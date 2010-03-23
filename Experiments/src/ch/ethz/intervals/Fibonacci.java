@@ -1,4 +1,5 @@
 package ch.ethz.intervals;
+
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.InlineTask;
 import ch.ethz.intervals.Interval;
@@ -25,13 +26,13 @@ public class Fibonacci extends Interval {
 					return new Fibonacci(subinterval, n - 1);
 				}
 			});
-			
+
 			Fibonacci fib2 = Intervals.inline(new InlineTask<Fibonacci>() {
 				public Fibonacci run(Interval subinterval) {
 					return new Fibonacci(subinterval, n - 2);
 				}
 			});
-			
+
 			number = fib1.number + fib2.number;
 		}
 	}
@@ -44,8 +45,9 @@ public class Fibonacci extends Interval {
 		}
 	}
 
-	public static void main(String[] args) {
-		final int n = 3;
+	public static void main(final String[] args) {
+		final int n = Integer.parseInt(args[0]);
+
 		Fibonacci fib = Intervals.inline(new InlineTask<Fibonacci>() {
 			public Fibonacci run(Interval subinterval) {
 				return new Fibonacci(subinterval, n);
@@ -53,7 +55,7 @@ public class Fibonacci extends Interval {
 		});
 
 		System.out.println(fib.number);
-		
+
 		assert fib.number == fib.sequentialFibonacci(n);
 	}
 }
