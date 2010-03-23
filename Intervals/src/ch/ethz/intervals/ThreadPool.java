@@ -46,6 +46,9 @@ class ThreadPool {
 		}
 	}
 	
+	// Called "Lazy" because the owner of the deque only lazily updates 
+	// the location of the head of deque, i.e., only when it tries to 
+	// pop something and finds it gone	
 	static class LazyDeque {
 		static class ThiefData {
 			int head = 0;
@@ -106,6 +109,8 @@ class ThreadPool {
 			//   we never store null into the array, and we know this location was initialized.
 			WorkItem item = tasksArray.getAndSet(lastIndex, null);
 			
+			// Only updates the location of the head of the deque when it tries to 
+			// pop something and finds it gone (lazy deque)
 			try {
 				if(item == null) { // The item we put here was stolen!
 					// If this item was stolen, then all previous entries
