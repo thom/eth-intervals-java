@@ -84,7 +84,7 @@ class ThreadPool {
 				
 				final int index = index(l, tail);
 				tasksArray.set(index, task);
-				ownerTail = tail + 1; // important: put vol. wr. after array store to create HB rel
+				ownerTail = tail + 1;
 				
 				if(Debug.ENABLED)
 					Debug.dequePut(owner, l, ownerHead, ownerTail, tail, task);				
