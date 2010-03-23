@@ -286,7 +286,6 @@ class ThreadPool {
 	
 	final int numWorkers = Runtime.getRuntime().availableProcessors();
 	final Worker[] workers = new Worker[numWorkers];
-	final Worker sentinel = new Worker(-1);
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 	
 	final Lock idleLock = new ReentrantLock();
