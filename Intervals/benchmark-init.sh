@@ -8,10 +8,13 @@ git diff | cat
 echo "pwd"
 pwd
 
+export CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib
+
 echo 
 echo "Settings:"
 echo "JAVAOPTS=${JAVAOPTS}"
 echo "NOBUILD=${NOBUILD}"
+echo "CLASSPATH=${CLASSPATH}"
 
 if [ ! -n "$NOBUILD" ]; then
 	ant
