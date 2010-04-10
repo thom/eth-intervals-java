@@ -10,11 +10,6 @@
             <src path="test"/>            
             <classpath refid="java"/>
         </javac>
-
-        <javac destdir="bin">            
-            <src path="erco_test/benchmarks/sor"/>            
-            <classpath refid="java"/>
-        </javac>
     </target>
 
     <target name="jar" depends="compile">
