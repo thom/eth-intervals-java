@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PACKAGE=src/ch/ethz/intervals
+
+rm -f ${PACKAGE}/IntReduction.java
+cp ${PACKAGE}/DoubleReduction.java ${PACKAGE}/IntReduction.java
+perl -p -i -e 's/Double/Int/g' ${PACKAGE}/IntReduction.java
+perl -p -i -e 's/double/int/g' ${PACKAGE}/IntReduction.java
+perl -p -i -e 's/PAD = 2/PAD = 4/g' ${PACKAGE}/IntReduction.java
+chmod u-w ${PACKAGE}/IntReduction.java
+
+rm -f ${PACKAGE}/LongReduction.java
+cp ${PACKAGE}/DoubleReduction.java ${PACKAGE}/LongReduction.java
+perl -p -i -e 's/Double/Long/g' ${PACKAGE}/LongReduction.java
+perl -p -i -e 's/double/long/g' ${PACKAGE}/LongReduction.java
+chmod u-w ${PACKAGE}/LongReduction.java
