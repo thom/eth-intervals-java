@@ -1,20 +1,27 @@
 echo Logfile: $1
-echo "> date"
+echo
+
+echo "date"
 date
+echo
+
 echo 'git show --pretty=oneline | head -1'
 git show --pretty=oneline | head -1
+echo
+
 echo "git diff | cat"
 git diff | cat
+echo
+
 echo "pwd"
 pwd
+echo
 
-export CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib
-
-echo 
 echo "Settings:"
 echo "JAVAOPTS=${JAVAOPTS}"
 echo "NOBUILD=${NOBUILD}"
 echo "CLASSPATH=${CLASSPATH}"
+echo
 
 if [ ! -n "$NOBUILD" ]; then
 	ant

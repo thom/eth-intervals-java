@@ -2,6 +2,8 @@
 
 ./benchmark-init $1
 
+export CLASSPATH=$CLASSPATH
+
 for iter in 500 1000 1500
 do
 	echo Testing 8 threads with $iter iterations

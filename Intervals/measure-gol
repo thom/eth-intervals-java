@@ -1,5 +1,6 @@
 #!/bin/bash
 MYDIR=$(dirname $0)
-LOGDIR=$MYDIR/../measurements
+DIR=$(cd $MYDIR; pwd)
+LOGDIR=${MYDIR}/measurements
 LOGFILE=$(hostname)-$(date +'%Y-%m-%d-%H:%M:%S')-gol.txt
-script -c "$MYDIR/measure-gol.1 $LOGFILE" $LOGDIR/$LOGFILE
+CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib/* script -c "$MYDIR/measure-gol.1 $LOGFILE" $LOGDIR/$LOGFILE
