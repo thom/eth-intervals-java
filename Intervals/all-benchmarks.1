@@ -9,24 +9,32 @@ NS="8 -1"
 
 ./benchmark-init.sh $1
 
-echo "SIZES2=${JAVAOPTS}"
-echo "SIZES3=${JAVAOPTS}"
+echo "SIZES2=${SIZE2}"
+echo "SIZES3=${SIZE3}"
 echo "ITERFAST=${ITERFAST}"
 echo "ITERSLOW=${ITERSLOW}"
 echo "NS=${NS}"
 
-for N in ${NS}
+for B in Crypt LUFact SOR
 do 
-	for B in Crypt LUFact SOR
+	for N in ${NS}
 	do 
 		./jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERFAST "$SIZES2" "$JAVAOPTS"
 	done
-	./jgf-benchmark jgfmt.section2.JGFSeriesBench $N $ITERSLOW "$SIZES2" "$JAVAOPTS"
 done
 
-for N in ${NS}
+for B in Series
+do 
+	for N in ${NS}
+	do 
+		./jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERSLOW "$SIZES2" "$JAVAOPTS"
+	done
+done
+
+
+for B in MolDyn MonteCarlo RayTracer
 do
-	for B in MolDyn MonteCarlo RayTracer
+	for N in ${NS}
 	do 
 		./jgf-benchmark jgfmt.section3.JGF${B}Bench $N "$ITERFAST" "$SIZES3" "$JAVAOPTS"
 	done
