@@ -13,7 +13,7 @@ do
 			for n in 1 2 3 4 5
 			do 
 				echo Testing kind=$k test=$t trial=$n tile_size=$ts
-				java ch.ethz.intervals.TestGameOfLife $k $ts $ts $t 150 155 1 1000 1000  
+				java ${JAVA_OPTS} ch.ethz.intervals.TestGameOfLife $k $ts $ts $t 150 155 1 1000 1000  
 			done
 		done
 	done

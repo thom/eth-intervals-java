@@ -9,12 +9,12 @@ do
 	echo Testing 8 threads with $iter iterations
 	for N in 1 2 3 4 5
 	do 
-		java ${JAVAOPTS} erco.sor.threads.Sor $iter 8
+		java ${JAVA_OPTS} erco.sor.threads.Sor $iter 8
 	done
 
 	echo Testing intervals with $iter iterations
 	for N in 1 2 3 4 5
 	do 
-		java ${JAVAOPTS} erco.sor.intervals.Sor $iter
+		java ${JAVA_OPTS} erco.sor.intervals.Sor $iter
 	done
 done
