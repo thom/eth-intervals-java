@@ -1,0 +1,44 @@
+#!/bin/bash
+
+JAVAOPTS="-Xmx2048M"
+SIZES2="SizeA SizeB SizeC"
+SIZES3="SizeA SizeB"
+ITERFAST=6
+ITERSLOW=3
+NS="8 -1"
+
+MYDIR=$(dirname $0)
+DIR=$(cd $MYDIR; pwd)
+JGF=$(cd $MYDIR/..; pwd)
+$DIR/benchmark-init $1
+
+echo "SIZES2=${SIZE2}"
+echo "SIZES3=${SIZE3}"
+echo "ITERFAST=${ITERFAST}"
+echo "ITERSLOW=${ITERSLOW}"
+echo "NS=${NS}"
+
+for B in Crypt LUFact SOR
+do 
+	for N in ${NS}
+	do 
+		$JGF/jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERFAST "$SIZES2" "$JAVAOPTS"
+	done
+done
+
+for B in Series
+do 
+	for N in ${NS}
+	do 
+		$JGF/jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERSLOW "$SIZES2" "$JAVAOPTS"
+	done
+done
+
+
+for B in MolDyn MonteCarlo RayTracer
+do
+	for N in ${NS}
+	do 
+		$DIR/jgf-benchmark jgfmt.section3.JGF${B}Bench $N "$ITERFAST" "$SIZES3" "$JAVAOPTS"
+	done
+done
