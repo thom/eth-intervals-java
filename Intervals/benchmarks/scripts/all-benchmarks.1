@@ -39,6 +39,6 @@ for B in MolDyn MonteCarlo RayTracer
 do
 	for N in ${NS}
 	do 
-		$DIR/jgf-benchmark jgfmt.section3.JGF${B}Bench $N "$ITERFAST" "$SIZES3" "$JAVA_OPTS"
+		$JGF/jgf-benchmark jgfmt.section3.JGF${B}Bench $N "$ITERFAST" "$SIZES3" "$JAVA_OPTS"
 	done
 done
