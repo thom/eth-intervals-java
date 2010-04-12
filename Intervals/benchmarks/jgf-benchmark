@@ -14,7 +14,7 @@ JAVAC_OPTS="$5"
 FOUND=
 TMPDIR=/tmp
 
-export CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib/*
+export CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib/*:$DIR/test/jgfmt/section3/Data/
 
 rm -f $TMPDIR/prof
 for x in $ALL

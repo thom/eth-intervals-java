@@ -21,6 +21,8 @@
 
 package jgfmt.section3.montecarlo;
 
+import java.net.URL;
+
 /**
  * Wrapper code to invoke the Application demonstrator.
  * 
@@ -38,8 +40,9 @@ public class CallAppDemo {
 		input[0] = 1000;
 		input[1] = datasizes[size];
 
-		String dirName = "test/jgfmt/section3/Data";
-		String filename = "hitData";
+		URL resource = this.getClass().getClassLoader().getResource("./hitData");
+		String dirName = "";
+		String filename = resource.getFile();
 		
 		if (JGFMonteCarloBench.nthreads != -1)
 			ap = new AppDemo(dirName, filename, (input[0]), (input[1]));
