@@ -39,10 +39,16 @@ public class CallAppDemo {
 
 		input[0] = 1000;
 		input[1] = datasizes[size];
-
+		
+		String filename, dirName;
 		URL resource = this.getClass().getClassLoader().getResource("./hitData");
-		String dirName = "";
-		String filename = resource.getFile();
+		if (resource == null) {
+			dirName = "test/jgfmt/section3/Data";
+			filename = "hitData";
+		}else {
+			dirName = "";
+			filename = resource.getFile();
+		}	
 		
 		if (JGFMonteCarloBench.nthreads != -1)
 			ap = new AppDemo(dirName, filename, (input[0]), (input[1]));
