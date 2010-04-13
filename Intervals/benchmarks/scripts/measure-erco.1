@@ -2,19 +2,40 @@
 
 MYDIR=$(dirname $0)
 DIR=$(cd $MYDIR; pwd)
+
 $DIR/benchmark-init $1
+
+if [ -z $NS ]
+then
+        NS="8 -1"
+fi
+
+if [ -z $ITER ]
+then
+        ITER="5"
+fi 
+
+echo "NS=${NS}"
+echo "ITER=${ITER}"
 
 for iter in 500 1000 1500
 do
-	echo Testing 8 threads with $iter iterations
-	for N in 1 2 3 4 5
-	do 
-		java ${JAVA_OPTS} erco.sor.threads.Sor $iter 8
-	done
-
-	echo Testing intervals with $iter iterations
-	for N in 1 2 3 4 5
-	do 
-		java ${JAVA_OPTS} erco.sor.intervals.Sor $iter
+	echo Testing with $iter iterations
+	for T in ${NS}
+	do
+		for N in $(seq 1 $ITER)
+		do
+			if [ $T -eq -1 ]
+			then
+				echo Intervals
+				java ${JAVA_OPTS} erco.sor.intervals.Sor $iter
+				echo
+			else
+				echo $T threads
+				java ${JAVA_OPTS} erco.sor.threads.Sor $iter $T
+				echo
+			fi
+		done
+		echo
 	done
 done

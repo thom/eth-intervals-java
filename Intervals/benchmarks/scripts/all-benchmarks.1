@@ -3,14 +3,26 @@
 JAVA_OPTS="-Xmx2048M"
 SIZES2="SizeA SizeB SizeC"
 SIZES3="SizeA SizeB"
-ITERFAST=6
-ITERSLOW=3
-NS="8 -1"
-
 MYDIR=$(dirname $0)
 DIR=$(cd $MYDIR; pwd)
 JGF=$(cd $MYDIR/..; pwd)
+
 $DIR/benchmark-init $1
+
+if [ -z $NS ]
+then
+	NS="8 -1"
+fi
+
+if [ -z $ITERFAST ]
+then
+	ITERFAST=6
+fi
+
+if [ -z $ITERSLOW ]
+then
+	ITERSLOW=3
+fi
 
 echo "SIZES2=${SIZES2}"
 echo "SIZES3=${SIZES3}"
