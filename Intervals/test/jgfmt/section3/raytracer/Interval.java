@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public class Interval implements java.io.Serializable {
 	/*
 	 * public int number; public int width; public int height; public int yfrom;

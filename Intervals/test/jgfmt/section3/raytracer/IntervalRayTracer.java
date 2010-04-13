@@ -28,11 +28,11 @@ import ch.ethz.intervals.LongReduction;
 import ch.ethz.intervals.ParentForNew;
 
 public class IntervalRayTracer {
-	
+
 	final LongReduction checksum;
-	
+
 	final Scene scene;
-	
+
 	/**
 	 * Lights for the rendering scene
 	 */
@@ -61,13 +61,14 @@ public class IntervalRayTracer {
 	final int datasizes[] = { 150, 500 };
 
 	final Vec viewVec, upVec, leftVec;
-	
+
 	final Interval interval;
-	
-	public IntervalRayTracer(@ParentForNew("Parent") Dependency dep, LongReduction checksum, Scene scene, Interval interval) {
+
+	public IntervalRayTracer(@ParentForNew("Parent") Dependency dep,
+			LongReduction checksum, Scene scene, Interval interval) {
 		this.checksum = checksum;
 		this.scene = scene;
-		
+
 		// Get the objects count
 		int nLights = scene.getLights();
 		int nObjects = scene.getObjects();
@@ -87,7 +88,7 @@ public class IntervalRayTracer {
 
 		// Set the view
 		view = scene.getView();
-		
+
 		viewVec = Vec.sub(view.at, view.from);
 		viewVec.normalize();
 
@@ -104,41 +105,43 @@ public class IntervalRayTracer {
 
 		upVec.scale(-frustrumwidth);
 		leftVec.scale(view.aspect * frustrumwidth);
-		
+
 		this.interval = interval;
 	}
 
 	public void run(int start, int stop) {
-		for(int y = start; y < stop; y++) {
+		for (int y = start; y < stop; y++) {
 			long lineChecksum = 0;
-			
+
 			// Screen variables
-			int row[] = new int[interval.width]; // * (interval.yto - interval.yfrom)];
+			int row[] = new int[interval.width]; // * (interval.yto -
+													// interval.yfrom)];
 			int pixCounter = 0; // iterator
-	
+
 			// Rendering variables
 			Tracer tracer = new Tracer();
 			Ray r = new Ray(view.from, voidVec);
-	
+
 			// Header for .ppm file
 			// System.out.println("P3");
 			// System.out.println(width + " " + height);
 			// System.out.println("255");
-	
+
 			// All loops are reversed for 'speedup' (cf. thinking in java p331)
-	
+
 			// For each line
-			
+
 			double ylen = (double) (2.0 * y) / (double) interval.width - 1.0;
 			// System.out.println("Doing line " + y);
 			// For each pixel of the line
 			for (int x = 0; x < interval.width; x++) {
-				double xlen = (double) (2.0 * x) / (double) interval.width - 1.0;
+				double xlen = (double) (2.0 * x) / (double) interval.width
+						- 1.0;
 				r.D = Vec.comb(xlen, leftVec, ylen, upVec);
 				r.D.add(viewVec);
 				r.D.normalize();
 				Vec col = tracer.trace(0, 1.0, r);
-				
+
 				// computes the color of the ray
 				int red = (int) (col.x * 255.0);
 				if (red > 255)
@@ -149,28 +152,28 @@ public class IntervalRayTracer {
 				int blue = (int) (col.z * 255.0);
 				if (blue > 255)
 					blue = 255;
-	
+
 				lineChecksum += red;
 				lineChecksum += green;
 				lineChecksum += blue;
-	
+
 				// RGB values for .ppm file
 				// System.out.println(red + " " + green + " " + blue);
 				// Sets the pixels
 				row[pixCounter++] = alpha | (red << 16) | (green << 8) | (blue);
 			} // end for (x)
-			
+
 			checksum.add(lineChecksum);
 		}
 	}
-	
+
 	final class Tracer {
-		// State that varies by line.  Mostly this could be moved
-		// to local variables, except for tRay: there is a (unintentional?) 
+		// State that varies by line. Mostly this could be moved
+		// to local variables, except for tRay: there is a (unintentional?)
 		// dependence between recursive calls to shade().
 		final Isect inter = new Isect();
 		final Vec L = new Vec();
-		final Ray tRay = new Ray();		
+		final Ray tRay = new Ray();
 		final Vec primVec = new Vec();
 
 		boolean intersect(Ray r, double maxt) {
@@ -242,7 +245,9 @@ public class IntervalRayTracer {
 		 * @return The color in Vec form (rgb)
 		 */
 		Vec shade(int level, double weight, Vec P, Vec N, Vec I, Isect hit) {
+			@SuppressWarnings("unused")
 			double n1, n2, eta, c1, cs2;
+			@SuppressWarnings("unused")
 			Vec r;
 			Vec tcol;
 			Vec R;

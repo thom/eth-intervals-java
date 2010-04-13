@@ -26,6 +26,7 @@ package jgfmt.section3.raytracer;
 /**
  * This class reflects the 3d vectors used in 3d computations
  */
+@SuppressWarnings("serial")
 public class Vec implements java.io.Serializable {
 
 	/**

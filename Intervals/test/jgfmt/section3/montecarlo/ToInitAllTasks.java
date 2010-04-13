@@ -27,6 +27,7 @@ package jgfmt.section3.montecarlo;
  * @author H W Yau
  * @version $Revision: 1.10 $ $Date: 1999/02/16 18:52:53 $
  */
+@SuppressWarnings("serial")
 public class ToInitAllTasks implements java.io.Serializable {
 	private String header;
 	private String name;
@@ -69,17 +70,9 @@ public class ToInitAllTasks implements java.io.Serializable {
 	 *            The stock price value to use at the start of each Monte Carlo
 	 *            simulation path.
 	 */
-	public ToInitAllTasks(
-			String header,
-			String name,
-			int startDate,
-			int endDate,
-			double dTime,
-			int returnDefinition,
-			double expectedReturnRate,
-			double volatility,
-			double pathStartValue)
-	{
+	public ToInitAllTasks(String header, String name, int startDate,
+			int endDate, double dTime, int returnDefinition,
+			double expectedReturnRate, double volatility, double pathStartValue) {
 		this.header = header;
 		this.name = name;
 		this.startDate = startDate;
@@ -88,7 +81,6 @@ public class ToInitAllTasks implements java.io.Serializable {
 		this.returnDefinition = returnDefinition;
 		this.expectedReturnRate = expectedReturnRate;
 		this.volatility = volatility;
-		this.nTimeSteps = nTimeSteps;
 		this.pathStartValue = pathStartValue;
 	}
 
@@ -110,8 +102,7 @@ public class ToInitAllTasks implements java.io.Serializable {
 	 *                variables from the target objetct.
 	 */
 	public ToInitAllTasks(ReturnPath obj, int nTimeSteps, double pathStartValue)
-			throws DemoException
-	{
+			throws DemoException {
 		//
 		// Instance variables defined in the PathId object.
 		this.name = obj.get_name();

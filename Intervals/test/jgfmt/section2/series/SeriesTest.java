@@ -68,6 +68,7 @@ public class SeriesTest {
 
 	void Do() {
 
+		@SuppressWarnings("unused")
 		int i, j;
 		Runnable thobjects[] = new Runnable[JGFSeriesBench.nthreads];
 		Thread th[] = new Thread[JGFSeriesBench.nthreads];
@@ -128,8 +129,8 @@ class SeriesRunner implements Runnable {
 
 		if (id == 0) {
 			SeriesTest.TestArray[0][0] = TrapezoidIntegrate((double) 0.0, // Lower
-																			// bound
-																			// .
+					// bound
+					// .
 					(double) 2.0, // Upper bound.
 					1000, // # of steps.
 					(double) 0.0, // No omega*n needed.
@@ -158,21 +159,15 @@ class SeriesRunner implements Runnable {
 			// since the period is 2 and the term cancels itself
 			// out.
 
-			SeriesTest.TestArray[0][i] = TrapezoidIntegrate(
-					(double) 0.0,
-					(double) 2.0,
-					1000,
-					omega * (double) i,
-					1); // 1 = cosine term.
+			SeriesTest.TestArray[0][i] = TrapezoidIntegrate((double) 0.0,
+					(double) 2.0, 1000, omega * (double) i, 1); // 1 = cosine
+			// term.
 
 			// Calculate the B[i] terms.
 
-			SeriesTest.TestArray[1][i] = TrapezoidIntegrate(
-					(double) 0.0,
-					(double) 2.0,
-					1000,
-					omega * (double) i,
-					2); // 2 = sine term.
+			SeriesTest.TestArray[1][i] = TrapezoidIntegrate((double) 0.0,
+					(double) 2.0, 1000, omega * (double) i, 2); // 2 = sine
+			// term.
 		}
 
 	}

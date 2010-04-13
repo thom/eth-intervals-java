@@ -36,6 +36,7 @@ public class JGFSORBench extends SOR implements JGFSection2 {
 
 	Random R = new Random(RANDOM_SEED);
 
+	@SuppressWarnings("static-access")
 	public JGFSORBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

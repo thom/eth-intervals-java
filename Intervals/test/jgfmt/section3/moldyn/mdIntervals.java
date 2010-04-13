@@ -31,33 +31,32 @@ import ch.ethz.intervals.IndexedInterval;
 import ch.ethz.intervals.IntReduction;
 import ch.ethz.intervals.Interval;
 import ch.ethz.intervals.Intervals;
-import ch.ethz.intervals.Point;
 import ch.ethz.intervals.VoidInlineTask;
 
 public class mdIntervals extends mdBase {
-	
+
 	int lg, mdsize;
 
-//	double l, rcoff, rcoffs, side, sideh, hsq, hsq2, velt;
-//	double a, r, tscale, sc, ts;
+	// double l, rcoff, rcoffs, side, sideh, hsq, hsq2, velt;
+	// double a, r, tscale, sc, ts;
 	final double den = 0.83134;
 	final double tref = 0.722;
 	final double h = 0.064;
-//	double vaver, vaverh, rand;
-//	double u1, u2, v1, v2, s, xx, yy, zz;
-//	double xvelocity, yvelocity, zvelocity;
+	// double vaver, vaverh, rand;
+	// double u1, u2, v1, v2, s, xx, yy, zz;
+	// double xvelocity, yvelocity, zvelocity;
 
 	DoubleReduction[][] sh_force;
-	
+
 	double result;
 
-	//int npartm, iseed, tint;
+	// int npartm, iseed, tint;
 	final int irep = 10;
 	final int istop = 19;
 	final int iprint = 10;
 	final int movemx = 50;
 
-	//Barrier br;
+	// Barrier br;
 	random randnum;
 
 	particle one[] = null;
@@ -73,7 +72,7 @@ public class mdIntervals extends mdBase {
 		vir = new DoubleReduction(0.0);
 		interacts = new IntReduction(0);
 
-		DoubleReduction sh_force[][] = new DoubleReduction[3][PARTSIZE];		
+		DoubleReduction sh_force[][] = new DoubleReduction[3][PARTSIZE];
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < PARTSIZE; j++)
 				sh_force[i][j] = new DoubleReduction(0.0);
@@ -82,16 +81,20 @@ public class mdIntervals extends mdBase {
 
 		mdsize = md.PARTSIZE;
 		one = new particle[mdsize];
+		@SuppressWarnings("unused")
 		final double l = md.LENGTH;
 
 		final double side = Math.pow((mdsize / den), 0.3333333);
 		final double rcoff = mm / 4.0;
 
 		final double a = side / mm;
+		@SuppressWarnings("unused")
 		final double sideh = side * 0.5;
 		final double hsq = h * h;
 		final double hsq2 = hsq * 0.5;
+		@SuppressWarnings("unused")
 		final double npartm = mdsize - 1;
+		@SuppressWarnings("unused")
 		final double rcoffs = rcoff * rcoff;
 		final double tscale = 16.0 / (1.0 * mdsize - 1.0);
 		final double vaver = 1.13 * Math.sqrt(tref / 24.0);
@@ -108,15 +111,9 @@ public class mdIntervals extends mdBase {
 			for (int i = 0; i < mm; i++) {
 				for (int j = 0; j < mm; j++) {
 					for (int k = 0; k < mm; k++) {
-						one[ijk] = new particle(
-								(i * a + lg * a * 0.5),
-								(j * a + lg * a * 0.5),
-								(k * a),
-								xvelocity,
-								yvelocity,
-								zvelocity,
-								sh_force,
-								this);
+						one[ijk] = new particle((i * a + lg * a * 0.5),
+								(j * a + lg * a * 0.5), (k * a), xvelocity,
+								yvelocity, zvelocity, sh_force, this);
 						ijk = ijk + 1;
 					}
 				}
@@ -126,15 +123,10 @@ public class mdIntervals extends mdBase {
 			for (int i = 0; i < mm; i++) {
 				for (int j = 0; j < mm; j++) {
 					for (int k = 0; k < mm; k++) {
-						one[ijk] = new particle(
-								(i * a + (2 - lg) * a * 0.5),
+						one[ijk] = new particle((i * a + (2 - lg) * a * 0.5),
 								(j * a + (lg - 1) * a * 0.5),
-								(k * a + a * 0.5),
-								xvelocity,
-								yvelocity,
-								zvelocity,
-								sh_force,
-								this);
+								(k * a + a * 0.5), xvelocity, yvelocity,
+								zvelocity, sh_force, this);
 						ijk = ijk + 1;
 					}
 				}
@@ -219,15 +211,16 @@ public class mdIntervals extends mdBase {
 		JGFInstrumentor.startTimer("Section3:MolDyn:Run");
 		for (int move = 0; move < movemx; move++) {
 			/* move the particles and update velocities */
-			
+
 			// use accumulate shared force to update position of all particles
-			Intervals.inline(new VoidInlineTask() {				
-				@Override public void run(Interval subinterval) {
+			Intervals.inline(new VoidInlineTask() {
+				@Override
+				public void run(Interval subinterval) {
 					new IndexedInterval(subinterval, mdsize) {
 						public void run(int start, int stop) {
-							for(int i = start; i < stop; i++)
+							for (int i = start; i < stop; i++)
 								one[i].domove(side, i);
-						}				
+						}
 					};
 				}
 			});
@@ -245,13 +238,14 @@ public class mdIntervals extends mdBase {
 			interacts.resetAccumulators();
 
 			/* compute forces */
-			Intervals.inline(new VoidInlineTask() {				
-				@Override public void run(Interval subinterval) {
+			Intervals.inline(new VoidInlineTask() {
+				@Override
+				public void run(Interval subinterval) {
 					new IndexedInterval(subinterval, mdsize) {
 						public void run(int start, int stop) {
-							for(int i = start; i < stop; i++)
+							for (int i = start; i < stop; i++)
 								one[i].force(side, rcoff, mdsize, i);
-						}				
+						}
 					};
 				}
 			});
@@ -269,7 +263,6 @@ public class mdIntervals extends mdBase {
 					DoubleReduction r = sh_force[j][i];
 					r.setValue(r.value() * hsq2);
 				}
-			
 
 			/* scale forces, update velocities */
 			double sum = 0.0;
@@ -306,26 +299,29 @@ public class mdIntervals extends mdBase {
 
 			/* sum to get full potential energy and virial */
 
-			if (((move + 1) % iprint) == 0) {				
+			if (((move + 1) % iprint) == 0) {
 				double ek = result = 24.0 * ekin;
 				double epot4 = epot.value() * 4.0;
+				@SuppressWarnings("unused")
 				double etot = ek + epot4;
+				@SuppressWarnings("unused")
 				double temp = tscale * ekin;
+				@SuppressWarnings("unused")
 				double pres = den * 16.0 * (ekin - vir.value()) / mdsize;
 				vel = vel / mdsize;
+				@SuppressWarnings("unused")
 				double rp = (count / mdsize) * 100.0;
 			}
 		}
 
 		JGFInstrumentor.stopTimer("Section3:MolDyn:Run");
 	}
-	
+
 	public void setupParameters() {
 		/* Parameter determination */
 
-
 	}
-	
+
 	static class particle {
 
 		public double xcoord, ycoord, zcoord;
@@ -334,16 +330,9 @@ public class mdIntervals extends mdBase {
 		DoubleReduction[][] sh_force;
 		mdIntervals runner;
 
-		public particle(
-				double xcoord,
-				double ycoord,
-				double zcoord,
-				double xvelocity,
-				double yvelocity,
-				double zvelocity,
-				DoubleReduction[][] sh_force,
-				mdIntervals runner)
-		{
+		public particle(double xcoord, double ycoord, double zcoord,
+				double xvelocity, double yvelocity, double zvelocity,
+				DoubleReduction[][] sh_force, mdIntervals runner) {
 
 			this.xcoord = xcoord;
 			this.ycoord = ycoord;
@@ -386,12 +375,7 @@ public class mdIntervals extends mdBase {
 
 		}
 
-		public void force(
-				double side,
-				double rcoff,
-				int mdsize,
-				int x)
-		{
+		public void force(double side, double rcoff, int mdsize, int x) {
 
 			final double sideh = 0.5 * side;
 			final double rcoffs = rcoff * rcoff;
@@ -506,6 +490,4 @@ public class mdIntervals extends mdBase {
 		return result;
 	}
 
-
 }
-

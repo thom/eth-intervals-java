@@ -86,6 +86,7 @@ class LinpackRunner implements Runnable {
 		double[] col_k, col_j;
 		double t;
 		int j, k, kp1, l, nm1;
+		@SuppressWarnings("unused")
 		int info;
 		int slice, ilow, iupper;
 

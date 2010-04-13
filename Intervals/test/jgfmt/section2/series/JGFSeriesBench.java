@@ -30,6 +30,7 @@ public class JGFSeriesBench extends SeriesTest implements JGFSection2 {
 	private int size;
 	private int datasizes[] = { 10000, 100000, 1000000 };
 
+	@SuppressWarnings("static-access")
 	public JGFSeriesBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

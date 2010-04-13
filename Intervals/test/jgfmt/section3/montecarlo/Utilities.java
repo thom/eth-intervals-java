@@ -102,11 +102,9 @@ public final class Utilities {
 	 *            The array index on which to start joining.
 	 * @return A string of the joined string array.
 	 */
-	public static String joinString(
-			String joinChar,
-			String stringArray[],
-			int index)
-	{
+	public static String joinString(String joinChar, String stringArray[],
+			int index) {
+		@SuppressWarnings("unused")
 		String methodName = "join";
 		StringBuffer tmpString;
 

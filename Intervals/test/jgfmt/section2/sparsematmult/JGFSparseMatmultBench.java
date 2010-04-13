@@ -48,6 +48,7 @@ public class JGFSparseMatmultBench extends SparseMatmult implements JGFSection2
 	int[] lowsum;
 	int[] highsum;
 
+	@SuppressWarnings("static-access")
 	public JGFSparseMatmultBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public class Sphere extends Primitive implements java.io.Serializable {
 	Vec c;
 	double r, r2;

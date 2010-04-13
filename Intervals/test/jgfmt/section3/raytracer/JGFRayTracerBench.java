@@ -35,6 +35,7 @@ public class JGFRayTracerBench extends RayTracer implements JGFSection3 {
 	public static int staticnumobjects;
 	public boolean failed;
 
+	@SuppressWarnings("static-access")
 	public JGFRayTracerBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

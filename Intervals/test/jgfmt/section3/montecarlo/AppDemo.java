@@ -80,21 +80,19 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	/**
 	 * Flag to determine whether initialisation has already taken place.
 	 */
+	@SuppressWarnings("unused")
 	private boolean initialised = false;
 	/**
 	 * Variable to determine which deployment scenario to run.
 	 */
+	@SuppressWarnings("unused")
 	private int runMode;
 
 	public static Vector<Object> tasks;
 	public static Vector<Object> results;
 
-	public AppDemo(
-			String dataDirname,
-			String dataFilename,
-			int nTimeStepsMC,
-			int nRunsMC)
-	{
+	public AppDemo(String dataDirname, String dataFilename, int nTimeStepsMC,
+			int nRunsMC) {
 		this.dataDirname = dataDirname;
 		this.dataFilename = dataFilename;
 		this.nTimeStepsMC = nTimeStepsMC;
@@ -122,7 +120,9 @@ public class AppDemo extends Universal implements AppDemoInterface {
 
 	public static ToInitAllTasks initAllTasks = null;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see jgfmt.section3.montecarlo.AppDemoInterface#initSerial()
 	 */
 	public void initSerial() {
@@ -134,14 +134,15 @@ public class AppDemo extends Universal implements AppDemoInterface {
 			ReturnPath returnP = rateP.getReturnCompounded();
 			returnP.estimatePath();
 			returnP.dbgDumpFields();
+			@SuppressWarnings("unused")
 			double expectedReturnRate = returnP.get_expectedReturnRate();
+			@SuppressWarnings("unused")
 			double volatility = returnP.get_volatility();
 			//
 			// Now prepare for MC runs.
-			initAllTasks = new ToInitAllTasks(
-					returnP,
-					nTimeStepsMC,
+			initAllTasks = new ToInitAllTasks(returnP, nTimeStepsMC,
 					pathStartValue);
+			@SuppressWarnings("unused")
 			String slaveClassName = "MonteCarlo.PriceStock";
 			//
 			// Now create the tasks.
@@ -153,7 +154,9 @@ public class AppDemo extends Universal implements AppDemoInterface {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see jgfmt.section3.montecarlo.AppDemoInterface#runThread()
 	 */
 	public void runThread() {
@@ -180,7 +183,9 @@ public class AppDemo extends Universal implements AppDemoInterface {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see jgfmt.section3.montecarlo.AppDemoInterface#processSerial()
 	 */
 	public void processSerial() {
@@ -221,7 +226,9 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	private void processResults() throws DemoException {
 		double avgExpectedReturnRateMC = 0.0;
 		double avgVolatilityMC = 0.0;
+		@SuppressWarnings("unused")
 		double runAvgExpectedReturnRateMC = 0.0;
+		@SuppressWarnings("unused")
 		double runAvgVolatilityMC = 0.0;
 		ToResult returnMC;
 		if (nRunsMC != results.size()) {
@@ -231,12 +238,8 @@ public class AppDemo extends Universal implements AppDemoInterface {
 		//
 		// Create an instance of a RatePath, for accumulating the results of the
 		// Monte Carlo simulations.
-		RatePath avgMCrate = new RatePath(
-				nTimeStepsMC,
-				"MC",
-				19990109,
-				19991231,
-				dTime);
+		RatePath avgMCrate = new RatePath(nTimeStepsMC, "MC", 19990109,
+				19991231, dTime);
 		for (int i = 0; i < nRunsMC; i++) {
 			// First, create an instance which is supposed to generate a
 			// particularly simple MC path.
@@ -353,6 +356,7 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	 * 
 	 * @return Value of instance variable <code>tasks</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public Vector<Object> get_tasks() {
 		return (this.tasks);
 	}
@@ -363,6 +367,7 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	 * @param tasks
 	 *            the value to set for the instance variable <code>tasks</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public void set_tasks(Vector<Object> tasks) {
 		this.tasks = tasks;
 	}
@@ -372,6 +377,7 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	 * 
 	 * @return Value of instance variable <code>results</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public Vector<Object> get_results() {
 		return (this.results);
 	}
@@ -383,6 +389,7 @@ public class AppDemo extends Universal implements AppDemoInterface {
 	 *            the value to set for the instance variable
 	 *            <code>results</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public void set_results(Vector<Object> results) {
 		this.results = results;
 	}

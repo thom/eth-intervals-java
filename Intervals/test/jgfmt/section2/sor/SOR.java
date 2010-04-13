@@ -37,11 +37,14 @@ public class SOR {
 		int M = G.length;
 		int N = G[0].length;
 
+		@SuppressWarnings("unused")
 		double omega_over_four = omega * 0.25;
+		@SuppressWarnings("unused")
 		double one_minus_omega = 1.0 - omega;
 
 		// update interior points
 		//
+		@SuppressWarnings("unused")
 		int Mm1 = M - 1;
 		int Nm1 = N - 1;
 

@@ -28,6 +28,7 @@ package jgfmt.section3.montecarlo;
  * @author H W Yau
  * @version $Revision: 1.4 $ $Date: 1999/02/16 18:51:14 $
  */
+@SuppressWarnings("serial")
 public class DemoException extends java.lang.Exception {
 	/**
 	 * Flag for selecting whether to print the stack-trace dump.

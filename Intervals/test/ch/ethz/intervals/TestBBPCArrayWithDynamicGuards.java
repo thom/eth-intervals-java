@@ -2,7 +2,6 @@ package ch.ethz.intervals;
 
 import static ch.ethz.intervals.Intervals.addHb;
 import static ch.ethz.intervals.Intervals.inline;
-import static ch.ethz.intervals.Intervals.child;
 import static ch.ethz.intervals.Intervals.successor;
 
 import java.util.concurrent.atomic.AtomicInteger;

@@ -28,6 +28,7 @@ package jgfmt.section3.montecarlo;
  * @author H W Yau
  * @version $Revision: 1.8 $ $Date: 1999/02/16 18:53:07 $
  */
+@SuppressWarnings("serial")
 public class ToResult implements java.io.Serializable {
 	private String header;
 	private double expectedReturnRate = Double.NaN;
@@ -44,14 +45,9 @@ public class ToResult implements java.io.Serializable {
 	 * @param pathValue
 	 *            Data computed by the Monte Carlo generator.
 	 */
-	public ToResult(
-			String header,
-			double expectedReturnRate,
-			double volatility,
-			double volatility2,
-			double finalStockPrice,
-			double[] pathValue)
-	{
+	public ToResult(String header, double expectedReturnRate,
+			double volatility, double volatility2, double finalStockPrice,
+			double[] pathValue) {
 		this.header = header;
 		this.expectedReturnRate = expectedReturnRate;
 		this.volatility = volatility;

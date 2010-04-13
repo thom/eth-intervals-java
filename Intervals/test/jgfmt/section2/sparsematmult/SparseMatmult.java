@@ -33,16 +33,8 @@ public class SparseMatmult {
 	 * Scimark kernels.
 	 */
 
-	public static void test(
-			double y[],
-			double val[],
-			int row[],
-			int col[],
-			double x[],
-			int NUM_ITERATIONS,
-			int lowsum[],
-			int highsum[])
-	{
+	public static void test(double y[], double val[], int row[], int col[],
+			double x[], int NUM_ITERATIONS, int lowsum[], int highsum[]) {
 		int nz = val.length;
 		yt = y;
 
@@ -51,36 +43,20 @@ public class SparseMatmult {
 
 		JGFInstrumentor.startTimer("Section2:SparseMatmult:Kernel");
 
-		if(JGFSparseMatmultBench.nthreads == -1) {
-			
+		if (JGFSparseMatmultBench.nthreads == -1) {
+
 		} else {
 			for (int i = 1; i < JGFSparseMatmultBench.nthreads; i++) {
-				thobjects[i] = new SparseRunner(
-						i,
-						val,
-						row,
-						col,
-						x,
-						NUM_ITERATIONS,
-						nz,
-						lowsum,
-						highsum);
+				thobjects[i] = new SparseRunner(i, val, row, col, x,
+						NUM_ITERATIONS, nz, lowsum, highsum);
 				th[i] = new Thread(thobjects[i]);
 				th[i].start();
 			}
-	
-			thobjects[0] = new SparseRunner(
-					0,
-					val,
-					row,
-					col,
-					x,
-					NUM_ITERATIONS,
-					nz,
-					lowsum,
-					highsum);
+
+			thobjects[0] = new SparseRunner(0, val, row, col, x,
+					NUM_ITERATIONS, nz, lowsum, highsum);
 			thobjects[0].run();
-	
+
 			for (int i = 1; i < JGFSparseMatmultBench.nthreads; i++) {
 				try {
 					th[i].join();
@@ -105,17 +81,8 @@ class SparseRunner implements Runnable {
 	int lowsum[];
 	int highsum[];
 
-	public SparseRunner(
-			int id,
-			double val[],
-			int row[],
-			int col[],
-			double x[],
-			int NUM_ITERATIONS,
-			int nz,
-			int lowsum[],
-			int highsum[])
-	{
+	public SparseRunner(int id, double val[], int row[], int col[], double x[],
+			int NUM_ITERATIONS, int nz, int lowsum[], int highsum[]) {
 		this.id = id;
 		this.x = x;
 		this.val = val;

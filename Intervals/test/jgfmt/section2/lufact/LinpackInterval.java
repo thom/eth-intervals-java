@@ -23,7 +23,6 @@ package jgfmt.section2.lufact;
 import ch.ethz.intervals.IndexedInterval;
 import ch.ethz.intervals.Interval;
 import ch.ethz.intervals.Intervals;
-import ch.ethz.intervals.Point;
 import ch.ethz.intervals.VoidInlineTask;
 
 class LinpackInterval {

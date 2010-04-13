@@ -25,6 +25,7 @@ package jgfmt.section3.raytracer;
 
 import java.util.Vector;
 
+@SuppressWarnings("serial")
 public class Scene implements java.io.Serializable {
 	public final Vector<Object> lights;
 	public final Vector<Object> objects;

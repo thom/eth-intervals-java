@@ -125,6 +125,7 @@ public class TspSolver extends Thread {
 
     static void MakeTourString(int len, int[] path) {
 	int i;
+	@SuppressWarnings("unused")
 	String tour_str="";
 
 	for (i=0; i < len; i++) {
@@ -467,6 +468,7 @@ public class TspSolver extends Thread {
      *
      */
     void recursive_solve(int index) {
+	@SuppressWarnings("unused")
 	int i, j;
 	TourElement curr = Tours[index];
 

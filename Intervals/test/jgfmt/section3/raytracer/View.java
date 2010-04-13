@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public class View implements java.io.Serializable {
 	/*
 	 * public Vec from; public Vec at; public Vec up; public double dist; public
@@ -35,14 +36,8 @@ public class View implements java.io.Serializable {
 	public final double angle;
 	public final double aspect;
 
-	public View(
-			Vec from,
-			Vec at,
-			Vec up,
-			double dist,
-			double angle,
-			double aspect)
-	{
+	public View(Vec from, Vec at, Vec up, double dist, double angle,
+			double aspect) {
 		this.from = from;
 		this.at = at;
 		this.up = up;

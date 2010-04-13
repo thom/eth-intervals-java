@@ -23,7 +23,6 @@
 
 package jgfmt.section3.raytracer;
 
-
 public class RayTracer {
 
 	Scene scene;
@@ -61,7 +60,7 @@ public class RayTracer {
 	 * Temporary vect
 	 */
 	Vec L = new Vec();
-	
+
 	/** NDM: Temporary vect that used to be in Sphere */
 	Vec primVec = new Vec();
 
@@ -133,9 +132,7 @@ public class RayTracer {
 		scene.addLight(new Light(200, 200, 0, 1.0));
 
 		/* Creates a View (viewing point) for the rendering scene */
-		View v = new View(new Vec(x, 20, -30), new Vec(x, y, 0), new Vec(
-				0,
-				1,
+		View v = new View(new Vec(x, 20, -30), new Vec(x, y, 0), new Vec(0, 1,
 				0), 1.0, 35.0 * 3.14159265 / 180.0, 1.0);
 		/*
 		 * v.from = new Vec(x, y, -30); v.at = new Vec(x, y, -15); v.up = new
@@ -315,7 +312,9 @@ public class RayTracer {
 	 * @return The color in Vec form (rgb)
 	 */
 	Vec shade(int level, double weight, Vec P, Vec N, Vec I, Isect hit) {
+		@SuppressWarnings("unused")
 		double n1, n2, eta, c1, cs2;
+		@SuppressWarnings("unused")
 		Vec r;
 		Vec tcol;
 		Vec R;
@@ -417,14 +416,8 @@ public class RayTracer {
 
 		// Set interval to be rendered to the whole picture
 		// (overkill, but will be useful to retain this for parallel versions)
-		Interval interval = new Interval(
-				0,
-				rt.width,
-				rt.height,
-				0,
-				rt.height,
-				1,
-				0);
+		Interval interval = new Interval(0, rt.width, rt.height, 0, rt.height,
+				1, 0);
 
 		// Do the business!
 		rt.render(interval);

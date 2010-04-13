@@ -66,6 +66,7 @@ public class PriceStock extends Universal {
 	/**
 	 * Object which represents the results from a given computation task.
 	 */
+	@SuppressWarnings("unused")
 	private ToResult result;
 	private double expectedReturnRate = Double.NaN;
 	private double volatility = Double.NaN;

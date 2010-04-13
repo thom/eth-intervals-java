@@ -30,6 +30,7 @@ public class JGFForkJoinBench implements JGFSection1 {
 	private static final int MAXSIZE = 1000000;
 	private static final double TARGETTIME = 10.0;
 
+	@SuppressWarnings("static-access")
 	public JGFForkJoinBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

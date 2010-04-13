@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public class Surface implements java.io.Serializable {
 	public Vec color;
 	public double kd;

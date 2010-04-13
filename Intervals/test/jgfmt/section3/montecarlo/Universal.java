@@ -57,6 +57,7 @@ public class Universal {
 	/**
 	 * Default constructor.
 	 */
+	@SuppressWarnings("static-access")
 	public Universal() {
 		super();
 		this.DEBUG = true;
@@ -96,6 +97,7 @@ public class Universal {
 	 * 
 	 * @return Value of instance variable <code>UNIVERSAL_DEBUG</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public boolean get_UNIVERSAL_DEBUG() {
 		return (this.UNIVERSAL_DEBUG);
 	}
@@ -107,6 +109,7 @@ public class Universal {
 	 *            the value to set for the instance variable
 	 *            <code>UNIVERSAL_DEBUG</code>.
 	 */
+	@SuppressWarnings("static-access")
 	public void set_UNIVERSAL_DEBUG(boolean UNIVERSAL_DEBUG) {
 		this.UNIVERSAL_DEBUG = UNIVERSAL_DEBUG;
 	}

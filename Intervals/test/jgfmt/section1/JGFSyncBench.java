@@ -30,6 +30,7 @@ public class JGFSyncBench implements JGFSection1 {
 	private static final int MAXSIZE = 100000000;
 	private static final double TARGETTIME = 10.0;
 
+	@SuppressWarnings("static-access")
 	public JGFSyncBench(int nthreads) {
 		this.nthreads = nthreads;
 	}
@@ -38,6 +39,7 @@ public class JGFSyncBench implements JGFSection1 {
 
 		int i, size;
 		double time;
+		@SuppressWarnings("unused")
 		int counter = 0;
 		int shared_cont = 0;
 

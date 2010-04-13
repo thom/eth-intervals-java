@@ -520,11 +520,15 @@ public class TestDynamicGuard {
 				Interval withLock1 = f.create(a, "withLock1", FLAG_LCK1FOR1);
 				
 				Interval readers = f.create(withLock1, "readers", 0);
+				@SuppressWarnings("unused")
 				Interval reader0 = f.create(readers, "reader0", FLAG_RD1);
+				@SuppressWarnings("unused")
 				Interval reader1 = f.create(readers, "reader1", FLAG_RD1);
+				@SuppressWarnings("unused")
 				Interval reader2 = f.create(readers, "reader2", FLAG_RD1);
 				
 				Interval writers = f.create(withLock1, "writers", 0);
+				@SuppressWarnings("unused")
 				Interval writer0 = f.create(writers, "writer0", FLAG_RD1|FLAG_WR1);
 				
 				Intervals.addHb(readers.end, writers.start);
@@ -549,11 +553,15 @@ public class TestDynamicGuard {
 				Interval withLock1 = f.create(a, "withLock1", FLAG_LCK1FOR1);
 				
 				Interval readers = f.create(withLock1, "readers", 0);
+				@SuppressWarnings("unused")
 				Interval reader0 = f.create(readers, "reader0", FLAG_RD1);
+				@SuppressWarnings("unused")
 				Interval reader1 = f.create(readers, "reader1", FLAG_RD1);
+				@SuppressWarnings("unused")
 				Interval reader2 = f.create(readers, "reader2", FLAG_RD1);
 				
 				Interval writers = f.create(withLock1, "writers", 0);
+				@SuppressWarnings("unused")
 				Interval writer0 = f.create(writers, "writer0", FLAG_RD1|FLAG_WR1);
 				
 				Intervals.addHb(readers.end, writers.start);

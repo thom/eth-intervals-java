@@ -29,6 +29,7 @@ public class JGFMolDynBench implements JGFSection3 {
 	public final mdBase base;
 	public boolean failed; // NDM
 
+	@SuppressWarnings("static-access")
 	public JGFMolDynBench(int nthreads) {
 		this.nthreads = nthreads;
 		if (nthreads != -1) 

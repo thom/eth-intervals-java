@@ -1,7 +1,6 @@
 package ch.ethz.intervals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,7 +68,7 @@ public class TestLocks {
 					Interval a = new IdInterval(subinterval, ids, "a", l1);
 					Interval a1 = new IdInterval(a, ids, "a1", l1);
 					Interval a11 = new IdInterval(a1, ids, "a11", l1);
-					Interval a111 = new IdInterval(a11, ids, "a111", l1);
+					new IdInterval(a11, ids, "a111", l1);
 					Interval a2 = new IdInterval(a, ids, "a2", l1);
 					new IdInterval(a2, ids, "a21", l1);
 				}

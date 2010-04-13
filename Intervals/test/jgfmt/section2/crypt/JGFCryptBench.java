@@ -31,6 +31,7 @@ public class JGFCryptBench extends IDEATest implements JGFSection2 {
 	private int datasizes[] = { 3000000, 20000000, 50000000 };
 	public static int nthreads;
 
+	@SuppressWarnings("static-access")
 	public JGFCryptBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

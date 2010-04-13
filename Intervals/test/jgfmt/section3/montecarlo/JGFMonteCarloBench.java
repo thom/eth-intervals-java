@@ -28,6 +28,7 @@ public class JGFMonteCarloBench extends CallAppDemo implements JGFSection3 {
 	public static int nthreads;
 	public boolean failed; // NDM
 
+	@SuppressWarnings("static-access")
 	public JGFMonteCarloBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

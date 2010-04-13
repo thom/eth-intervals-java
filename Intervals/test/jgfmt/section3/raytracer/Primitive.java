@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public abstract class Primitive implements java.io.Serializable {
 	public Surface surf = new Surface();
 

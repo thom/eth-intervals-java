@@ -86,10 +86,12 @@ public class AppDemoIntervals extends Universal implements AppDemoInterface {
 	/**
 	 * Flag to determine whether initialisation has already taken place.
 	 */
+	@SuppressWarnings("unused")
 	private boolean initialised = false;
 	/**
 	 * Variable to determine which deployment scenario to run.
 	 */
+	@SuppressWarnings("unused")
 	private int runMode;
 
 	public Vector<Object> tasks;
@@ -137,7 +139,9 @@ public class AppDemoIntervals extends Universal implements AppDemoInterface {
 			ReturnPath returnP = rateP.getReturnCompounded();
 			returnP.estimatePath();
 			returnP.dbgDumpFields();
+			@SuppressWarnings("unused")
 			double expectedReturnRate = returnP.get_expectedReturnRate();
+			@SuppressWarnings("unused")
 			double volatility = returnP.get_volatility();
 			//
 			// Now prepare for MC runs.
@@ -145,6 +149,7 @@ public class AppDemoIntervals extends Universal implements AppDemoInterface {
 					returnP,
 					nTimeStepsMC,
 					pathStartValue);
+			@SuppressWarnings("unused")
 			String slaveClassName = "MonteCarlo.PriceStock";
 			//
 			// Now create the tasks.
@@ -216,7 +221,9 @@ public class AppDemoIntervals extends Universal implements AppDemoInterface {
 	private void processResults() throws DemoException {
 		double avgExpectedReturnRateMC = 0.0;
 		double avgVolatilityMC = 0.0;
+		@SuppressWarnings("unused")
 		double runAvgExpectedReturnRateMC = 0.0;
+		@SuppressWarnings("unused")
 		double runAvgVolatilityMC = 0.0;
 		ToResult returnMC;
 		if (nRunsMC != results.size()) {

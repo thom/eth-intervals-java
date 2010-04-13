@@ -31,6 +31,7 @@ public class JGFLUFactBench extends Linpack implements JGFSection2 {
 	public static final int cachelinesize = 128;
 	public boolean failed;
 
+	@SuppressWarnings("static-access")
 	public JGFLUFactBench(int nthreads) {
 		this.nthreads = nthreads;
 	}

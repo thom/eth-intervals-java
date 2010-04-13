@@ -30,6 +30,7 @@ public class JGFBarrierBench implements JGFSection1 {
 	private static final int MAXSIZE = 10000000;
 	private static final double TARGETTIME = 10.0;
 
+	@SuppressWarnings("static-access")
 	public JGFBarrierBench(int nthreads) {
 		this.nthreads = nthreads;
 	}
@@ -69,8 +70,7 @@ public class JGFBarrierBench implements JGFSection1 {
 
 			JGFInstrumentor.stopTimer("Section1:Barrier:Simple");
 			time = JGFInstrumentor.readTimer("Section1:Barrier:Simple");
-			JGFInstrumentor.addOpsToTimer(
-					"Section1:Barrier:Simple",
+			JGFInstrumentor.addOpsToTimer("Section1:Barrier:Simple",
 					(double) size);
 			size *= 2;
 		}
@@ -101,8 +101,7 @@ public class JGFBarrierBench implements JGFSection1 {
 
 			JGFInstrumentor.stopTimer("Section1:Barrier:Tournament");
 			time = JGFInstrumentor.readTimer("Section1:Barrier:Tournament");
-			JGFInstrumentor.addOpsToTimer(
-					"Section1:Barrier:Tournament",
+			JGFInstrumentor.addOpsToTimer("Section1:Barrier:Tournament",
 					(double) size);
 			size *= 2;
 		}

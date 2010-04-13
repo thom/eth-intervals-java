@@ -23,6 +23,7 @@
 
 package jgfmt.section3.raytracer;
 
+@SuppressWarnings("serial")
 public class Light implements java.io.Serializable {
 	public Vec pos;
 	public double brightness;

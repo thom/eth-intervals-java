@@ -680,6 +680,7 @@ public class TestGameOfLife {
 	}
 
 	/** Prints the config to stderr */
+	@SuppressWarnings("unused")
 	private void dumpConfig(String name, byte[][] expConfig, Tile tile) {
 		System.err.printf("%s (%d,%d)-(%d,%d):\n", name, tile.r0, tile.c0, tile.rN, tile.cN);
 		
@@ -867,7 +868,7 @@ public class TestGameOfLife {
 	 * Compares the results from two board factories.  Always starts from the
 	 * same initial pattern and runs for all gens between 1 and {@code maxGen},
 	 * changing by {@code step}.  Do not modify.  
-	 * @param minGen TODO
+	 * @param minGen
 	 */
 	void compareFactories(
 			GameOfLifeEngine reference,

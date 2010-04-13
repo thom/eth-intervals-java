@@ -27,6 +27,7 @@ package jgfmt.section3.montecarlo;
  * @author H W Yau
  * @version $Revision: 1.6 $ $Date: 1999/02/16 18:53:20 $
  */
+@SuppressWarnings("serial")
 public class ToTask implements java.io.Serializable {
 	private String header;
 	private long randomSeed;
