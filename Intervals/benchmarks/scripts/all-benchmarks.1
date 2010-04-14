@@ -9,17 +9,17 @@ JGF=$(cd $MYDIR/..; pwd)
 
 $DIR/benchmark-init $1
 
-if [ -z $NS ]
+if [ -z "$NS" ]
 then
 	NS="8 -1"
 fi
 
-if [ -z $ITERFAST ]
+if [ -z "$ITERFAST" ]
 then
 	ITERFAST=6
 fi
 
-if [ -z $ITERSLOW ]
+if [ -z "$ITERSLOW" ]
 then
 	ITERSLOW=3
 fi
