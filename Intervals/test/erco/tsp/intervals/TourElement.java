@@ -32,6 +32,6 @@ implements Comparable<TourElement>
 	
 	@Override
 	public int compareTo(TourElement o) {
-		return lowerBound - o.lowerBound; // XXX
+		return lowerBound - o.lowerBound;
 	}
 }
