@@ -660,44 +660,44 @@ public class TestGameOfLife {
 
 	/** Prints the config to stderr */
 	private void dumpConfig(String name, byte[][] expConfig) {
-		System.err.println(name+":");
+		System.out.println(name+":");
 		
-		System.err.print("  ");
+		System.out.print("  ");
 		for (int c = 1; c < expConfig[0].length; c++)
-			System.err.print(c % 10);
-		System.err.println();
+			System.out.print(c % 10);
+		System.out.println();
 		
 		for (int r = 1; r < expConfig.length; r++) {
-			System.err.print(" ");
-			System.err.print(r % 10);
+			System.out.print(" ");
+			System.out.print(r % 10);
 			for (int c = 1; c < expConfig[0].length; c++)
 				if(expConfig[r][c] == 0)
-					System.err.print(".");
+					System.out.print(".");
 				else
-					System.err.print("x");
-			System.err.println();
+					System.out.print("x");
+			System.out.println();
 		}
 	}
 
 	/** Prints the config to stderr */
 	@SuppressWarnings("unused")
 	private void dumpConfig(String name, byte[][] expConfig, Tile tile) {
-		System.err.printf("%s (%d,%d)-(%d,%d):\n", name, tile.r0, tile.c0, tile.rN, tile.cN);
+		System.out.printf("%s (%d,%d)-(%d,%d):\n", name, tile.r0, tile.c0, tile.rN, tile.cN);
 		
-		System.err.print("  ");
+		System.out.print("  ");
 		for (int c = tile.c0; c <= tile.cN; c++)
-			System.err.print(c % 10);
-		System.err.println();
+			System.out.print(c % 10);
+		System.out.println();
 		
 		for (int r = tile.r0; r <= tile.rN; r++) {
-			System.err.print(" ");
-			System.err.print(r % 10);
+			System.out.print(" ");
+			System.out.print(r % 10);
 			for (int c = tile.c0; c <= tile.cN; c++)
 				if(expConfig[r][c] == 0)
-					System.err.print(".");
+					System.out.print(".");
 				else
-					System.err.print("x");
-			System.err.println();
+					System.out.print("x");
+			System.out.println();
 		}
 	}
 	
@@ -894,7 +894,7 @@ public class TestGameOfLife {
 			test.execute(initialPattern.expected, initialPattern.rs, initialPattern.cs, rnd);			
 		}
 		double time1 = System.nanoTime() / 1e9;
-		System.err.println(test.getClass().getName()+": "+(time1 - time0));
+		System.out.println(test.getClass().getName()+": "+(time1 - time0));
 	}
 	
 	/**
