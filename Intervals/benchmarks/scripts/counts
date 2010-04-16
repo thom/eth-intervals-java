@@ -1,0 +1,19 @@
+#!/bin/bash
+
+COUNT=$1
+RE=$2/re
+
+if [[ -s $COUNT ]]
+then
+	echo -e "\nDeque:"
+	echo -e "A\tU\tS"
+	echo -e "$($RE 'DEQUE_STEAL ATTEMPT' 'hit' < $COUNT | wc -l)\t$($RE 'DEQUE_STEAL UNSUCCESSFUL' 'hit' < $COUNT | wc -l)\t$($RE 'DEQUE_STEAL SUCCESSFUL' 'hit' < $COUNT | wc -l)\n"
+
+	echo -e "Worker:"
+	echo -e "A\tU\tS"
+	echo -e "$($RE 'WORKER_STEAL ATTEMPT' 'hit' < $COUNT | wc -l)\t$($RE 'WORKER_STEAL UNSUCCESSFUL' 'hit' < $COUNT | wc -l)\t$($RE 'WORKER_STEAL SUCCESSFUL' 'hit' < $COUNT | wc -l)\n"
+
+	echo -e "A: Attempt, U: Unsuccessful, S: Successful\n"
+else
+	echo -e "\nNo counts for work steals.\n"
+fi
