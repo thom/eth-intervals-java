@@ -28,4 +28,5 @@ if [ ! -n "$NOBUILD" ]; then
 	DIR=$(cd $MYDIR/../..; pwd)
 	cd $DIR
 	ant
+	echo
 fi
