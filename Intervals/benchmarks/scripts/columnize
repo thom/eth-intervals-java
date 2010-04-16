@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+"""
+columnize header_name*
+
+Given input data that is a flat list of measurements, groups them into
+N columns where N is the number of header_names provided on the
+command line.  Assumes that the first X measurements correspond to the
+first header, the next X to the second header, and so on.  X is
+determined by taking the total number of measurements and dividing by
+the number of headers.  Prints out in tab-separated format suitable for
+opening by a spreadsheet.
+
+Used when doing benchmarks: simply iterate over the versions you want to
+test and emit the test numbers for each version, then run this script
+to collate them.
+
+For nice ASCII output, pipe the toutput into the lineup script.
+"""
+
+import sys
+
+if len(sys.argv) == 1:
+    sys.stderr.write(__doc__[1:])
+    sys.exit(1)
+
+headers = sys.argv[1:]
+len_headers = len(headers)
+input_lines = [l for l in sys.stdin.read().split('\n') if l != ""]
+per_header = len(input_lines) // len_headers
+
+remainder = len(input_lines) % len_headers
+if remainder:
+    sys.stderr.write("Warning: %d extra lines!\n" % (remainder,))
+
+print "\t".join(headers)
+data = []
+for row in range(per_header):
+    row_data = [input_lines[idx*per_header + row] for idx in range(len_headers)]
+    print "\t".join(row_data)
