@@ -31,11 +31,15 @@ echo "ITERSLOW=${ITERSLOW}"
 echo "NS=${NS}"
 echo
 
+function jgf {
+        $JGF/jgf-benchmark jgfmt.section${1}.JGF${2}Bench "${3}" "${4}" "${5}" "${JAVA_OPTS}"
+}
+
 for B in Crypt LUFact SOR
 do 
 	for N in ${NS}
 	do 
-		$JGF/jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERFAST "$SIZES2" "$JAVA_OPTS"
+		jgf "2" "${B}" "${N}" "${ITERFAST}" "${SIZES2}"
 	done
 done
 
@@ -43,7 +47,7 @@ for B in Series
 do 
 	for N in ${NS}
 	do 
-		$JGF/jgf-benchmark jgfmt.section2.JGF${B}Bench $N $ITERSLOW "$SIZES3" "$JAVA_OPTS"
+		jgf "2" "${B}" "${N}" "${ITERSLOW}" "${SIZES3}"
 	done
 done
 
@@ -52,6 +56,6 @@ for B in MolDyn MonteCarlo RayTracer
 do
 	for N in ${NS}
 	do 
-		$JGF/jgf-benchmark jgfmt.section3.JGF${B}Bench $N "$ITERFAST" "$SIZES3" "$JAVA_OPTS"
+		jgf "3" "${B}" "${N}" "${ITERFAST}" "${SIZES3}"
 	done
 done
