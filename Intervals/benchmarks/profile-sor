@@ -1,0 +1,6 @@
+#!/bin/bash
+MYDIR=$(dirname $0)
+DIR=$(cd $MYDIR/..; pwd)
+LOGDIR=${MYDIR}/results
+LOGFILE=$(hostname)-$(date +'%Y-%m-%d-%H:%M:%S')-profile-sor.txt
+CLASSPATH=$CLASSPATH:$DIR/bin:$DIR/lib/* script -c "$MYDIR/scripts/profile-sor.1 $LOGFILE" $LOGDIR/$LOGFILE
