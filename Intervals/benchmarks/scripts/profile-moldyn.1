@@ -1,0 +1,61 @@
+#!/bin/bash
+
+JAVA_OPTS="-Xmx2048M"
+MYDIR=$(dirname $0)
+DIR=$(cd $MYDIR; pwd)
+JGF=$(cd $MYDIR/..; pwd)
+
+$DIR/benchmark-init $1
+
+if [ -z "$NS" ]
+then
+	NS="8 -1"
+fi
+
+if [ -z "$ITER" ]
+then
+	ITER=6
+fi
+
+if [ ! -z "$AGENT" ]
+then
+	JAVA_OPTS="${JAVA_OPTS} -agentlib:jvmti_oprofile"
+fi
+
+echo "AGENT=${AGENT}"
+echo "ITER=${ITER}"
+echo "NS=${NS}"
+echo
+
+function jgf {
+        $JGF/jgf-benchmark jgfmt.section${1}.JGF${2}Bench "${3}" "${4}" "${5}" "${JAVA_OPTS}"
+}
+
+function prof {
+	echo "Profiling ${1} with count ${2}"
+	$DIR/oprofile-start ${1} ${2}
+	jgf "3" "MolDyn" "${3}" "${ITER}" "${4}"
+	$DIR/oprofile-dump
+	echo
+}
+
+for N in ${NS}
+do 
+	prof l1 100000 ${N} "SizeA"
+	prof l1 100000 ${N} "SizeB"
+
+	prof l2 100000 ${N} "SizeA"
+	prof l2 100000 ${N} "SizeB"
+
+	prof llc 10000 ${N} "SizeA"
+	prof llc 100000 ${N} "SizeB"
+
+	prof mod 100000 ${N} "SizeA"
+	prof mod 100000 ${N} "SizeB"
+
+	prof lock 6000 ${N} "SizeA"
+	prof lock 10000 ${N} "SizeB"
+
+	prof store 1000000 ${N} "SizeA"
+	prof store 1000000 ${N} "SizeB"
+done
