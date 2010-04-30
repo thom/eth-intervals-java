@@ -1,4 +1,0 @@
-#!/bin/bash
-
-sudo opcontrol --shutdown
-opreport -a -l /usr/lib/jvm/java-6-sun/jre/bin/java
