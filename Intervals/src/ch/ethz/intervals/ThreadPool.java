@@ -42,13 +42,6 @@ class ThreadPool {
 		if (keepAliveThread != null) {
 			keepAliveThread.sem.release();
 			keepAliveThread = null;
-
-			// Print statistics for each worker if worker statistics is enabled
-			if (WorkerStatistics.ENABLED) {
-				for (Worker worker : workers) {
-					worker.stats.print();
-				}
-			}
 		}
 	}
 
@@ -195,6 +188,17 @@ class ThreadPool {
 	volatile boolean idleWorkersExist;
 
 	ThreadPool() {
+		// Print statistics for each worker if worker statistics is enabled
+		if (WorkerStatistics.ENABLED) {
+			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+				public void run() {
+					for (Worker worker : workers) {
+						worker.stats.print();
+					}
+				}
+			}));
+		}
+
 		for (int i = 0; i < numWorkers; i++) {
 			Worker worker = new Worker(i);
 			workers[i] = worker;
