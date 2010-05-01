@@ -45,11 +45,10 @@ class ThreadPool {
 		}
 	}
 
-
 	final class Worker extends Thread {
 		final int id;
 		final Semaphore semaphore = new Semaphore(1);
-		LazyDeque tasks = new LazyDeque();
+		LazyDeque tasks = new LazyDeque(this);
 
 		Worker(int id) {
 			super("Intervals-Worker-" + id);
@@ -79,7 +78,7 @@ class ThreadPool {
 		 */
 		boolean doWork(boolean block) {
 			WorkItem item;
-			if ((item = tasks.take(this)) == null)
+			if ((item = tasks.take()) == null)
 				if ((item = stealTask()) == null)
 					if ((item = findPendingWork(block)) == null)
 						return false;
@@ -103,7 +102,7 @@ class ThreadPool {
 
 		private WorkItem stealTaskFrom(int victimId) {
 			Worker victim = workers[victimId];
-			WorkItem item = victim.tasks.steal(victim, this);
+			WorkItem item = victim.tasks.steal(this);
 			return item;
 		}
 
@@ -154,14 +153,14 @@ class ThreadPool {
 				if (idleWorker != null) {
 					if (Debug.ENABLED)
 						Debug.awakenIdle(this, item, idleWorker);
-					idleWorker.tasks.put(idleWorker, item);
+					idleWorker.tasks.put(item);
 					idleWorker.semaphore.release();
 					return;
 				}
 			}
 			if (Debug.ENABLED)
 				Debug.enqeue(this, item);
-			tasks.put(this, item);
+			tasks.put(item);
 		}
 
 	}
@@ -219,7 +218,7 @@ class ThreadPool {
 				idleLock.unlock();
 				if (Debug.ENABLED)
 					Debug.awakenIdle(null, item, worker);
-				worker.tasks.put(worker, item);
+				worker.tasks.put(item);
 				worker.semaphore.release();
 			}
 		}

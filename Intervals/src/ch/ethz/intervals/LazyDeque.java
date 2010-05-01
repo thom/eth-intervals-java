@@ -40,6 +40,12 @@ class LazyDeque {
 	int ownerHead = 0, ownerTail = 0;
 	private final ThiefData thief = new ThiefData();
 
+	private final Worker owner;
+
+	public LazyDeque(Worker owner) {
+		this.owner = owner;
+	}
+
 	private int index(int id) {
 		return index(tasksArray.length() >> PAD, id);
 	}
@@ -53,7 +59,7 @@ class LazyDeque {
 	}
 
 	// Only owner can put.
-	public void put(Worker owner, WorkItem task) {
+	public void put(WorkItem task) {
 		assert task != null;
 		while (true) {
 			final int l = tasksArray.length() >> PAD;
@@ -72,7 +78,7 @@ class LazyDeque {
 		}
 	}
 
-	public WorkItem take(Worker owner) {
+	public WorkItem take() {
 		// Only owner can take. Returns either NULL or a WorkItem that
 		// should be executed.
 		if (ownerHead == ownerTail)
@@ -106,15 +112,14 @@ class LazyDeque {
 		}
 	}
 
-	public WorkItem steal(Worker victimWorker, Worker thiefWorker) {
+	public WorkItem steal(Worker thiefWorker) {
 		// At most one thief at a time.
 		synchronized (thief) {
 			final int head = thief.head;
 			final int index = index(head);
 			WorkItem item = tasksArray.getAndSet(index, null);
 			if (Debug.ENABLED)
-				Debug.dequeSteal(victimWorker, thiefWorker, thief.head, index,
-						item);
+				Debug.dequeSteal(owner, thiefWorker, thief.head, index, item);
 			// if null, was either already taken by owner or never there.
 			if (item == null)
 				return null;
