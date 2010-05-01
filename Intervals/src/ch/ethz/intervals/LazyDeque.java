@@ -142,7 +142,7 @@ class LazyDeque implements WorkStealingQueue {
 		}
 	}
 
-	public void expand() {
+	private void expand() {
 		// Only owner can expand.
 		// No thieves are active.
 		synchronized (thief) {
