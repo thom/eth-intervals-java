@@ -48,11 +48,12 @@ class ThreadPool {
 	final class Worker extends Thread {
 		final int id;
 		final Semaphore semaphore = new Semaphore(1);
-		LazyDeque tasks = new LazyDeque(this);
+		final WorkStealingQueue tasks;
 
 		Worker(int id) {
 			super("Intervals-Worker-" + id);
 			this.id = id;
+			this.tasks = new LazyDeque(this);
 		}
 
 		public String toString() {
