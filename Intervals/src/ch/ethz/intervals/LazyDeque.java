@@ -13,6 +13,7 @@ class LazyDeque {
 	}
 
 	static final int INITIAL_SIZE = (1 << 10);
+
 	// Experiment with different memory layouts: Try spacing out the items
 	// so that they fall on different cache lines. Often if you have
 	// multiple threads writing to different memory locations that happen
@@ -30,14 +31,18 @@ class LazyDeque {
 	// goes to position OFFSET. Index 1 goes to position OFFSET + (1 << 2).
 	// Index 2 goes to position OFFSET + (2 << 2), etc.
 	static final int PAD = 0;
+
 	// How many entries to skip at the beginning of the array.
 	// This can be important because the length of the array is the very
 	// first value in memory, so all accesses touch that beginning part.
 	// Therefore it can be a good idea to skip the initial X entries.
 	static final int OFFSET = 0;
+
 	private AtomicReferenceArray<WorkItem> tasksArray = new AtomicReferenceArray<WorkItem>(
 			size(INITIAL_SIZE));
+
 	int ownerHead = 0, ownerTail = 0;
+
 	private final ThiefData thief = new ThiefData();
 
 	private final Worker owner;
@@ -78,19 +83,24 @@ class LazyDeque {
 		}
 	}
 
+	// Only owner can take.
 	public WorkItem take() {
 		// Only owner can take. Returns either NULL or a WorkItem that
 		// should be executed.
 		if (ownerHead == ownerTail)
 			return null; // Empty.
+
 		// Pop the last item from the deque.
 		final int lastTail = ownerTail - 1;
+
 		final int lastIndex = index(lastTail);
+
 		// Read the item popped.
 		// Note: if we get back null, the item must have been stolen, since
 		// otherwise we never store null into the array, and we know this
 		// location was initialized.
 		WorkItem item = tasksArray.getAndSet(lastIndex, null);
+
 		// Only updates the location of the head of the deque when it tries
 		// to pop something and finds it gone (lazy deque)
 		try {
@@ -100,6 +110,7 @@ class LazyDeque {
 				// must have been stolen too. Update our notion of the head
 				// of the deque.
 				ownerHead = ownerTail;
+
 				// Deque is now empty.
 				return null;
 			}
@@ -120,9 +131,11 @@ class LazyDeque {
 			WorkItem item = tasksArray.getAndSet(index, null);
 			if (Debug.ENABLED)
 				Debug.dequeSteal(owner, thiefWorker, thief.head, index, item);
+
 			// if null, was either already taken by owner or never there.
 			if (item == null)
 				return null;
+
 			// Successfully stolen!
 			thief.head++;
 			return item;
@@ -137,10 +150,12 @@ class LazyDeque {
 			ownerHead = thief.head;
 			int l = tasksArray.length() >> PAD, thold = l >> 4;
 			int size = (ownerTail - ownerHead);
+
 			// Less than 1/16 is free.
 			if ((l - size) <= thold) {
 				replaceTaskArray(l * 2);
 			}
+
 			// About to roll-over.
 			else if (ownerTail == Integer.MAX_VALUE) {
 				replaceTaskArray(l);
