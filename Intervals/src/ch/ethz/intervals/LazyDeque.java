@@ -155,7 +155,6 @@ class LazyDeque implements WorkStealingQueue {
 			if ((l - size) <= thold) {
 				replaceTaskArray(l * 2);
 			}
-
 			// About to roll-over.
 			else if (ownerTail == Integer.MAX_VALUE) {
 				replaceTaskArray(l);
@@ -164,6 +163,9 @@ class LazyDeque implements WorkStealingQueue {
 	}
 
 	private void replaceTaskArray(int size) {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doGrow();
+
 		AtomicReferenceArray<WorkItem> newTasks = new AtomicReferenceArray<WorkItem>(
 				size(size));
 		final int l = tasksArray.length() >> PAD;
