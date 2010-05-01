@@ -42,6 +42,13 @@ class ThreadPool {
 		if (keepAliveThread != null) {
 			keepAliveThread.sem.release();
 			keepAliveThread = null;
+
+			// Print statistics for each worker if worker statistics is enabled
+			if (WorkerStatistics.ENABLED) {
+				for (Worker worker : workers) {
+					worker.stats.print();
+				}
+			}
 		}
 	}
 
@@ -49,11 +56,18 @@ class ThreadPool {
 		final int id;
 		final Semaphore semaphore = new Semaphore(1);
 		final WorkStealingQueue tasks;
+		final WorkerStatistics stats;
 
 		Worker(int id) {
 			super("Intervals-Worker-" + id);
 			this.id = id;
 			this.tasks = new LazyDeque(this);
+
+			if (WorkerStatistics.ENABLED) {
+				stats = new WorkerStatistics(this);
+			} else {
+				stats = null;
+			}
 		}
 
 		public String toString() {

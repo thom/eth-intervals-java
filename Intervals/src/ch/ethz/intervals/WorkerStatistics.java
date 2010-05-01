@@ -20,9 +20,9 @@ public class WorkerStatistics {
 	public String toString() {
 		assert ENABLED;
 
-		String result = "Statistics for worker " + owner + "\n\n";
+		String result = "\nStatistics for " + owner + "\n\n";
 		result += "TODO";
-		result += "\n\n";
+		result += "\n";
 		return result;
 	}
 	
