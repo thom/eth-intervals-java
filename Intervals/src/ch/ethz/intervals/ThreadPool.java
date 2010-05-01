@@ -216,10 +216,6 @@ class ThreadPool {
 		}
 	}
 
-	static abstract class WorkItem {
-		abstract void exec(Worker worker);
-	}
-
 	final class Worker extends Thread {
 		final int id;
 		final Semaphore semaphore = new Semaphore(1);

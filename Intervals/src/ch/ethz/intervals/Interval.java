@@ -16,7 +16,7 @@ import ch.ethz.intervals.util.ChunkList;
 
 @Parent @ParentForNew("this")
 public abstract class Interval 
-extends ThreadPool.WorkItem 
+extends WorkItem 
 implements Dependency, Guard, IntervalMirror
 {	
 	// =====================================================================================
