@@ -7,7 +7,7 @@ import ch.ethz.intervals.ThreadPool.Worker;
 // Called "Lazy" because the owner of the deque only lazily updates
 // the location of the head of deque, i.e., only when it tries to
 // pop something and finds it gone
-class LazyDeque {
+class LazyDeque implements WorkStealingQueue {
 	static class ThiefData {
 		int head = 0;
 	}
