@@ -3,7 +3,7 @@ package ch.ethz.intervals;
 import ch.ethz.intervals.ThreadPool.Worker;
 
 public class Config {
-	// TODO: STATISTICS
+	public static final boolean STATISTICS = false;
 
 	// TODO: DUPLICATING_QUEUE
 
