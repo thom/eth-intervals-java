@@ -54,7 +54,7 @@ class ThreadPool {
 		Worker(int id) {
 			super("Intervals-Worker-" + id);
 			this.id = id;
-			this.tasks = new LazyDeque(this);
+			this.tasks = Config.createQueue(this);
 
 			if (WorkerStatistics.ENABLED) {
 				stats = new WorkerStatistics(this);
