@@ -27,7 +27,7 @@ public class DynamicCircularDeque implements WorkStealingQueue {
 		}
 		currentTasks.put(oldBottom, task);
 		bottom = oldBottom + 1;
-		
+
 		if (WorkerStatistics.ENABLED) {
 			owner.stats.doPut();
 		}
@@ -40,16 +40,39 @@ public class DynamicCircularDeque implements WorkStealingQueue {
 		this.bottom = oldBottom;
 		int oldTop = top.get();
 		int size = oldBottom - oldTop;
+
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doTakeAttempt();
+
 		if (size < 0) {
 			bottom = oldTop;
+
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeFailure();
+
 			return null;
 		}
+
 		WorkItem task = currentTasks.get(bottom);
-		if (size > 0)
+
+		if (size > 0) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeSuccess();
 			return task;
+		}
+
 		if (!top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
 			task = null; // queue is empty
+
 		bottom = oldTop + 1;
+
+		if (WorkerStatistics.ENABLED) {
+			if (task == null)
+				owner.stats.doTakeFailure();
+			else
+				owner.stats.doTakeSuccess();
+		}
+
 		return task;
 	}
 
