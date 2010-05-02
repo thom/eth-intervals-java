@@ -85,6 +85,9 @@ public class DynamicCircularDeque implements WorkStealingQueue {
 		}
 
 		CircularArray grow(int bottom, int top) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doGrow();
+
 			CircularArray newWorkItems = new CircularArray(logLength + 1);
 			for (int i = top; i < bottom; i++) {
 				newWorkItems.put(i, get(i));
