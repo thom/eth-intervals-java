@@ -27,6 +27,10 @@ public class DynamicCircularDeque implements WorkStealingQueue {
 		}
 		currentTasks.put(oldBottom, task);
 		bottom = oldBottom + 1;
+		
+		if (WorkerStatistics.ENABLED) {
+			owner.stats.doPut();
+		}
 	}
 
 	public WorkItem take() {
