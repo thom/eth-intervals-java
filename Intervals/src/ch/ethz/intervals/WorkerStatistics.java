@@ -9,6 +9,9 @@ public class WorkerStatistics {
 
 	private final Worker owner;
 
+	// TODO: work attempts, successes, failures
+	// TODO: work taken, stolen, pending
+
 	private AtomicInteger puts = new AtomicInteger(0);
 	private AtomicInteger takeAttempts = new AtomicInteger(0);
 	private AtomicInteger takeSuccesses = new AtomicInteger(0);
