@@ -1,6 +1,68 @@
 package ch.ethz.intervals;
 
-public class DynamicCircularDeque {
+import java.util.concurrent.atomic.AtomicInteger;
+
+import ch.ethz.intervals.ThreadPool.Worker;
+
+public class DynamicCircularDeque implements WorkStealingQueue {
+	private final static int INITIAL_LOG_CAPACITY = 10;
+	private volatile CircularArray tasks = new CircularArray(
+			INITIAL_LOG_CAPACITY);
+	private volatile int bottom = 0;
+	private AtomicInteger top = new AtomicInteger(0);
+	private final Worker owner;
+
+	public DynamicCircularDeque(Worker owner) {
+		this.owner = owner;
+	}
+
+	public void put(WorkItem task) {
+		int oldBottom = bottom;
+		int oldTop = top.get();
+		CircularArray currentTasks = tasks;
+		int size = oldBottom - oldTop;
+		if (size >= currentTasks.length() - 1) {
+			currentTasks = currentTasks.grow(oldBottom, oldTop);
+			tasks = currentTasks;
+		}
+		currentTasks.put(oldBottom, task);
+		bottom = oldBottom + 1;
+	}
+
+	public WorkItem take() {
+		int oldBottom = this.bottom;
+		CircularArray currentTasks = tasks;
+		oldBottom = oldBottom - 1;
+		this.bottom = oldBottom;
+		int oldTop = top.get();
+		int size = oldBottom - oldTop;
+		if (size < 0) {
+			bottom = oldTop;
+			return null;
+		}
+		WorkItem task = currentTasks.get(bottom);
+		if (size > 0)
+			return task;
+		if (!top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
+			task = null; // queue is empty
+		bottom = oldTop + 1;
+		return task;
+	}
+
+	public WorkItem steal(Worker thiefWorker) {
+		// important that top read before bottom
+		int oldTop = top.get();
+		int oldBottom = bottom;
+		CircularArray currentTasks = tasks;
+		int size = oldBottom - oldTop;
+		if (size <= 0)
+			return null; // empty
+		WorkItem task = currentTasks.get(oldTop);
+		if (!top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
+			return null; // abort
+		return task;
+	}
+
 	static class CircularArray {
 		private int logLength;
 		private WorkItem[] workItems;
