@@ -63,7 +63,7 @@ public class DynamicCircularDeque implements WorkStealingQueue {
 		return task;
 	}
 
-	static class CircularArray {
+	class CircularArray {
 		private int logLength;
 		private WorkItem[] workItems;
 
