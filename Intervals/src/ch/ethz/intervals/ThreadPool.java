@@ -109,8 +109,20 @@ class ThreadPool {
 		}
 
 		private WorkItem stealTaskFrom(int victimId) {
+			if (WorkerStatistics.ENABLED)
+				stats.doStealAttempt();
+
 			Worker victim = workers[victimId];
 			WorkItem item = victim.tasks.steal(this);
+
+			if (item == null) {
+				if (WorkerStatistics.ENABLED)
+					stats.doStealFailure();
+			} else {
+				if (WorkerStatistics.ENABLED)
+					stats.doStealSuccess();
+			}
+
 			return item;
 		}
 
