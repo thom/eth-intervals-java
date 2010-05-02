@@ -66,6 +66,7 @@ class LazyDeque implements WorkStealingQueue {
 	// Only owner can put.
 	public void put(WorkItem task) {
 		assert task != null;
+
 		while (true) {
 			final int l = tasksArray.length() >> PAD;
 			final int tail = ownerTail;
@@ -90,10 +91,17 @@ class LazyDeque implements WorkStealingQueue {
 
 	// Only owner can take.
 	public WorkItem take() {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doTakeAttempt();
+
 		// Only owner can take. Returns either NULL or a WorkItem that
 		// should be executed.
-		if (ownerHead == ownerTail)
+		if (ownerHead == ownerTail) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeFailure();
+
 			return null; // Empty.
+		}
 
 		// Pop the last item from the deque.
 		final int lastTail = ownerTail - 1;
@@ -108,24 +116,30 @@ class LazyDeque implements WorkStealingQueue {
 
 		// Only updates the location of the head of the deque when it tries
 		// to pop something and finds it gone (lazy deque)
-		try {
-			if (item == null) {
-				// The item we put here was stolen!
-				// If this item was stolen, then all previous entries
-				// must have been stolen too. Update our notion of the head
-				// of the deque.
-				ownerHead = ownerTail;
+		if (item == null) {
+			// The item we put here was stolen!
+			// If this item was stolen, then all previous entries
+			// must have been stolen too. Update our notion of the head
+			// of the deque.
+			ownerHead = ownerTail;
 
-				// Deque is now empty.
-				return null;
-			}
-			ownerTail = lastTail;
-			return item;
-		} finally {
-			if (Debug.ENABLED)
-				Debug.dequeTake(owner, tasksArray.length() >> PAD, ownerHead,
-						ownerTail, lastIndex, item);
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeFailure();
+
+			// Deque is now empty.
+			return null;
 		}
+
+		ownerTail = lastTail;
+
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doTakeSuccess();
+
+		if (Debug.ENABLED)
+			Debug.dequeTake(owner, tasksArray.length() >> PAD, ownerHead,
+					ownerTail, lastIndex, item);
+
+		return item;
 	}
 
 	public WorkItem steal(Worker thiefWorker) {
