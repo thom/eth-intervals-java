@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ch.ethz.intervals.ThreadPool.Worker;
 
 public class WorkerStatistics {
-	public static final boolean ENABLED = false;
+	public static final boolean ENABLED = Config.STATISTICS;
 
 	private final Worker owner;
 
