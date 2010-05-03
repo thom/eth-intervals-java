@@ -641,6 +641,7 @@ implements Dependency, Guard, IntervalMirror
 	 */
 	@Override
 	void exec(Worker worker) {
+		// TODO: Should we check the state here?
 		exec();
 	}
 	
