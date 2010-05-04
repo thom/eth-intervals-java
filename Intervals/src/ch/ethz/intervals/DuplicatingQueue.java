@@ -16,14 +16,15 @@ public class DuplicatingQueue implements WorkStealingQueue {
 
 	@Override
 	public void put(WorkItem task) {
-		if (task == null)
-			return;
+		assert task != null;
 
 		// queue not full and no index overflow?
 		if ((tail < Math.min(tailMin, head) + size)
 				&& (tail < Integer.MAX_VALUE / 2)) {
 			tasks[tail % size] = task;
 			tail = tail + 1;
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doPut();
 		} else {
 			synchronized (this) {
 				if (head > tailMin)
