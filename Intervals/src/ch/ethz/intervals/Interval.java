@@ -665,9 +665,18 @@ implements Dependency, Guard, IntervalMirror
 	@Override
 	void exec(Worker worker) {
 		if (Config.DUPLICATING_QUEUE) {
+			if (Config.STATISTICS)
+				worker.stats.doWorkAttempt();
+
 			if (runningState.compareAndSet(RunningState.INIT, RunningState.RUNNING)) {
+				if (Config.STATISTICS)
+					worker.stats.doWorkSuccess();
+
 				exec();
 				runningState.set(RunningState.DONE);
+			} else {
+				if (Config.STATISTICS)
+					worker.stats.doWorkFailure();
 			}
 		} else {
 			exec();
