@@ -37,6 +37,9 @@ public class DuplicatingQueue implements WorkStealingQueue {
 				tail = head + count;
 			}
 
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doEagerExecution();
+
 			// just run this task eagerly
 			task.exec(owner);
 		}
