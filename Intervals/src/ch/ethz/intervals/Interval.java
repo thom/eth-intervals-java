@@ -1,6 +1,7 @@
 package ch.ethz.intervals;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import pcollections.Empty;
 import pcollections.HashTreePSet;
@@ -31,6 +32,9 @@ implements Dependency, Guard, IntervalMirror
 	}
 	
 	public Interval(@ParentForNew("Parent") Dependency dep, String name) {
+		if (Config.DUPLICATING_QUEUE)
+			runningState = new AtomicReference<RunningState>(RunningState.INIT);
+
 		Interval parent = dep.parentForNewInterval();
 		Current current = Current.get();
 		
@@ -303,6 +307,22 @@ implements Dependency, Guard, IntervalMirror
 	/** @see Current#unscheduled */
 	Interval nextUnscheduled;
 	
+	/**
+	 * State used to indicate whether interval has been initialized, is running
+	 * or is done already.
+	 *
+	 * Needed when using duplicating queue to make sure intervals are executed
+	 * only once.
+	 */
+	enum RunningState {
+		INIT, RUNNING, DONE
+	}
+	/**
+	 * Indicates whether interval has been initialized, is running or is done
+	 * already.
+	 */
+	private final AtomicReference<RunningState> runningState;
+
 	/** Current state of this interval.  
 	 * 
 	 *  Any change to this variable must HAPPEN AFTER the predecessor state.
@@ -361,6 +381,9 @@ implements Dependency, Guard, IntervalMirror
 	
 	/** Constructor used by blocking subintervals */
 	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount) {
+		if (Config.DUPLICATING_QUEUE)
+			runningState = new AtomicReference<RunningState>(RunningState.INIT);
+
 		this.state = State.WAIT;
 		this.name = name;
 		this.parent = parent;		
@@ -641,8 +664,14 @@ implements Dependency, Guard, IntervalMirror
 	 */
 	@Override
 	void exec(Worker worker) {
-		// TODO: Should we check the state here?
-		exec();
+		if (Config.DUPLICATING_QUEUE) {
+			if (runningState.compareAndSet(RunningState.INIT, RunningState.RUNNING)) {
+				exec();
+				runningState.set(RunningState.DONE);
+			}
+		} else {
+			exec();
+		}
 	}
 	
 	/**
