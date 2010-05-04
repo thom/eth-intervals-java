@@ -47,15 +47,18 @@ public class DuplicatingQueue implements WorkStealingQueue {
 
 	@Override
 	public WorkItem take() {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doTakeAttempt();
+
 		tail = tail - 1;
+		WorkItem task = null;
 
 		// can we pop safely?
 		if (head <= Math.min(tailMin, tail)) {
 			if (tailMin > tail)
 				tailMin = tail;
-			WorkItem task = tasks[tail % size];
+			task = tasks[tail % size];
 			tasks[tail % size] = null;
-			return task;
 		} else {
 			synchronized (this) {
 				// adjust head and reset tailMin
@@ -65,16 +68,22 @@ public class DuplicatingQueue implements WorkStealingQueue {
 
 				// try to pop again
 				if (head <= tail) {
-					WorkItem task = tasks[tail % size];
+					task = tasks[tail % size];
 					tasks[tail % size] = null;
-					return task;
-
 				} else {
 					tail = tail + 1; // restore tail when empty
-					return null;
 				}
 			}
 		}
+
+		if (WorkerStatistics.ENABLED) {
+			if (task == null)
+				owner.stats.doTakeFailure();
+			else
+				owner.stats.doTakeSuccess();
+		}
+
+		return task;
 	}
 
 	@Override
