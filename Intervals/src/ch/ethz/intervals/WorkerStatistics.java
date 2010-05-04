@@ -9,9 +9,7 @@ public class WorkerStatistics {
 
 	private final Worker owner;
 
-	// TODO: work attempts, successes, failures
-	// TODO: work taken, stolen, pending
-
+	// General statistics
 	private AtomicInteger puts = new AtomicInteger(0);
 	private AtomicInteger takeAttempts = new AtomicInteger(0);
 	private AtomicInteger takeSuccesses = new AtomicInteger(0);
@@ -20,6 +18,13 @@ public class WorkerStatistics {
 	private AtomicInteger stealSuccesses = new AtomicInteger(0);
 	private AtomicInteger stealFailures = new AtomicInteger(0);
 	private AtomicInteger grows = new AtomicInteger(0);
+
+	// Statistics for duplicating queues
+	private AtomicInteger eagerExecutions = new AtomicInteger(0);
+
+	// TODO: work attempts, successes, failures
+	// TODO: work taken, stolen, pending
+	// TODO: eager execution
 
 	public WorkerStatistics(Worker owner) {
 		// all statistics events should be protected by if(ENABLED)
@@ -68,6 +73,11 @@ public class WorkerStatistics {
 		grows.incrementAndGet();
 	}
 
+	public void doEagerExecution() {
+		assert ENABLED;
+		eagerExecutions.incrementAndGet();
+	}
+
 	public String toString() {
 		assert ENABLED;
 
@@ -82,6 +92,12 @@ public class WorkerStatistics {
 				+ stealFailures + "\n\n";
 		result += "Deque Grows\n";
 		result += grows + "\n";
+
+		if (Config.DUPLICATING_QUEUE) {
+			result += "\nEager Executions\n";
+			result += eagerExecutions + "\n";
+		}
+
 		return result;
 	}
 
