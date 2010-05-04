@@ -18,13 +18,13 @@ public class WorkerStatistics {
 	private AtomicInteger stealSuccesses = new AtomicInteger(0);
 	private AtomicInteger stealFailures = new AtomicInteger(0);
 	private AtomicInteger grows = new AtomicInteger(0);
+	// TODO: work taken, stolen, pending
 
 	// Statistics for duplicating queues
 	private AtomicInteger eagerExecutions = new AtomicInteger(0);
-
-	// TODO: work attempts, successes, failures
-	// TODO: work taken, stolen, pending
-	// TODO: eager execution
+	private AtomicInteger workAttempts = new AtomicInteger(0);
+	private AtomicInteger workSuccesses = new AtomicInteger(0);
+	private AtomicInteger workFailures = new AtomicInteger(0);
 
 	public WorkerStatistics(Worker owner) {
 		// all statistics events should be protected by if(ENABLED)
@@ -78,6 +78,21 @@ public class WorkerStatistics {
 		eagerExecutions.incrementAndGet();
 	}
 
+	public void doWorkAttempt() {
+		assert ENABLED;
+		workAttempts.incrementAndGet();
+	}
+
+	public void doWorkSuccess() {
+		assert ENABLED;
+		workSuccesses.incrementAndGet();
+	}
+
+	public void doWorkFailure() {
+		assert ENABLED;
+		workFailures.incrementAndGet();
+	}
+
 	public String toString() {
 		assert ENABLED;
 
@@ -94,7 +109,10 @@ public class WorkerStatistics {
 		result += grows + "\n";
 
 		if (Config.DUPLICATING_QUEUE) {
-			result += "\nEager Executions\n";
+			result += "\nWork Attempts\tWork Successes\tWork Failures\n";
+			result += workAttempts + "\t\t" + workSuccesses + "\t\t"
+					+ workFailures + "\n\n";
+			result += "Eager Executions\n";
 			result += eagerExecutions + "\n";
 		}
 
