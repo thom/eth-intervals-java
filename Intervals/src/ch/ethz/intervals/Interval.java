@@ -34,6 +34,8 @@ implements Dependency, Guard, IntervalMirror
 	public Interval(@ParentForNew("Parent") Dependency dep, String name) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
+		else
+			runningState = null;
 
 		Interval parent = dep.parentForNewInterval();
 		Current current = Current.get();
@@ -383,6 +385,8 @@ implements Dependency, Guard, IntervalMirror
 	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
+		else
+			runningState = null;
 
 		this.state = State.WAIT;
 		this.name = name;
