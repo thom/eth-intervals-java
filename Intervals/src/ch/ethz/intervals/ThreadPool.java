@@ -94,7 +94,6 @@ class ThreadPool {
 			if (Debug.ENABLED)
 				Debug.execute(this, item, true);
 			
-			// TODO: Should we check the state here?
 			item.exec(this);
 			
 			return true;

@@ -18,7 +18,6 @@ public class WorkerStatistics {
 	private AtomicInteger stealSuccesses = new AtomicInteger(0);
 	private AtomicInteger stealFailures = new AtomicInteger(0);
 	private AtomicInteger grows = new AtomicInteger(0);
-	// TODO: work taken, stolen, pending
 
 	// Statistics for duplicating queues
 	private AtomicInteger eagerExecutions = new AtomicInteger(0);
@@ -33,6 +32,7 @@ public class WorkerStatistics {
 		this.owner = owner;
 	}
 
+	// General statistics
 	public void doPut() {
 		assert ENABLED;
 		puts.incrementAndGet();
@@ -73,6 +73,7 @@ public class WorkerStatistics {
 		grows.incrementAndGet();
 	}
 
+	// Statistics for duplicating queues
 	public void doEagerExecution() {
 		assert ENABLED;
 		eagerExecutions.incrementAndGet();
