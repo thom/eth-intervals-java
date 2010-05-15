@@ -14,30 +14,6 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 	static final int INITIAL_SIZE = (1 << 10);
 
-	// Experiment with different memory layouts: Try spacing out the items
-	// so that they fall on different cache lines. Often if you have
-	// multiple threads writing to different memory locations that happen
-	// to fall on the same cache line, you can experience quite a lot of
-	// contention by the underlying hardware. So, for example, if one has
-	// an array, and the stealing thread writes to location 0 while the
-	// owner thread writes to location 1, one can get very bad performance
-	// even though the two writes are to distinct locations.
-	//
-	// Never tuned this very much. Did some experiments and found there
-	// wasn't enough stealing to cause a lot of problems, but I left it
-	// in there for later. At one point it ran without problems even
-	// if you used non-zero values for PAD and OFFSET.
-	// How many bits to shift the index by. So, if PAD is 2 then index 0
-	// goes to position OFFSET. Index 1 goes to position OFFSET + (1 << 2).
-	// Index 2 goes to position OFFSET + (2 << 2), etc.
-	static final int PAD = 0;
-
-	// How many entries to skip at the beginning of the array.
-	// This can be important because the length of the array is the very
-	// first value in memory, so all accesses touch that beginning part.
-	// Therefore it can be a good idea to skip the initial X entries.
-	static final int OFFSET = 0;
-
 	private AtomicReferenceArray<WorkItem> tasksArray = new AtomicReferenceArray<WorkItem>(
 			size(INITIAL_SIZE));
 
@@ -52,22 +28,22 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 	}
 
 	private int index(int id) {
-		return index(tasksArray.length() >> PAD, id);
+		return index(tasksArray.length(), id);
 	}
 
 	private static int size(int l) {
-		return (l << PAD) + OFFSET;
+		return l;
 	}
 
 	private static int index(int l, int id) {
-		return ((id % l) << PAD) + OFFSET;
+		return id % l;
 	}
 
 	@Override
 	public void put(WorkItem task) {
 		assert task != null;
 		while (true) {
-			final int l = tasksArray.length() >> PAD;
+			final int l = tasksArray.length();
 			final int tail = ownerTail;
 
 			if (tail - ownerHead >= l || tail == Integer.MAX_VALUE) {
@@ -93,7 +69,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		synchronized (thief) {
 			final int head = thief.head;
 			final int index = index(head);
-			
+
 			WorkItem item = tasksArray.get(index);
 			if (!tasksArray.compareAndSet(index, item, null)) {
 				item = null;
@@ -165,7 +141,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		synchronized (thief) {
 			assert ownerHead <= thief.head && thief.head <= ownerTail;
 			ownerHead = thief.head;
-			int l = tasksArray.length() >> PAD, thold = l >> 4;
+			int l = tasksArray.length(), thold = l >> 4;
 			int size = (ownerTail - ownerHead);
 
 			// Less than 1/16 is free.
@@ -186,7 +162,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 		AtomicReferenceArray<WorkItem> newTasks = new AtomicReferenceArray<WorkItem>(
 				size(size));
-		final int l = tasksArray.length() >> PAD;
+		final int l = tasksArray.length();
 		int j = 0;
 		for (int i = ownerHead; i < ownerTail; i++)
 			newTasks.set(index(size, j++), tasksArray.get(index(l, i)));
