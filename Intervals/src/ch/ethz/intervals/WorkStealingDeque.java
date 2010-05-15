@@ -24,7 +24,7 @@ public class WorkStealingDeque implements WorkStealingQueue {
 			currentTasks = expand(currentTasks, oldBottom, oldTop);
 			tasks = currentTasks;
 		}
-		tasks[oldBottom % currentTasks.length] = task;
+		currentTasks[oldBottom % currentTasks.length] = task;
 		bottom = oldBottom + 1;
 
 		if (WorkerStatistics.ENABLED) {
