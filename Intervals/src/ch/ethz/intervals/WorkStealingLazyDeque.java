@@ -51,8 +51,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 	@Override
 	public WorkItem steal(Worker thiefWorker) {
-		// At most one thief at a time.
-		// TODO: Is that really necessary?
+		// At most one thief at a time
 		synchronized (thief) {
 			final int head = thief.head;
 			final int index = index(head);
