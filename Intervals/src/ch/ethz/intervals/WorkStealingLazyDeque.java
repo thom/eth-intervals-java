@@ -15,7 +15,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 	static final int INITIAL_SIZE = (1 << 10);
 
 	private AtomicReferenceArray<WorkItem> tasksArray = new AtomicReferenceArray<WorkItem>(
-			size(INITIAL_SIZE));
+			INITIAL_SIZE);
 
 	int ownerHead = 0, ownerTail = 0;
 
@@ -29,10 +29,6 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 	private int index(int id) {
 		return index(tasksArray.length(), id);
-	}
-
-	private static int size(int l) {
-		return l;
 	}
 
 	private static int index(int l, int id) {
@@ -161,7 +157,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 			owner.stats.doGrow();
 
 		AtomicReferenceArray<WorkItem> newTasks = new AtomicReferenceArray<WorkItem>(
-				size(size));
+				size);
 		final int l = tasksArray.length();
 		int j = 0;
 		for (int i = ownerHead; i < ownerTail; i++)
