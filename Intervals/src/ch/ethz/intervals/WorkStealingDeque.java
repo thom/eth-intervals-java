@@ -5,9 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ch.ethz.intervals.ThreadPool.Worker;
 
 public class WorkStealingDeque implements WorkStealingQueue {
-	private final static int INITIAL_LOG_CAPACITY = 10;
-	private volatile CircularArray tasks = new CircularArray(
-			INITIAL_LOG_CAPACITY);
+	private volatile WorkItem[] tasks = new WorkItem[1024];
 	private volatile int bottom = 0;
 	private AtomicInteger top = new AtomicInteger(0);
 	private final Worker owner;
@@ -20,13 +18,13 @@ public class WorkStealingDeque implements WorkStealingQueue {
 	public void put(WorkItem task) {
 		int oldBottom = bottom;
 		int oldTop = top.get();
-		CircularArray currentTasks = tasks;
+		WorkItem[] currentTasks = tasks;
 		int size = oldBottom - oldTop;
-		if (size >= currentTasks.length() - 1) {
-			currentTasks = currentTasks.grow(oldBottom, oldTop);
+		if (size >= currentTasks.length - 1) {
+			currentTasks = expand(currentTasks, oldBottom, oldTop);
 			tasks = currentTasks;
 		}
-		currentTasks.put(oldBottom, task);
+		tasks[oldBottom % currentTasks.length] = task;
 		bottom = oldBottom + 1;
 
 		if (WorkerStatistics.ENABLED) {
@@ -39,20 +37,23 @@ public class WorkStealingDeque implements WorkStealingQueue {
 		// important that top read before bottom
 		int oldTop = top.get();
 		int oldBottom = bottom;
-		CircularArray currentTasks = tasks;
+		WorkItem[] currentTasks = tasks;
 		int size = oldBottom - oldTop;
 		if (size <= 0)
 			return null; // empty
-		WorkItem task = currentTasks.get(oldTop);
+
+		WorkItem task = currentTasks[oldTop % currentTasks.length];
+
 		if (!top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
 			return null; // abort
+
 		return task;
 	}
 
 	@Override
 	public WorkItem take() {
 		int oldBottom = this.bottom;
-		CircularArray currentTasks = tasks;
+		WorkItem[] currentTasks = tasks;
 		oldBottom = oldBottom - 1;
 		this.bottom = oldBottom;
 		int oldTop = top.get();
@@ -68,7 +69,7 @@ public class WorkStealingDeque implements WorkStealingQueue {
 			return null;
 		}
 
-		WorkItem task = currentTasks.get(bottom);
+		WorkItem task = currentTasks[bottom % currentTasks.length];
 
 		if (size > 0) {
 			if (WorkerStatistics.ENABLED)
@@ -91,39 +92,18 @@ public class WorkStealingDeque implements WorkStealingQueue {
 		return task;
 	}
 
-	class CircularArray {
-		private int logLength;
-		private WorkItem[] workItems;
+	private WorkItem[] expand(WorkItem[] currentTasks, int bottom, int top) {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doGrow();
 
-		CircularArray(int logLength) {
-			this.logLength = logLength;
-			workItems = new WorkItem[1 << logLength];
+		WorkItem[] newTasks = new WorkItem[currentTasks.length * 2];
+
+		for (int i = top; i < bottom; i++) {
+			newTasks[i % newTasks.length] = currentTasks[i
+					% currentTasks.length];
 		}
 
-		public int length() {
-			return 1 << logLength;
-		}
-
-		WorkItem get(int i) {
-			return workItems[i % length()];
-		}
-
-		void put(int i, WorkItem item) {
-			workItems[i % length()] = item;
-		}
-
-		CircularArray grow(int bottom, int top) {
-			if (WorkerStatistics.ENABLED)
-				owner.stats.doGrow();
-
-			CircularArray newWorkItems = new CircularArray(logLength + 1);
-
-			for (int i = top; i < bottom; i++) {
-				newWorkItems.put(i, get(i));
-			}
-
-			return newWorkItems;
-		}
+		return newTasks;
 	}
 
 }
