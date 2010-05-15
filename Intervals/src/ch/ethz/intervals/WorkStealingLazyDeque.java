@@ -12,10 +12,8 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		int head = 0;
 	}
 
-	static final int INITIAL_SIZE = (1 << 10);
-
-	private AtomicReferenceArray<WorkItem> tasksArray = new AtomicReferenceArray<WorkItem>(
-			INITIAL_SIZE);
+	private AtomicReferenceArray<WorkItem> tasks = new AtomicReferenceArray<WorkItem>(
+			1024);
 
 	int ownerHead = 0, ownerTail = 0;
 
@@ -27,29 +25,29 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		this.owner = owner;
 	}
 
-	private int index(int id) {
-		return index(tasksArray.length(), id);
+	private final int index(int id) {
+		return index(tasks.length(), id);
 	}
 
-	private static int index(int l, int id) {
-		return id % l;
+	private final static int index(int length, int id) {
+		return id % length;
 	}
 
 	@Override
 	public void put(WorkItem task) {
 		assert task != null;
+
 		while (true) {
-			final int l = tasksArray.length();
+			final int length = tasks.length();
 			final int tail = ownerTail;
 
-			if (tail - ownerHead >= l || tail == Integer.MAX_VALUE) {
-				// Would be full or would roll-over
+			// Would be full or would roll-over
+			if (tail - ownerHead >= length || tail == Integer.MAX_VALUE) {
 				expand();
 				continue;
 			}
 
-			final int index = index(l, tail);
-			tasksArray.set(index, task);
+			tasks.set(index(length, tail), task);
 			ownerTail = tail + 1;
 
 			if (WorkerStatistics.ENABLED)
@@ -62,12 +60,13 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 	@Override
 	public WorkItem steal(Worker thiefWorker) {
 		// At most one thief at a time.
+		// TODO: Is that really necessary?
 		synchronized (thief) {
 			final int head = thief.head;
 			final int index = index(head);
 
-			WorkItem item = tasksArray.get(index);
-			if (!tasksArray.compareAndSet(index, item, null)) {
+			WorkItem item = tasks.get(index);
+			if (!tasks.compareAndSet(index, item, null)) {
 				item = null;
 			}
 
@@ -82,12 +81,12 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 	}
 
 	@Override
+	// Only owner can take. Returns either NULL or a WorkItem that should be
+	// executed.
 	public WorkItem take() {
 		if (WorkerStatistics.ENABLED)
 			owner.stats.doTakeAttempt();
 
-		// Only owner can take. Returns either NULL or a WorkItem that
-		// should be executed.
 		if (ownerHead == ownerTail) {
 			if (WorkerStatistics.ENABLED)
 				owner.stats.doTakeFailure();
@@ -102,8 +101,8 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		// Note: if we get back null, the item must have been stolen, since
 		// otherwise we never store null into the array, and we know this
 		// location was initialized.
-		WorkItem item = tasksArray.get(lastIndex);
-		if (!tasksArray.compareAndSet(lastIndex, item, null)) {
+		WorkItem item = tasks.get(lastIndex);
+		if (!tasks.compareAndSet(lastIndex, item, null)) {
 			item = null;
 		}
 
@@ -137,7 +136,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		synchronized (thief) {
 			assert ownerHead <= thief.head && thief.head <= ownerTail;
 			ownerHead = thief.head;
-			int l = tasksArray.length(), thold = l >> 4;
+			int l = tasks.length(), thold = l >> 4;
 			int size = (ownerTail - ownerHead);
 
 			// Less than 1/16 is free.
@@ -158,13 +157,17 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 		AtomicReferenceArray<WorkItem> newTasks = new AtomicReferenceArray<WorkItem>(
 				size);
-		final int l = tasksArray.length();
+		final int length = tasks.length();
 		int j = 0;
-		for (int i = ownerHead; i < ownerTail; i++)
-			newTasks.set(index(size, j++), tasksArray.get(index(l, i)));
+
+		for (int i = ownerHead; i < ownerTail; i++) {
+			newTasks.set(index(size, j), tasks.get(index(length, i)));
+			j++;
+		}
+
 		ownerTail = j;
 		ownerHead = thief.head = 0;
-		tasksArray = newTasks;
+		tasks = newTasks;
 	}
 
 }
