@@ -4,9 +4,9 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import ch.ethz.intervals.ThreadPool.Worker;
 
-// Called "Lazy" because the owner of the deque only lazily updates
-// the location of the head of deque, i.e., only when it tries to
-// pop something and finds it gone
+// Called "Lazy" because the owner of the deque only lazily updates the
+// location of the head of deque, i.e., only when it tries to pop something
+// and finds it gone
 public class WorkStealingLazyDeque implements WorkStealingQueue {
 	static class ThiefData {
 		int head = 0;
@@ -23,14 +23,6 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 	public WorkStealingLazyDeque(Worker owner) {
 		this.owner = owner;
-	}
-
-	private final int index(int id) {
-		return index(tasks.length(), id);
-	}
-
-	private final static int index(int length, int id) {
-		return id % length;
 	}
 
 	@Override
@@ -70,7 +62,7 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 				item = null;
 			}
 
-			// if null, was either already taken by owner or never there.
+			// If null, was either already taken by owner or never there.
 			if (item == null)
 				return null;
 
@@ -87,10 +79,12 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		if (WorkerStatistics.ENABLED)
 			owner.stats.doTakeAttempt();
 
+		// Empty
 		if (ownerHead == ownerTail) {
 			if (WorkerStatistics.ENABLED)
 				owner.stats.doTakeFailure();
-			return null; // Empty.
+
+			return null;
 		}
 
 		// Pop the last item from the deque.
@@ -107,12 +101,11 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 		}
 
 		// Only updates the location of the head of the deque when it tries
-		// to pop something and finds it gone (lazy deque)
+		// to pop something and finds it gone
 		if (item == null) {
 			// The item we put here was stolen!
-			// If this item was stolen, then all previous entries
-			// must have been stolen too. Update our notion of the head
-			// of the deque.
+			// If this item was stolen, then all previous entries must have been
+			// stolen too. Update our notion of the head of the deque.
 			ownerHead = ownerTail;
 
 			if (WorkerStatistics.ENABLED)
@@ -131,22 +124,21 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 	}
 
 	private void expand() {
-		// Only owner can expand.
-		// No thieves are active.
+		// Only owner can expand, no thieves are active
 		synchronized (thief) {
 			assert ownerHead <= thief.head && thief.head <= ownerTail;
 			ownerHead = thief.head;
-			int l = tasks.length(), thold = l >> 4;
-			int size = (ownerTail - ownerHead);
+			final int length = tasks.length();
+			final int thold = length >> 4;
+			final int size = (ownerTail - ownerHead);
 
 			// Less than 1/16 is free.
-			if ((l - size) <= thold) {
-				replaceTaskArray(l * 2);
+			if ((length - size) <= thold) {
+				replaceTaskArray(length * 2);
 			}
-
 			// About to roll-over.
 			else if (ownerTail == Integer.MAX_VALUE) {
-				replaceTaskArray(l);
+				replaceTaskArray(length);
 			}
 		}
 	}
@@ -157,17 +149,26 @@ public class WorkStealingLazyDeque implements WorkStealingQueue {
 
 		AtomicReferenceArray<WorkItem> newTasks = new AtomicReferenceArray<WorkItem>(
 				size);
+
 		final int length = tasks.length();
-		int j = 0;
+		int newTail = 0;
 
 		for (int i = ownerHead; i < ownerTail; i++) {
-			newTasks.set(index(size, j), tasks.get(index(length, i)));
-			j++;
+			newTasks.set(index(size, newTail), tasks.get(index(length, i)));
+			newTail++;
 		}
 
-		ownerTail = j;
+		ownerTail = newTail;
 		ownerHead = thief.head = 0;
 		tasks = newTasks;
+	}
+
+	private final int index(int id) {
+		return index(tasks.length(), id);
+	}
+
+	private final int index(int length, int id) {
+		return id % length;
 	}
 
 }
