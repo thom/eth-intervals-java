@@ -4,7 +4,7 @@ import ch.ethz.intervals.ThreadPool.Worker;
 
 public class DuplicatingWorkStealingDeque implements WorkStealingQueue {
 	private final Worker owner;
-	private final static int size = 1024;
+	private int size = 1024;
 	private WorkItem[] tasks = new WorkItem[size];
 	private int tailMin = Integer.MAX_VALUE;
 	private volatile int tail = 0;
@@ -18,31 +18,15 @@ public class DuplicatingWorkStealingDeque implements WorkStealingQueue {
 	public void put(WorkItem task) {
 		assert task != null;
 
-		// queue not full and no index overflow?
-		if ((tail < Math.min(tailMin, head) + size)
-				&& (tail < Integer.MAX_VALUE / 2)) {
-			tasks[tail % size] = task;
-			tail = tail + 1;
-			if (WorkerStatistics.ENABLED)
-				owner.stats.doPut();
-		} else {
-			synchronized (this) {
-				if (head > tailMin)
-					head = tailMin;
-				tailMin = Integer.MAX_VALUE;
+		// If queue full or index overflow: expand
+		if (!((tail < Math.min(tailMin, head) + size) && (tail < Integer.MAX_VALUE / 2)))
+			expand();
 
-				// adjust the indices to prevent overflow
-				int count = Math.max(0, tail - head);
-				head = head % size;
-				tail = head + count;
-			}
+		tasks[tail % size] = task;
+		tail = tail + 1;
 
-			if (WorkerStatistics.ENABLED)
-				owner.stats.doEagerExecution();
-
-			// just run this task eagerly
-			task.exec(owner);
-		}
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doPut();
 	}
 
 	@Override
@@ -97,6 +81,31 @@ public class DuplicatingWorkStealingDeque implements WorkStealingQueue {
 		}
 
 		return task;
+	}
+
+	private void expand() {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doGrow();
+
+		synchronized (this) {
+			if (head > tailMin)
+				head = tailMin;
+
+			tailMin = Integer.MAX_VALUE;
+
+			// Adjust the indices to prevent overflow
+			int count = Math.max(0, tail - head);
+			head = head % size;
+			tail = head + count;
+
+			// Replace tasks array
+			int newSize = 2 * size;
+			WorkItem[] newTasks = new WorkItem[newSize];
+			for (int i = head; i < tail; i++)
+				newTasks[i % newSize] = tasks[i % size];
+			size = newSize;
+			tasks = newTasks;
+		}
 	}
 
 }
