@@ -1,8 +1,15 @@
 package ch.ethz.intervals;
 
+import java.util.concurrent.atomic.AtomicStampedReference;
+
 import ch.ethz.intervals.ThreadPool.Worker;
 
 public class DynamicWorkStealingDeque implements WorkStealingQueue {
+	class Node {
+		static final int SIZE = 9;
+		WorkItem[] tasks = new WorkItem[SIZE];
+		Node next, prev;
+	}
 
 	@Override
 	public void put(WorkItem task) {
