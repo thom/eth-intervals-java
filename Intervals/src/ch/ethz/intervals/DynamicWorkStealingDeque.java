@@ -11,6 +11,16 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		Node next, prev;
 	}
 
+	class Index {
+		Node node;
+		int index;
+
+		Index(Node node, int index) {
+			this.node = node;
+			this.index = index;
+		}
+	}
+
 	@Override
 	public void put(WorkItem task) {
 		// TODO Auto-generated method stub
