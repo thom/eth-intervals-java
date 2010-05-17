@@ -21,6 +21,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		}
 	}
 
+	private Index bottom;
+	private AtomicStampedReference<Index> top;
+	private final Worker owner;
+
 	@Override
 	public void put(WorkItem task) {
 		// TODO Auto-generated method stub
