@@ -63,6 +63,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		// Update bottom
 		bottom.node = newNode;
 		bottom.index = newIndex;
+
+		if (WorkerStatistics.ENABLED) {
+			owner.stats.doPut();
+		}
 	}
 
 	@Override
