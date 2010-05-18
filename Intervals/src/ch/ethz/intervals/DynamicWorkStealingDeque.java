@@ -67,8 +67,50 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 
 	@Override
 	public WorkItem steal(Worker thiefWorker) {
-		// TODO Auto-generated method stub
-		return null;
+		// Read top
+		AtomicStampedReference<Index> currentTopRef = top;
+		Index currentTop = currentTopRef.getReference();
+		Node currentTopNode = currentTop.node;
+		int currentTopIndex = currentTop.index;
+		int currentTopTag = currentTopRef.getStamp();
+
+		// Read bottom
+		Index currentBottom = bottom;
+
+		if (isEmpty(currentBottom, currentTop))
+			return null;
+
+		// New top values
+		int newTopTag;
+		Node newTopNode;
+		int newTopIndex;
+
+		// If deque isn't empty, calculate next top pointer
+		if (currentTopIndex != 0) {
+			// stay at current node
+			newTopTag = currentTopTag;
+			newTopNode = currentTopNode;
+			newTopIndex = currentTopIndex - 1;
+		} else {
+			// Move to next node and update tag
+			newTopTag = currentTopTag + 1;
+			newTopNode = currentTopNode.prev;
+			newTopIndex = Node.SIZE - 1;
+		}
+
+		// Read value
+		WorkItem task = currentTopNode.tasks[currentTopIndex];
+
+		// New top
+		Index newTop = new Index(newTopNode, newTopIndex);
+
+		// Try to update top using CAS
+		if (currentTopRef.compareAndSet(currentTop, newTop, currentTopTag,
+				newTopTag)) {
+			return task;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
