@@ -135,6 +135,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 
 	@Override
 	public WorkItem take() {
+		if (WorkerStatistics.ENABLED)
+			owner.stats.doTakeAttempt();
+
 		// Read bottom data
 		Node oldBottomNode = bottom.node;
 		int oldBottomIndex = bottom.index;
@@ -150,6 +153,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		}
 
 		if (newBottomNode == null) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeFailure();
+
 			return null;
 		}
 
@@ -173,6 +179,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			// Return bottom to its old position
 			bottom.node = oldBottomNode;
 			bottom.index = oldBottomIndex;
+
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeFailure();
+
 			return null;
 		}
 		// Case 2: When taking the last entry in the deque (i.e. deque is empty
@@ -184,6 +194,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			Index newTop = new Index(currentTopNode, currentTopIndex);
 			if (top.compareAndSet(currentTop, newTop, currentTopTag,
 					currentTopTag + 1)) {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doTakeSuccess();
+
 				return task;
 			}
 			// If CAS failed (i.e. a concurrent steal operation already took the
@@ -192,12 +205,19 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 				// Return bottom to its old position
 				bottom.node = oldBottomNode;
 				bottom.index = oldBottomIndex;
+
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doTakeFailure();
+
 				return null;
 			}
 		}
 		// Case 3: Regular case (i.e. there was at least one entry in the deque
 		// after bottom's update)
 		else {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doTakeSuccess();
+
 			return task;
 		}
 	}
