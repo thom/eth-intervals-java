@@ -6,7 +6,7 @@ import ch.ethz.intervals.ThreadPool.Worker;
 
 public class DynamicWorkStealingDeque implements WorkStealingQueue {
 	class Node {
-		static final int SIZE = 9;
+		static final int SIZE = 1024;
 		WorkItem[] tasks = new WorkItem[SIZE];
 		Node next, prev;
 	}
@@ -67,56 +67,63 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 
 	@Override
 	public WorkItem steal(Worker thiefWorker) {
-		// Read top
-		AtomicStampedReference<Index> currentTopRef = top;
-		Index currentTop = currentTopRef.getReference();
-		Node currentTopNode = currentTop.node;
-		int currentTopIndex = currentTop.index;
-		int currentTopTag = currentTopRef.getStamp();
+		WorkItem task;
 
-		// Read bottom
-		Index currentBottom = bottom;
+		while (true) {
+			// Read top
+			AtomicStampedReference<Index> currentTopRef = top;
+			Index currentTop = currentTopRef.getReference();
+			Node currentTopNode = currentTop.node;
+			int currentTopIndex = currentTop.index;
+			int currentTopTag = currentTopRef.getStamp();
 
-		if (isEmpty(currentBottom, currentTop)) {
-			if (currentTopRef == top) {
+			if (currentTopNode == null) {
 				return null;
+			}
+
+			// Read bottom
+			Index currentBottom = bottom;
+
+			if (isEmpty(currentBottom, currentTop)) {
+				if (currentTopRef == top) {
+					return null;
+				} else {
+					// ABORT
+					continue;
+				}
+			}
+
+			// New top values
+			int newTopTag;
+			Node newTopNode;
+			int newTopIndex;
+
+			// If deque isn't empty, calculate next top pointer
+			if (currentTopIndex != 0) {
+				// Stay at current node
+				newTopTag = currentTopTag;
+				newTopNode = currentTopNode;
+				newTopIndex = currentTopIndex - 1;
 			} else {
-				// ABORT
-				return null;
+				// Move to next node and update tag
+				newTopTag = currentTopTag + 1;
+				newTopNode = currentTopNode.prev;
+				newTopIndex = Node.SIZE - 1;
+			}
+
+			// Read value
+			task = currentTopNode.tasks[currentTopIndex];
+
+			// New top
+			Index newTop = new Index(newTopNode, newTopIndex);
+
+			// Try to update top using CAS
+			if (top.compareAndSet(currentTop, newTop, currentTopTag, newTopTag)) {
+				break;
 			}
 		}
 
-		// New top values
-		int newTopTag;
-		Node newTopNode;
-		int newTopIndex;
-
-		// If deque isn't empty, calculate next top pointer
-		if (currentTopIndex != 0) {
-			// Stay at current node
-			newTopTag = currentTopTag;
-			newTopNode = currentTopNode;
-			newTopIndex = currentTopIndex - 1;
-		} else {
-			// Move to next node and update tag
-			newTopTag = currentTopTag + 1;
-			newTopNode = currentTopNode.prev;
-			newTopIndex = Node.SIZE - 1;
-		}
-
-		// Read value
-		WorkItem task = currentTopNode.tasks[currentTopIndex];
-
-		// New top
-		Index newTop = new Index(newTopNode, newTopIndex);
-
-		// Try to update top using CAS
-		if (top.compareAndSet(currentTop, newTop, currentTopTag, newTopTag)) {
-			return task;
-		} else {
-			// ABORT
-			return null;
-		}
+		return task;
 	}
 
 	@Override
@@ -133,6 +140,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		} else {
 			newBottomNode = oldBottomNode.next;
 			newBottomIndex = 0;
+		}
+
+		if (newBottomNode == null) {
+			return null;
 		}
 
 		// Read data to be taken
@@ -185,6 +196,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 	}
 
 	private boolean isEmpty(Index currentBottom, Index currentTop) {
+		if (currentTop == null)
+			System.out.println("currentTop: " + currentTop);
+
 		// Same node
 		if (currentBottom.node == currentTop.node) {
 			// Same cell
@@ -196,7 +210,7 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 				return true;
 		}
 		// Neighboring nodes
-		else if (currentTop.node.next == currentBottom.node) {
+		else if (currentBottom.node.prev == currentTop.node) {
 			// Simple crossing
 			if ((currentTop.index == 0)
 					&& (currentBottom.index == Node.SIZE - 1))
