@@ -77,8 +77,14 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		// Read bottom
 		Index currentBottom = bottom;
 
-		if (isEmpty(currentBottom, currentTop))
-			return null;
+		if (isEmpty(currentBottom, currentTop)) {
+			if (currentTopRef == top) {
+				return null;
+			} else {
+				// ABORT
+				return null;
+			}
+		}
 
 		// New top values
 		int newTopTag;
@@ -87,7 +93,7 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 
 		// If deque isn't empty, calculate next top pointer
 		if (currentTopIndex != 0) {
-			// stay at current node
+			// Stay at current node
 			newTopTag = currentTopTag;
 			newTopNode = currentTopNode;
 			newTopIndex = currentTopIndex - 1;
@@ -105,10 +111,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		Index newTop = new Index(newTopNode, newTopIndex);
 
 		// Try to update top using CAS
-		if (currentTopRef.compareAndSet(currentTop, newTop, currentTopTag,
-				newTopTag)) {
+		if (top.compareAndSet(currentTop, newTop, currentTopTag, newTopTag)) {
 			return task;
 		} else {
+			// ABORT
 			return null;
 		}
 	}
@@ -157,8 +163,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 				&& (newBottomIndex == currentTopIndex)) {
 			// Try to update top's tag so no concurrent steal operation will
 			// also take the same entry
-			if (currentTopRef.compareAndSet(currentTop, currentTop,
-					currentTopTag, currentTopTag + 1)) {
+			Index newTop = new Index(currentTopNode, currentTopIndex);
+			if (top.compareAndSet(currentTop, newTop, currentTopTag,
+					currentTopTag + 1)) {
 				return task;
 			}
 			// If CAS failed (i.e. a concurrent steal operation already took the
