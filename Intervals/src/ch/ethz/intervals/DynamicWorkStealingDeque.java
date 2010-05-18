@@ -58,6 +58,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			newNode.next = currentNode;
 			currentNode.prev = newNode;
 			newIndex = Node.SIZE - 1;
+
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doGrow();
 		}
 
 		// Update bottom
