@@ -179,7 +179,7 @@ public class WorkerStatistics {
 	public static String globalToString() {
 		assert ENABLED;
 		String result = "\nGlobal Statistics\n\n";
-		result += "Gone Idle\tWaken up\n";
+		result += "Gone Idle\tWoken up\n";
 		result += globalIdleWorkersAdds + "\t\t" + globalIdleWorkersRemoves
 				+ "\n\n";
 		result += "Puts\n";
@@ -216,7 +216,7 @@ public class WorkerStatistics {
 		assert ENABLED;
 
 		String result = "\nStatistics for " + owner + "\n\n";
-		result += "Gone Idle\tWaken up\n";
+		result += "Gone Idle\tWoken up\n";
 		result += idleWorkersAdds + "\t\t" + idleWorkersRemoves + "\n\n";
 		result += "Puts\n";
 		result += puts + "\n\n";
