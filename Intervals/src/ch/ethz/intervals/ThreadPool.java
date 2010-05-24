@@ -185,6 +185,10 @@ class ThreadPool {
 				if (idleWorker != null) {
 					if (Debug.ENABLED)
 						Debug.awakenIdle(this, item, idleWorker);
+
+					if (WorkerStatistics.ENABLED)
+						idleWorker.stats.doIdleWorkersRemove();
+
 					idleWorker.tasks.put(item);
 					idleWorker.semaphore.release();
 					return;
@@ -264,14 +268,15 @@ class ThreadPool {
 				// There is an idle worker. Remove it, assign it this job, and
 				// wake it.
 				worker = idleWorkers.remove(l - 1);
+				idleWorkersExist = (l != 1);
+				idleLock.unlock();
 
 				if (WorkerStatistics.ENABLED)
 					worker.stats.doIdleWorkersRemove();
 
-				idleWorkersExist = (l != 1);
-				idleLock.unlock();
 				if (Debug.ENABLED)
 					Debug.awakenIdle(null, item, worker);
+
 				worker.tasks.put(item);
 				worker.semaphore.release();
 			}
