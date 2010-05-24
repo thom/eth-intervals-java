@@ -93,9 +93,9 @@ class ThreadPool {
 
 			if (Debug.ENABLED)
 				Debug.execute(this, item, true);
-			
+
 			item.exec(this);
-			
+
 			return true;
 		}
 
@@ -131,14 +131,24 @@ class ThreadPool {
 		private WorkItem findPendingWork(boolean block) {
 			idleLock.lock();
 
+			if (WorkerStatistics.ENABLED)
+				this.stats.doPendingWorkItemsRemoveAttempt();
+
 			int l = pendingWorkItems.size();
 			if (l != 0) {
 				WorkItem item = pendingWorkItems.remove(l - 1);
+
+				if (WorkerStatistics.ENABLED)
+					this.stats.doPendingWorkItemsRemove();
+
 				idleLock.unlock();
 				return item;
 			} else if (block) {
 				idleWorkersExist = true;
 				idleWorkers.add(this);
+
+				if (WorkerStatistics.ENABLED)
+					this.stats.doIdleWorkersAdd();
 
 				int length = idleWorkers.size();
 				if (length == numWorkers) {
@@ -206,6 +216,8 @@ class ThreadPool {
 		if (WorkerStatistics.ENABLED) {
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
+					WorkerStatistics.globalPrint();
+
 					for (Worker worker : workers) {
 						worker.stats.print();
 					}
@@ -240,13 +252,22 @@ class ThreadPool {
 				// Put it on the list of pending items, and someone will get to
 				// it rather than becoming idle.
 				pendingWorkItems.add(item);
+
 				if (Debug.ENABLED)
 					Debug.enqeue(null, item);
+
+				if (WorkerStatistics.ENABLED)
+					WorkerStatistics.doPendingWorkItemsAdd();
+
 				idleLock.unlock();
 			} else {
 				// There is an idle worker. Remove it, assign it this job, and
 				// wake it.
 				worker = idleWorkers.remove(l - 1);
+
+				if (WorkerStatistics.ENABLED)
+					worker.stats.doIdleWorkersRemove();
+
 				idleWorkersExist = (l != 1);
 				idleLock.unlock();
 				if (Debug.ENABLED)
