@@ -1,9 +1,23 @@
-* Loosen new interval requirements
+* Remove `pendingWorkItems' => always put work item into one of the worker's 
+  queues instead:
+- Assign it randomly, or
+- Assign it to the worker with the smallest queue
 
-We could permit new interval creation so long as the end of the creator
-happens before the end of a descendent of the parent.  But I'm not sure
-if it's worth the trouble.
 
-* Propagate errors through locks
+=> Do benchmarks, if faster:
 
-But how to know when it's caught?
+* Replace `ArrayList<Worker> idleWorkers' with a concurrent queue
+- Non-blocking (`ConcurrentLinkedQueue<Worker>'), or
+- Blocking (`LinkedBlockingDeque<Worker>', `ArrayBlockingQueue<Worker>', 
+            `LinkedBlockingQueue<Worker>')
+
+* Move `idleLock' into `startKeepAliveThread' and `stopKeepAliveThread'
+
+
+If benchmarks show, it's slower:
+
+* Replace `ArrayList<Worker> idleWorkers' with a concurrrent queue
+
+* Replace `ArrayList<WorkItem> pendingWorkItems' with a concurrent queue
+
+* Move `idleLock' into `startKeepAliveThread' and `stopKeepAliveThread'
