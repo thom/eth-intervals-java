@@ -216,12 +216,15 @@ class ThreadPool {
 	volatile boolean idleWorkersExist;
 
 	ThreadPool() {
-		// Print statistics for each worker if worker statistics is enabled
+		// Print global statistics and statistics for each worker if worker
+		// statistics is enabled
 		if (WorkerStatistics.ENABLED) {
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
+					// Global statistics
 					WorkerStatistics.globalPrint();
 
+					// Statistics for each worker
 					for (Worker worker : workers) {
 						worker.stats.print();
 					}
