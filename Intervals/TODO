@@ -1,7 +1,8 @@
 * Remove `pendingWorkItems' => always put work item into one of the worker's 
   queues instead:
 - Assign it randomly, or
-- Assign it to the worker with the smallest queue
+- Assign it to the worker with the smallest queue, or
+- Execute eagerly
 
 
 => Do benchmarks, if faster:
