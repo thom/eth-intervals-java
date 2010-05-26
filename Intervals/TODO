@@ -5,7 +5,9 @@
 - Execute eagerly
 
 => Be careful with race conditions!
-=> idleLock should prevent us from having a race condition.
+=> `idleLock' should prevent us from having a race condition.
+
+* Rename `findPendingWork' to `goIdle'
 
 
 => Do benchmarks, if faster:
