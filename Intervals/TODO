@@ -4,6 +4,9 @@
 - Assign it to the worker with the smallest queue, or
 - Execute eagerly
 
+=> Be careful with race conditions!
+=> idleLock should prevent us from having a race condition.
+
 
 => Do benchmarks, if faster:
 
@@ -13,6 +16,7 @@
             `LinkedBlockingQueue<Worker>')
 
 * Move `idleLock' into `startKeepAliveThread' and `stopKeepAliveThread'
+- Is this really a good idea? What about race conditions?
 
 
 If benchmarks show, it's slower:
@@ -22,3 +26,9 @@ If benchmarks show, it's slower:
 * Replace `ArrayList<WorkItem> pendingWorkItems' with a concurrent queue
 
 * Move `idleLock' into `startKeepAliveThread' and `stopKeepAliveThread'
+
+
+Other idea: Ignore idle workers
+
+* Random assignment of tasks
+* Assign tasks to worker with smallest work item queue
