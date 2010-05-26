@@ -1,5 +1,6 @@
 * Remove `pendingWorkItems' => always put work item into one of the worker's 
   queues instead:
+- Always assign to worker 0, or
 - Assign it randomly, or
 - Assign it to the worker with the smallest queue, or
 - Execute eagerly
