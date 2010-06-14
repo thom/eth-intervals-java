@@ -34,25 +34,19 @@ public class WorkStealingDeque implements WorkStealingQueue {
 
 	@Override
 	public WorkItem steal(Worker thiefWorker) {
-		int oldTop, oldBottom;
-		WorkItem task;
-		
-		while (true) {
-			// important that top read before bottom
-			oldTop = top.get();
-			oldBottom = bottom;
-			WorkItem[] currentTasks = tasks;
-			int size = oldBottom - oldTop;
-			
-			if (size <= 0)
-				return null; // empty
-			
-			task = currentTasks[oldTop % currentTasks.length];
-			
-			if (top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
-				break;
-		}
-		
+		// important that top read before bottom
+		int oldTop = top.get();
+		int oldBottom = bottom;
+		WorkItem[] currentTasks = tasks;
+		int size = oldBottom - oldTop;
+		if (size <= 0)
+			return null; // empty
+
+		WorkItem task = currentTasks[oldTop % currentTasks.length];
+
+		if (!top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
+			return null; // abort
+
 		return task;
 	}
 
