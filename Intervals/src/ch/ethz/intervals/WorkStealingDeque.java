@@ -7,6 +7,7 @@ import ch.ethz.intervals.ThreadPool.Worker;
 public class WorkStealingDeque implements WorkStealingQueue {
 	private volatile WorkItem[] tasks = new WorkItem[1024];
 	private volatile int bottom = 0;
+	private int lazyTop = 0;
 	private AtomicInteger top = new AtomicInteger(0);
 	private final Worker owner;
 
@@ -17,11 +18,11 @@ public class WorkStealingDeque implements WorkStealingQueue {
 	@Override
 	public void put(WorkItem task) {
 		int oldBottom = bottom;
-		int oldTop = top.get();
 		WorkItem[] currentTasks = tasks;
-		int size = oldBottom - oldTop;
+		int size = oldBottom - lazyTop;
 		if (size >= currentTasks.length - 1) {
-			currentTasks = expand(currentTasks, oldBottom, oldTop);
+			lazyTop = top.get();
+			currentTasks = expand(currentTasks, oldBottom, lazyTop);
 			tasks = currentTasks;
 		}
 		currentTasks[oldBottom % currentTasks.length] = task;
