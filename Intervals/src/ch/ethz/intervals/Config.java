@@ -24,6 +24,6 @@ public class Config {
 	 * @return WorkStealingDeque
 	 */
 	public final static WorkStealingQueue createQueue(Worker owner) {
-		return new LazyDeque(owner);
+		return new WorkStealingDeque(owner);
 	}
 }
