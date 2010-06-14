@@ -14,7 +14,7 @@ public class Config {
 	 * Use state (init, running, done) to make sure tasks are executed only
 	 * once.
 	 */
-	public static final boolean DUPLICATING_QUEUE = false;
+	public static final boolean DUPLICATING_QUEUE = true;
 
 	/**
 	 * Creation method to simplify switching of work-stealing queue
@@ -24,6 +24,6 @@ public class Config {
 	 * @return WorkStealingDeque
 	 */
 	public final static WorkStealingQueue createQueue(Worker owner) {
-		return new LazyDeque(owner);
+		return new IdempotentDeque(owner);
 	}
 }
