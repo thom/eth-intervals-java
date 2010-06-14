@@ -47,31 +47,27 @@ public class IdempotentLIFOQueue implements WorkStealingQueue {
 	public WorkItem steal(Worker thiefWorker) {
 		// Order read in (1) before read in (2)
 		// Order read in (3) before CAS in (4)
-		int tail, tag;
 		WorkItem task;
 
-		while (true) {
-			// (1)
-			tail = anchor.getReference();
-			tag = anchor.getStamp();
+		// (1)
+		int tail = anchor.getReference();
+		int tag = anchor.getStamp();
 
-			// (2)
-			if (tail == 0) {
-				return null;
-			}
-
-			WorkItem[] tempTasks = tasks;
-
-			// (3)
-			task = tempTasks[tail - 1];
-
-			// (4)
-			if (anchor.compareAndSet(tail, tail - 1, tag, tag)) {
-				break;
-			}
+		// (2)
+		if (tail == 0) {
+			return null;
 		}
+		WorkItem[] tempTasks = tasks;
 
-		return task;
+		// (3)
+		task = tempTasks[tail - 1];
+
+		// (4)
+		if (anchor.compareAndSet(tail, tail - 1, tag, tag)) {
+			return task;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
