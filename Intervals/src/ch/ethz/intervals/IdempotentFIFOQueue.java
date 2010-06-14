@@ -48,33 +48,30 @@ public class IdempotentFIFOQueue implements WorkStealingQueue {
 		// Order read in (1) before read in (2)
 		// Order read in (1) before read in (3)
 		// Order read in (4) before CAS in (5)
-		int oldHead, oldTail;
 		WorkItem task;
 
-		while (true) {
-			// (1)
-			oldHead = head.get();
+		// (1)
+		int oldHead = head.get();
 
-			// (2)
-			oldTail = tail;
+		// (2)
+		int oldTail = tail;
 
-			if (oldHead == oldTail) {
-				return null;
-			}
-
-			// (3)
-			WorkItem[] tempTasks = tasks;
-
-			// (4)
-			task = tempTasks[oldHead % tempTasks.length];
-
-			// (5)
-			if (head.compareAndSet(oldHead, oldHead + 1)) {
-				break;
-			}
+		if (oldHead == oldTail) {
+			return null;
 		}
 
-		return task;
+		// (3)
+		WorkItem[] tempTasks = tasks;
+
+		// (4)
+		task = tempTasks[oldHead % tempTasks.length];
+
+		// (5)
+		if (head.compareAndSet(oldHead, oldHead + 1)) {
+			return task;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
