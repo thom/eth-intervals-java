@@ -56,35 +56,33 @@ public class IdempotentWorkStealingDeque implements WorkStealingQueue {
 	public WorkItem steal(Worker thiefWorker) {
 		// Order read in (1) before read in (2)
 		// Order read in (3) before CAS in (4)
-		ArrayData arrayData;
-		int head, size, tag;
 		WorkItem task;
-		
-		while (true) {
-			// (1)
-			arrayData = anchor.getReference();
-			head = arrayData.head;
-			size = arrayData.size;
-			tag = anchor.getStamp();
-			if (size == 0) {
-				return null;
-			}
-			
-			// (2)
-			WorkItem[] tempTasks = tasks;
-			
-			// (3)
-			task = tempTasks[head % tempTasks.length];
-			int newHead = head + 1 % Integer.MAX_VALUE;
-			
-			// (4)
-			if (anchor.compareAndSet(arrayData,
-					new ArrayData(newHead, size - 1), tag, tag)) {
-				break;
-			}
+
+		// (1)
+		ArrayData arrayData = anchor.getReference();
+
+		int head = arrayData.head;
+		int size = arrayData.size;
+		int tag = anchor.getStamp();
+
+		if (size == 0) {
+			return null;
 		}
-		
-		return task;
+
+		// (2)
+		WorkItem[] tempTasks = tasks;
+
+		// (3)
+		task = tempTasks[head % tempTasks.length];
+		int newHead = head + 1 % Integer.MAX_VALUE;
+
+		// (4)
+		if (anchor.compareAndSet(arrayData, new ArrayData(newHead, size - 1),
+				tag, tag)) {
+			return task;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
