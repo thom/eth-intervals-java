@@ -1,6 +1,10 @@
 #include <jni.h>
+#include <syscall.h>
+#include "ch_ethz_hwloc_Place.h"
 
 /* Implementation for class ch_ethz_hwloc_Place */
+
+long int gettid();
 
 /*
  * Class:     ch_ethz_hwloc_Place
@@ -31,6 +35,9 @@ Java_ch_ethz_hwloc_Place_getAffinity(JNIEnv *env, jobject obj) {
  */
 JNIEXPORT jint JNICALL
 Java_ch_ethz_hwloc_Place_getThreadId(JNIEnv *env, jobject obj) {
-	// TODO: getThreadId
-	return 0;
+	return gettid();
+}
+
+long int gettid() {
+	return syscall(SYS_gettid);
 }
