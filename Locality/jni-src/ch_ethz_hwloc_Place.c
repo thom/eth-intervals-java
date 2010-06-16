@@ -7,8 +7,9 @@
  * Method:    setAffinity
  * Signature: ([I)V
  */
-JNIEXPORT void JNICALL Java_ch_ethz_hwloc_Place_setAffinity
-  (JNIEnv *env, jobject obj, jintArray physical_units) {
+JNIEXPORT void JNICALL
+Java_ch_ethz_hwloc_Place_setAffinity(JNIEnv *env, jobject obj,
+		jintArray physical_units) {
 	// TODO: setAffinity
 }
 
@@ -17,8 +18,8 @@ JNIEXPORT void JNICALL Java_ch_ethz_hwloc_Place_setAffinity
  * Method:    getAffinity
  * Signature: ()[I
  */
-JNIEXPORT jintArray JNICALL Java_ch_ethz_hwloc_Place_getAffinity
-  (JNIEnv *env, jobject obj) {
+JNIEXPORT jintArray JNICALL
+Java_ch_ethz_hwloc_Place_getAffinity(JNIEnv *env, jobject obj) {
 	// TODO: getAffinity;
 	return NULL;
 }
@@ -28,8 +29,8 @@ JNIEXPORT jintArray JNICALL Java_ch_ethz_hwloc_Place_getAffinity
  * Method:    getThreadId
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_ch_ethz_hwloc_Place_getThreadId
-  (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL
+Java_ch_ethz_hwloc_Place_getThreadId(JNIEnv *env, jobject obj) {
 	// TODO: getThreadId
 	return 0;
 }
