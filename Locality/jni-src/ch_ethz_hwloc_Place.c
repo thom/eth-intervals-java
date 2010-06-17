@@ -19,7 +19,26 @@ long int gettid();
 JNIEXPORT void JNICALL
 Java_ch_ethz_hwloc_Place_setAffinity(JNIEnv *env, jobject obj,
 		jintArray physical_units) {
-	// TODO: setAffinity
+	int s, i;
+	cpu_set_t cpuset;
+	pthread_t thread;
+
+	thread = pthread_self();
+
+	CPU_ZERO(&cpuset);
+
+	jsize len = (*env)->GetArrayLength(env, physical_units);
+	jint *cpus = (*env)->GetIntArrayElements(env, physical_units, 0);
+	for (i = 0; i < len; i++) {
+		CPU_SET(cpus[i], &cpuset);
+	}
+
+	/* Set affinity mask for thread */
+	s = pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+	if (s != 0) {
+		(*env)->ThrowNew(env, (*env)->FindClass(env,
+				"ch/ethz/hwloc/SetAffinityException"), "Couldn't set affinity!");
+	}
 }
 
 /*
