@@ -1,7 +1,7 @@
 package ch.ethz.hwloc;
 
 /**
- * Place
+ * Abstract place
  * 
  * @author Thomas Weibel
  */
@@ -12,12 +12,7 @@ public abstract class Place {
 		place = -1;
 	}
 
-	public Place(int place) {
-		set(place);
-	}
-
-	public void set(int place) {
-		// TODO: set
+	public void set(int place) throws SetAffinityException {
 		this.place = place;
 	}
 
@@ -25,19 +20,30 @@ public abstract class Place {
 		return place;
 	}
 
+	public boolean isSet() {
+		return place != -1;
+	}
+
 	public String toString() {
 		String result = String.format("Thread ID: %d", getThreadId());
-		result += String.format("\nPlace: %d", place);
-		for (int core : placeToCores(place)) {
-			result += String.format("\n  * Core %d", core);
+
+		if (isSet()) {
+			result += String.format("\nPlace: %d", place);
+			for (int unit : mapPlaceToUnits(place)) {
+				result += String.format("\n  * Unit %d", unit);
+			}
+		} else {
+			result += "\nNo place set";
 		}
 
 		try {
 			boolean[] affinities = getAffinity();
 			result += "\nLocality:";
 			for (int i = 0; i < affinities.length; i++) {
-				result += String.format("\n  * Core %d (Place %d)", i,
-						coreToPlace(i));
+				if (affinities[i]) {
+					result += String.format("\n  * Unit %d (Place %d)", i,
+							mapUnitToPlace(i));
+				}
 			}
 		} catch (GetAffinityException e) {
 			e.printStackTrace();
@@ -46,9 +52,9 @@ public abstract class Place {
 		return result;
 	}
 
-	public abstract int coreToPlace(int core);
+	public abstract int mapUnitToPlace(int unit);
 
-	public abstract int[] placeToCores(int place);
+	public abstract int[] mapPlaceToUnits(int place);
 
 	protected native void setAffinity(int[] physicalUnits)
 			throws SetAffinityException;
