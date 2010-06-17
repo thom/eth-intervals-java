@@ -50,7 +50,8 @@ public abstract class Place {
 
 	public abstract int[] placeToCores(int place);
 
-	protected native void setAffinity(int[] physicalUnits);
+	protected native void setAffinity(int[] physicalUnits)
+			throws SetAffinityException;
 
 	protected native boolean[] getAffinity() throws GetAffinityException;
 
