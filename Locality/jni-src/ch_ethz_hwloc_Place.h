@@ -18,9 +18,9 @@ JNIEXPORT void JNICALL Java_ch_ethz_hwloc_Place_setAffinity
 /*
  * Class:     ch_ethz_hwloc_Place
  * Method:    getAffinity
- * Signature: ()[I
+ * Signature: ()[Z
  */
-JNIEXPORT jintArray JNICALL Java_ch_ethz_hwloc_Place_getAffinity
+JNIEXPORT jbooleanArray JNICALL Java_ch_ethz_hwloc_Place_getAffinity
   (JNIEnv *, jobject);
 
 /*
