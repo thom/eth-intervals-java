@@ -52,6 +52,8 @@ public abstract class Place {
 		return result;
 	}
 
+	public abstract int getNumberOfPlaces();
+
 	public abstract int mapUnitToPlace(int unit);
 
 	public abstract int[] mapPlaceToUnits(int place);
