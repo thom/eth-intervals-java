@@ -50,11 +50,11 @@ public abstract class Place {
 
 	public abstract int[] placeToCores(int place);
 
-	private native void setAffinity(int[] physicalUnits);
+	protected native void setAffinity(int[] physicalUnits);
 
-	private native boolean[] getAffinity() throws GetAffinityException;
+	protected native boolean[] getAffinity() throws GetAffinityException;
 
-	private native int getThreadId();
+	protected native int getThreadId();
 
 	static {
 		System.loadLibrary("Place");
