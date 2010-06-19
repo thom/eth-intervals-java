@@ -29,6 +29,9 @@ public class RunCacheStressTests {
 		case locality:
 			test = new LocalityAwareCacheStressTest(ARRAY_SIZE);
 			break;
+		case ignorant:
+			test = new LocalityIgnorantCacheStressTest(ARRAY_SIZE);
+			break;
 		// TODO: Run other tests!
 		default:
 			test = new LocalityAwareCacheStressTest(ARRAY_SIZE);
