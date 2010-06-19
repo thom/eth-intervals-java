@@ -58,12 +58,12 @@ public abstract class Place {
 
 	public abstract int[] mapPlaceToUnits(int place);
 
-	protected native void setAffinity(int[] physicalUnits)
+	public native void setAffinity(int[] physicalUnits)
 			throws SetAffinityException;
 
-	protected native boolean[] getAffinity() throws GetAffinityException;
+	public native boolean[] getAffinity() throws GetAffinityException;
 
-	protected native int getThreadId();
+	public native int getThreadId();
 
 	static {
 		System.loadLibrary("Place");
