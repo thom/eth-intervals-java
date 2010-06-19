@@ -37,7 +37,7 @@ public class RunCacheStressTests {
 		long results[] = new long[10];
 		for (int i = 0; i < RUNS; i++) {
 			results[i] = test.run();
-			System.out.println(results[i]);
+			System.out.printf("Run %d = %d\n", i, results[i]);
 		}
 
 		Arrays.sort(results);
@@ -47,6 +47,7 @@ public class RunCacheStressTests {
 			result += results[i];
 		}
 
-		System.out.println(K_BEST + "-best: " + result / K_BEST);
+		System.out.printf("%d-best = %f\n", K_BEST, (new Double(result))
+				/ K_BEST);
 	}
 }
