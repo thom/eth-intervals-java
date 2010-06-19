@@ -8,7 +8,7 @@ public class RunCacheStressTests {
 	public static final int K_BEST = 3;
 
 	public enum TestType {
-		locality, ignorant, random, worstcase
+		locality, ignorant, worstcase
 	}
 
 	public static void main(String[] args) {
@@ -32,7 +32,9 @@ public class RunCacheStressTests {
 		case ignorant:
 			test = new LocalityIgnorantCacheStressTest(ARRAY_SIZE);
 			break;
-		// TODO: Run other tests!
+		case worstcase:
+			test = new WorstCaseLocalityCacheStressTest(ARRAY_SIZE);
+			break;
 		default:
 			test = new LocalityAwareCacheStressTest(ARRAY_SIZE);
 		}
