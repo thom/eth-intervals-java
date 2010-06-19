@@ -47,19 +47,23 @@ class CacheStressWorker extends Thread {
 }
 
 public abstract class CacheStressTest {
-	public final int ARRAY_SIZE = 4194296;
+	private int arraySize;
+
+	public CacheStressTest(int arraySize) {
+		this.arraySize = arraySize;
+	}
 
 	public abstract CacheStressWorker createCacheStressWorker(int id,
 			int[] array, int begin, int end);
 
-	public void run() {
+	public long run() {
 		StopWatch stopWatch = new StopWatch();
 
 		// Start stop watch
 		stopWatch.start();
 
 		CacheStressWorker[] worker = new CacheStressWorker[8];
-		int[] array = createRandomIntegerArray(ARRAY_SIZE);
+		int[] array = createRandomIntegerArray(arraySize);
 		int sliceSize = 4194296 / 8;
 
 		// Create worker
@@ -87,8 +91,7 @@ public abstract class CacheStressTest {
 
 		// Stop stop watch
 		stopWatch.stop();
-		System.out.println("\nElapsed time: " + stopWatch.getElapsedTime()
-				+ "ms");
+		return stopWatch.getElapsedTime();
 	}
 
 	private int[] createRandomIntegerArray(int size) {
