@@ -13,8 +13,6 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 	public void run() {
 		try {
 			getPlace().set((getWorkerId() + (places / 2)) % places);
-			System.out.println("Id: " + getWorkerId());
-			System.out.println(getPlace());
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);
