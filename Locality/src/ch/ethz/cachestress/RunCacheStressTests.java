@@ -47,6 +47,6 @@ public class RunCacheStressTests {
 			result += results[i];
 		}
 
-		System.out.println(result / K_BEST);
+		System.out.println(K_BEST + "-best: " + result / K_BEST);
 	}
 }

@@ -10,7 +10,6 @@ class LocalityAwareWorker extends CacheStressWorker {
 	public void run() {
 		try {
 			getPlace().set(getWorkerId());
-			System.out.println(getPlace());
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

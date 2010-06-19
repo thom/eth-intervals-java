@@ -70,8 +70,6 @@ public abstract class CacheStressTest {
 		for (int i = 0; i < 8; i++) {
 			int begin = i * sliceSize;
 			int end = (i + 1) * sliceSize;
-			System.out.printf("Worker %d for array slice [%d, %d)\n", i, begin,
-					end);
 			worker[i] = createCacheStressWorker(i, array, begin, end);
 		}
 
