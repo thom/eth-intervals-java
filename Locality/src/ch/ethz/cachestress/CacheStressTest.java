@@ -64,7 +64,7 @@ public abstract class CacheStressTest {
 
 		CacheStressWorker[] worker = new CacheStressWorker[8];
 		int[] array = createRandomIntegerArray(arraySize);
-		int sliceSize = 4194296 / 8;
+		int sliceSize = arraySize / 8;
 
 		// Create worker
 		for (int i = 0; i < 8; i++) {
