@@ -19,15 +19,17 @@ class CacheStressWorker extends Thread {
 	}
 
 	public void run() {
-		// Sum up array slice
-		int sum = 0;
-		for (int i = 0; i < array.length; i++) {
-			sum += array[i];
-		}
-		// Multiply array slice
-		int mult = 1;
-		for (int i = 0; i < array.length; i++) {
-			mult *= array[i];
+		for (int k = 0; k < 100; k++) {
+			// Sum up array slice
+			int sum = 0;
+			for (int i = 0; i < array.length; i++) {
+				sum += array[i];
+			}
+			// Multiply array slice
+			int mult = 1;
+			for (int i = 0; i < array.length; i++) {
+				mult *= array[i];
+			}
 		}
 	}
 
