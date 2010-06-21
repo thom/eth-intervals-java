@@ -5,8 +5,8 @@ import ch.ethz.hwloc.SetAffinityException;
 class WorstCaseLocalityWorker extends CacheStressWorker {
 	private int places;
 
-	public WorstCaseLocalityWorker(int id, int[] sharedArray, int begin, int end) {
-		super(id, sharedArray, begin, end);
+	public WorstCaseLocalityWorker(int id, int[] array) {
+		super(id, array);
 		places = getPlace().getNumberOfPlaces();
 	}
 
@@ -27,8 +27,7 @@ public class WorstCaseLocalityCacheStressTest extends CacheStressTest {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array,
-			int begin, int end) {
-		return new WorstCaseLocalityWorker(id, array, begin, end);
+	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
+		return new WorstCaseLocalityWorker(id, array);
 	}
 }

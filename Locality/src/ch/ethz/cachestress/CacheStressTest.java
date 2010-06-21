@@ -1,6 +1,5 @@
 package ch.ethz.cachestress;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import ch.ethz.hwloc.MafushiPlace;
@@ -9,32 +8,27 @@ import ch.ethz.util.StopWatch;
 
 class CacheStressWorker extends Thread {
 	private int id;
-	private int sharedArray[];
+	private int array[];
 	private Place place;
-	private int begin, end;
 
-	public CacheStressWorker(int id, int[] sharedArray, int begin, int end) {
+	public CacheStressWorker(int id, int[] array) {
 		super("cache-stress-worker-" + id);
 		this.id = id;
-		this.sharedArray = sharedArray;
-		this.begin = begin;
-		this.end = end;
+		this.array = array;
 		place = new MafushiPlace();
 	}
 
 	public void run() {
 		// Sum up array slice
 		int sum = 0;
-		for (int i = begin; i < end; i++) {
-			sum += sharedArray[i];
+		for (int i = 0; i < array.length; i++) {
+			sum += array[i];
 		}
 		// Multiply array slice
 		int mult = 1;
-		for (int i = begin; i < end; i++) {
-			mult *= sharedArray[i];
+		for (int i = 0; i < array.length; i++) {
+			mult *= array[i];
 		}
-		// Sort array slice
-		Arrays.sort(sharedArray, begin, end);
 	}
 
 	public int getWorkerId() {
@@ -54,7 +48,7 @@ public abstract class CacheStressTest {
 	}
 
 	public abstract CacheStressWorker createCacheStressWorker(int id,
-			int[] array, int begin, int end);
+			int[] array);
 
 	public long run() {
 		StopWatch stopWatch = new StopWatch();
@@ -63,14 +57,16 @@ public abstract class CacheStressTest {
 		stopWatch.start();
 
 		CacheStressWorker[] worker = new CacheStressWorker[8];
-		int[] array = createRandomIntegerArray(arraySize);
-		int sliceSize = arraySize / 8;
+		int[] array1 = createRandomIntegerArray(arraySize);
+		int[] array2 = createRandomIntegerArray(arraySize);
 
 		// Create worker
 		for (int i = 0; i < 8; i++) {
-			int begin = i * sliceSize;
-			int end = (i + 1) * sliceSize;
-			worker[i] = createCacheStressWorker(i, array, begin, end);
+			if (i < 4) {
+				worker[i] = createCacheStressWorker(i, array1);
+			} else {
+				worker[i] = createCacheStressWorker(i, array2);
+			}
 		}
 
 		// Start worker

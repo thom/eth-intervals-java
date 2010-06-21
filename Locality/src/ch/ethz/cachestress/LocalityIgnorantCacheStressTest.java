@@ -1,8 +1,8 @@
 package ch.ethz.cachestress;
 
 class LocalityIgnorantWorker extends CacheStressWorker {
-	public LocalityIgnorantWorker(int id, int[] sharedArray, int begin, int end) {
-		super(id, sharedArray, begin, end);
+	public LocalityIgnorantWorker(int id, int[] array) {
+		super(id, array);
 	}
 
 	public void run() {
@@ -16,8 +16,7 @@ public class LocalityIgnorantCacheStressTest extends CacheStressTest {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array,
-			int begin, int end) {
-		return new LocalityIgnorantWorker(id, array, begin, end);
+	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
+		return new LocalityIgnorantWorker(id, array);
 	}
 }

@@ -3,8 +3,8 @@ package ch.ethz.cachestress;
 import ch.ethz.hwloc.SetAffinityException;
 
 class LocalityAwareWorker extends CacheStressWorker {
-	public LocalityAwareWorker(int id, int[] sharedArray, int begin, int end) {
-		super(id, sharedArray, begin, end);
+	public LocalityAwareWorker(int id, int[] array) {
+		super(id, array);
 	}
 
 	public void run() {
@@ -25,8 +25,7 @@ public class LocalityAwareCacheStressTest extends CacheStressTest {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array,
-			int begin, int end) {
-		return new LocalityAwareWorker(id, array, begin, end);
+	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
+		return new LocalityAwareWorker(id, array);
 	}
 }
