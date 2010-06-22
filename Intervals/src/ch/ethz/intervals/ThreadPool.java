@@ -214,7 +214,7 @@ class ThreadPool {
 
 	}
 
-	final int numWorkers = Runtime.getRuntime().availableProcessors();
+	final int numWorkers = Config.units.size();
 	final Worker[] workers = new Worker[numWorkers];
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 
