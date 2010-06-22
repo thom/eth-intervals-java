@@ -1,40 +1,37 @@
 package ch.ethz.experiments;
 
-import ch.ethz.hwloc.MarvinPlace;
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.Affinity;
+import ch.ethz.hwloc.MarvinUnits;
 import ch.ethz.hwloc.SetAffinityException;
+import ch.ethz.hwloc.Units;
 
-public class HelloPlaceWorld extends Thread {
-	private Place place;
-	private int number;
+public class HelloAffinityWorld extends Thread {
+	private int id;
 
-	public HelloPlaceWorld(int number) {
-		this.place = createPlace();
-		this.number = number;
+	public HelloAffinityWorld(int id) {
+		this.id = id;
 	}
 
 	public void run() {
 		try {
-			System.out.println(place + "\n");
+			System.out.println(Affinity.getInformation() + "\n");
 			try {
-				place.set(number);
+				Affinity.set(units.get(id));
 			} catch (SetAffinityException e) {
 				e.printStackTrace();
 			}
-			System.out.println(place + "\n");
+			System.out.println(Affinity.getInformation() + "\n");
 			sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static Place createPlace() {
-		return new MarvinPlace();
-	}
+	private static Units units = new MarvinUnits();
 
 	public static void main(String[] args) {
-		for (int i = 0; i < createPlace().getNumberOfPlaces(); i++) {
-			new HelloPlaceWorld(i).start();
+		for (int i = 0; i < units.size(); i++) {
+			new HelloAffinityWorld(i).start();
 		}
 	}
 }
