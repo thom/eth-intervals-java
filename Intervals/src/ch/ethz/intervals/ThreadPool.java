@@ -5,6 +5,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import ch.ethz.hwloc.Affinity;
+import ch.ethz.hwloc.SetAffinityException;
+
 class ThreadPool {
 
 	class KeepAliveThread extends Thread {
@@ -69,6 +72,16 @@ class ThreadPool {
 
 		@Override
 		public void run() {
+			try {
+				Affinity.set(Config.units.get(id));
+			} catch (SetAffinityException e) {
+				e.printStackTrace();
+			}
+
+			if (Debug.ENABLED) {
+				System.err.println(Affinity.getInformation());
+			}
+
 			currentWorker.set(this);
 			this.semaphore.acquireUninterruptibly(); // cannot fail
 			while (true) {

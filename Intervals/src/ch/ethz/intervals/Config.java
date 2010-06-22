@@ -1,8 +1,14 @@
 package ch.ethz.intervals;
 
+import ch.ethz.hwloc.*;
 import ch.ethz.intervals.ThreadPool.Worker;
 
 public class Config {
+	/**
+	 * Creation method to simplify switching to another machine
+	 */
+	public static final Units units = new MarvinUnits();
+
 	/**
 	 * Should we collect and print statistics
 	 */
@@ -10,7 +16,7 @@ public class Config {
 
 	/**
 	 * Are we using a duplicating queue?
-	 *
+	 * 
 	 * Use state (init, running, done) to make sure tasks are executed only
 	 * once.
 	 */
@@ -19,7 +25,7 @@ public class Config {
 	/**
 	 * Creation method to simplify switching of work-stealing queue
 	 * implementations
-	 *
+	 * 
 	 * @param owner
 	 * @return WorkStealingDeque
 	 */
