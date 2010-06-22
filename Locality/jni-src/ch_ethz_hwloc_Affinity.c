@@ -5,49 +5,58 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include "ch_ethz_hwloc_Place.h"
+#include "ch_ethz_hwloc_Affinity.h"
 
 /* Implementation for class ch_ethz_hwloc_Place */
 
 long int gettid();
+void set_affinity(JNIEnv *env, const cpu_set_t *cpuset);
 
 /*
- * Class:     ch_ethz_hwloc_Place
- * Method:    setAffinity
+ * Class:     ch_ethz_hwloc_Affinity
+ * Method:    set
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL
+Java_ch_ethz_hwloc_Affinity_set__I(JNIEnv *env, jclass class,
+		jint physical_unit) {
+	cpu_set_t cpuset;
+
+	CPU_ZERO(&cpuset);
+	CPU_SET(physical_unit, &cpuset);
+
+	set_affinity(env, &cpuset);
+}
+
+/*
+ * Class:     ch_ethz_hwloc_Affinity
+ * Method:    set
  * Signature: ([I)V
  */
 JNIEXPORT void JNICALL
-Java_ch_ethz_hwloc_Place_setAffinity(JNIEnv *env, jobject obj,
+Java_ch_ethz_hwloc_Affinity_set___3I(JNIEnv *env, jclass class,
 		jintArray physical_units) {
-	int s, i;
+	int i;
 	cpu_set_t cpuset;
-	pthread_t thread;
-
-	thread = pthread_self();
 
 	CPU_ZERO(&cpuset);
 
 	jsize len = (*env)->GetArrayLength(env, physical_units);
-	jint *cpus = (*env)->GetIntArrayElements(env, physical_units, 0);
+	jint *units = (*env)->GetIntArrayElements(env, physical_units, 0);
 	for (i = 0; i < len; i++) {
-		CPU_SET(cpus[i], &cpuset);
+		CPU_SET(units[i], &cpuset);
 	}
 
-	/* Set affinity mask for thread */
-	s = pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-	if (s != 0) {
-		(*env)->ThrowNew(env, (*env)->FindClass(env,
-				"ch/ethz/hwloc/SetAffinityException"), "Couldn't set affinity!");
-	}
+	set_affinity(env, &cpuset);
 }
 
 /*
- * Class:     ch_ethz_hwloc_Place
- * Method:    getAffinity
- * Signature: (I)[Z
+ * Class:     ch_ethz_hwloc_Affinity
+ * Method:    get
+ * Signature: ()[Z
  */
 JNIEXPORT jbooleanArray JNICALL
-Java_ch_ethz_hwloc_Place_getAffinity(JNIEnv *env, jobject obj) {
+Java_ch_ethz_hwloc_Affinity_get(JNIEnv *env, jclass class) {
 	int s, i;
 	int online_cpus;
 	cpu_set_t cpuset;
@@ -88,15 +97,27 @@ Java_ch_ethz_hwloc_Place_getAffinity(JNIEnv *env, jobject obj) {
 }
 
 /*
- * Class:     ch_ethz_hwloc_Place
+ * Class:     ch_ethz_hwloc_Affinity
  * Method:    getThreadId
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL
-Java_ch_ethz_hwloc_Place_getThreadId(JNIEnv *env, jobject obj) {
+Java_ch_ethz_hwloc_Affinity_getThreadId(JNIEnv *env, jobject obj) {
 	return gettid();
 }
 
 long int gettid() {
 	return syscall(SYS_gettid);
+}
+
+void set_affinity(JNIEnv *env, const cpu_set_t *cpuset) {
+	int s;
+	pthread_t thread = pthread_self();
+
+	/* Set affinity mask for thread */
+	s = pthread_setaffinity_np(thread, sizeof(cpu_set_t), cpuset);
+	if (s != 0) {
+		(*env)->ThrowNew(env, (*env)->FindClass(env,
+				"ch/ethz/hwloc/SetAffinityException"), "Couldn't set affinity!");
+	}
 }
