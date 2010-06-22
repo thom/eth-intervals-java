@@ -2,14 +2,7 @@ package ch.ethz.cachestress;
 
 import java.util.Random;
 
-import ch.ethz.hwloc.MafushiUnits;
-import ch.ethz.hwloc.MarvinUnits;
-import ch.ethz.hwloc.Units;
 import ch.ethz.util.StopWatch;
-
-class Config {
-	public static Units units = new MarvinUnits();
-}
 
 class CacheStressWorker extends Thread {
 	private int id;

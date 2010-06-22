@@ -2,6 +2,12 @@ package ch.ethz.cachestress;
 
 import java.util.Arrays;
 
+import ch.ethz.hwloc.*;
+
+class Config {
+	public static Units units = new MafushiUnits();
+}
+
 public class RunCacheStressTests {
 	public static final int ARRAY_SIZE = 2097144;
 	public static final int RUNS = 10;
