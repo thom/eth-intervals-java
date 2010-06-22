@@ -1,18 +1,20 @@
 package ch.ethz.cachestress;
 
+import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class WorstCaseLocalityWorker extends CacheStressWorker {
-	private int places;
+	private int units;
 
 	public WorstCaseLocalityWorker(int id, int[] array) {
 		super(id, array);
-		places = getPlace().getNumberOfPlaces();
+		units = Config.units.size();
 	}
 
 	public void run() {
 		try {
-			getPlace().set((getWorkerId() + (places / 2)) % places);
+			Affinity.set(Config.units
+					.get((getWorkerId() + (units / 2)) % units));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

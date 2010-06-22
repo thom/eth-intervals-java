@@ -1,5 +1,6 @@
 package ch.ethz.cachestress;
 
+import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class LocalityAwareWorker extends CacheStressWorker {
@@ -9,7 +10,7 @@ class LocalityAwareWorker extends CacheStressWorker {
 
 	public void run() {
 		try {
-			getPlace().set(getWorkerId());
+			Affinity.set(Config.units.get(getWorkerId()));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

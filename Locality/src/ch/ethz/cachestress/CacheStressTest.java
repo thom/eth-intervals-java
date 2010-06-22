@@ -2,20 +2,27 @@ package ch.ethz.cachestress;
 
 import java.util.Random;
 
-import ch.ethz.hwloc.MafushiPlace;
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.MafushiUnits;
+import ch.ethz.hwloc.MarvinUnits;
+import ch.ethz.hwloc.Units;
 import ch.ethz.util.StopWatch;
+
+class Config {
+	public static Units units = new MarvinUnits();
+}
 
 class CacheStressWorker extends Thread {
 	private int id;
 	private int array[];
-	private Place place;
 
 	public CacheStressWorker(int id, int[] array) {
 		super("cache-stress-worker-" + id);
 		this.id = id;
 		this.array = array;
-		place = new MafushiPlace();
+	}
+
+	public int getWorkerId() {
+		return id;
 	}
 
 	public void run() {
@@ -32,21 +39,15 @@ class CacheStressWorker extends Thread {
 			}
 		}
 	}
-
-	public int getWorkerId() {
-		return id;
-	}
-
-	public Place getPlace() {
-		return place;
-	}
 }
 
 public abstract class CacheStressTest {
 	private int arraySize;
+	private int units;
 
 	public CacheStressTest(int arraySize) {
 		this.arraySize = arraySize;
+		this.units = Config.units.size();
 	}
 
 	public abstract CacheStressWorker createCacheStressWorker(int id,
@@ -63,7 +64,7 @@ public abstract class CacheStressTest {
 		int[] array2 = createRandomIntegerArray(arraySize);
 
 		// Create worker
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < units; i++) {
 			if (i < 4) {
 				worker[i] = createCacheStressWorker(i, array1);
 			} else {
@@ -72,12 +73,12 @@ public abstract class CacheStressTest {
 		}
 
 		// Start worker
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < units; i++) {
 			worker[i].start();
 		}
 
 		// Wait for worker to finish
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < units; i++) {
 			try {
 				worker[i].join();
 			} catch (InterruptedException e) {
