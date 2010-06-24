@@ -52,28 +52,28 @@ public abstract class CacheStressTest {
 		// Start stop watch
 		stopWatch.start();
 
-		CacheStressWorker[] worker = new CacheStressWorker[8];
+		CacheStressWorker[] workers = new CacheStressWorker[units];
 		int[] array1 = createRandomIntegerArray(arraySize);
 		int[] array2 = createRandomIntegerArray(arraySize);
 
 		// Create worker
 		for (int i = 0; i < units; i++) {
 			if (i < 4) {
-				worker[i] = createCacheStressWorker(i, array1);
+				workers[i] = createCacheStressWorker(i, array1);
 			} else {
-				worker[i] = createCacheStressWorker(i, array2);
+				workers[i] = createCacheStressWorker(i, array2);
 			}
 		}
 
 		// Start worker
 		for (int i = 0; i < units; i++) {
-			worker[i].start();
+			workers[i].start();
 		}
 
 		// Wait for worker to finish
 		for (int i = 0; i < units; i++) {
 			try {
-				worker[i].join();
+				workers[i].join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
