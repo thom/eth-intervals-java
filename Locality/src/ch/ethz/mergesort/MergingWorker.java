@@ -17,6 +17,14 @@ public abstract class MergingWorker extends MergeSortWorker {
 		return id;
 	}
 
+	public MergeSortWorker getLeft() {
+		return left;
+	}
+
+	public MergeSortWorker getRight() {
+		return right;
+	}
+
 	public int[] getArray() {
 		return array;
 	}

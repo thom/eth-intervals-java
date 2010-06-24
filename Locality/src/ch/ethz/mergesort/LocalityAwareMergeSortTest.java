@@ -14,7 +14,7 @@ class LocalityAwareSortingWorker extends SortingWorker {
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
-		
+
 		super.run();
 	}
 }
@@ -26,6 +26,12 @@ class LocalityAwareMergingWorker extends MergingWorker {
 	}
 
 	public void run() {
+		try {
+			Affinity.set(Config.units.get(getLeft().getWorkerId()));
+		} catch (SetAffinityException e) {
+			e.printStackTrace();
+		}
+
 		super.run();
 	}
 }
