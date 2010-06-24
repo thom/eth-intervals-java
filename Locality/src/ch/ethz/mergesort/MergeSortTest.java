@@ -30,7 +30,6 @@ public abstract class MergeSortTest {
 		stopWatch.start();
 
 		// Create workers hierarchy
-		System.out.println();
 		sortingWorkers = new SortingWorker[units];
 		int sorterArraySize = arraySize / units;
 		for (int i = 0; i < units; i++) {
@@ -41,17 +40,12 @@ public abstract class MergeSortTest {
 		createMergerHierarchy(units / 2, 0, sortingWorkers);
 
 		// Start workers
-		System.out.println("Sorting Workers:");
 		for (SortingWorker sw : sortingWorkers) {
-			System.out.println("Start: " + sw.getName());
 			sw.start();
 		}
-		System.out.println("\nMerging Workers:");
 		for (MergingWorker mw : mergingWorkers) {
-			System.out.println("Start: " + mw.getName());
 			mw.start();
 		}
-		System.out.println();
 
 		// Wait for workers to finish
 		MergingWorker lastMerger = mergingWorkers
@@ -83,16 +77,12 @@ public abstract class MergeSortTest {
 		int newId = id;
 		if (!(number == 0)) {
 			for (int i = 0; i < number; i++) {
-				System.out.println("Add merging worker for "
-						+ pred[2 * i].getName() + " & "
-						+ pred[(2 * i) + 1].getName());
 				MergingWorker mw = createMergingWorker(newId, pred[2 * i],
 						pred[(2 * i) + 1]);
 				newPred[i] = mw;
 				mergingWorkers.add(mw);
 				newId += 1;
 			}
-			System.out.println();
 			createMergerHierarchy(number / 2, newId, newPred);
 		}
 	}
