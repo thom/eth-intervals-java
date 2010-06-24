@@ -56,7 +56,7 @@ public abstract class CacheStressTest {
 		int[] array1 = createRandomIntegerArray(arraySize);
 		int[] array2 = createRandomIntegerArray(arraySize);
 
-		// Create worker
+		// Create workers
 		for (int i = 0; i < units; i++) {
 			if (i < 4) {
 				workers[i] = createCacheStressWorker(i, array1);
@@ -65,12 +65,12 @@ public abstract class CacheStressTest {
 			}
 		}
 
-		// Start worker
+		// Start workers
 		for (int i = 0; i < units; i++) {
 			workers[i].start();
 		}
 
-		// Wait for worker to finish
+		// Wait for workers to finish
 		for (int i = 0; i < units; i++) {
 			try {
 				workers[i].join();
