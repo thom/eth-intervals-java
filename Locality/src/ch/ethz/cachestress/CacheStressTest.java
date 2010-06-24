@@ -4,7 +4,7 @@ import java.util.Random;
 
 import ch.ethz.util.StopWatch;
 
-class CacheStressWorker extends Thread {
+abstract class CacheStressWorker extends Thread {
 	private int id;
 	private int array[];
 
