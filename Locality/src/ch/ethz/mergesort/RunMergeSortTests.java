@@ -5,7 +5,7 @@ import java.util.Arrays;
 import ch.ethz.hwloc.*;
 
 class Config {
-	public static Units units = new MarvinUnits();
+	public static Units units = new MafushiUnits();
 }
 
 public class RunMergeSortTests {
