@@ -14,5 +14,8 @@ public class SizeOfTest {
 		System.out.printf("int[%d]: %s\n", j, SizeOf
 				.getHumanReadable(new int[j]));
 		System.out.printf("int[%d]: %s\n", j, SizeOf.get(new int[j]));
+		System.out.printf("Integer[%d]: %s\n", j, SizeOf
+				.getHumanReadable(new Integer[j]));
+		System.out.printf("Integer[%d]: %s\n", j, SizeOf.get(new Integer[j]));
 	}
 }
