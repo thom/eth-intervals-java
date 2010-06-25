@@ -4,7 +4,7 @@ public abstract class MergingWorker extends MergeSortWorker {
 	private int id;
 	private MergeSortWorker left;
 	private MergeSortWorker right;
-	private int[] array;
+	private Integer[] array;
 
 	public MergingWorker(int id, MergeSortWorker left, MergeSortWorker right) {
 		super("merging-worker-" + id);
@@ -25,7 +25,7 @@ public abstract class MergingWorker extends MergeSortWorker {
 		return right;
 	}
 
-	public int[] getArray() {
+	public Integer[] getArray() {
 		return array;
 	}
 
@@ -39,11 +39,11 @@ public abstract class MergingWorker extends MergeSortWorker {
 		}
 
 		// Get sorted arrays
-		int[] leftArray = left.getArray();
-		int[] rightArray = right.getArray();
+		Integer[] leftArray = left.getArray();
+		Integer[] rightArray = right.getArray();
 
 		// Initialize merged array
-		array = new int[leftArray.length + rightArray.length];
+		array = new Integer[leftArray.length + rightArray.length];
 
 		// Merge sorted arrays
 		int i = 0, j = 0, k = 0;

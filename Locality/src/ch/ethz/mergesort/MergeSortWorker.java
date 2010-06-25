@@ -7,5 +7,5 @@ public abstract class MergeSortWorker extends Thread {
 
 	public abstract int getWorkerId();
 
-	public abstract int[] getArray();
+	public abstract Integer[] getArray();
 }

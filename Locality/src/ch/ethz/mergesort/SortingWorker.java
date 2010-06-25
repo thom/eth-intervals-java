@@ -5,7 +5,7 @@ import java.util.Random;
 
 public abstract class SortingWorker extends MergeSortWorker {
 	private int id;
-	private int[] array;
+	private Integer[] array;
 	private int size;
 	private int upperBound;
 
@@ -20,14 +20,14 @@ public abstract class SortingWorker extends MergeSortWorker {
 		return id;
 	}
 
-	public int[] getArray() {
+	public Integer[] getArray() {
 		return array;
 	}
 
 	public void run() {
 		// Initialization
 		Random random = new Random();
-		array = new int[size];
+		array = new Integer[size];
 
 		// Fill array
 		for (int i = 0; i < size; i++) {

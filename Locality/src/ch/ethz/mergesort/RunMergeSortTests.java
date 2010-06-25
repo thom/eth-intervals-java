@@ -9,7 +9,8 @@ class Config {
 }
 
 public class RunMergeSortTests {
-	public static final int ARRAY_SIZE = 4194296;
+	// public static final int ARRAY_SIZE = 4194296;
+	public static final int ARRAY_SIZE = 2097144;
 	public static final int UPPER_BOUND = 100;
 	public static final int RUNS = 10;
 	public static final int K_BEST = 3;
