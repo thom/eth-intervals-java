@@ -73,7 +73,10 @@ class ThreadPool {
 		@Override
 		public void run() {
 			try {
-				Affinity.set(Config.units.get(id));
+				if (id < 4)
+					Affinity.set(Config.units.getNode(0));
+				else
+					Affinity.set(Config.units.getNode(1));
 			} catch (SetAffinityException e) {
 				e.printStackTrace();
 			}
