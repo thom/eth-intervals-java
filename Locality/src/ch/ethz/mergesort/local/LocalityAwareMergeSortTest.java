@@ -1,4 +1,4 @@
-package ch.ethz.mergesort;
+package ch.ethz.mergesort.local;
 
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;

@@ -1,4 +1,4 @@
-package ch.ethz.mergesort;
+package ch.ethz.mergesort.local;
 
 public abstract class MergingWorker extends MergeSortWorker {
 	private int id;
