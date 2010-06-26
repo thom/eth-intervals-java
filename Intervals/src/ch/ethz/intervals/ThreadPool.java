@@ -73,7 +73,10 @@ class ThreadPool {
 		@Override
 		public void run() {
 			try {
-				Affinity.set(Config.units.get(id));
+				if (id < 8)
+					Affinity.set(Config.units.getNode(0));
+				else
+					Affinity.set(Config.units.getNode(1));
 			} catch (SetAffinityException e) {
 				e.printStackTrace();
 			}
@@ -214,7 +217,7 @@ class ThreadPool {
 
 	}
 
-	final int numWorkers = Config.units.size();
+	final int numWorkers = 2 * Config.units.size();
 	final Worker[] workers = new Worker[numWorkers];
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 
