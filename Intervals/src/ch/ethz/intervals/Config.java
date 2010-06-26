@@ -7,7 +7,7 @@ public class Config {
 	/**
 	 * Creation method to simplify switching to another machine
 	 */
-	public static final Units units = new MarvinUnits();
+	public static final Units units = new MafushiUnits();
 
 	/**
 	 * Should we collect and print statistics
