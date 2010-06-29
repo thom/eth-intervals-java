@@ -15,7 +15,7 @@ public class RunMergeSortTests {
 	public static final int K_BEST = 3;
 
 	public enum TestType {
-		locality, ignorant, worstcase
+		locality, ignorant, worstcase, random
 	}
 
 	public static void main(String[] args) {
@@ -41,6 +41,9 @@ public class RunMergeSortTests {
 			break;
 		case worstcase:
 			test = new WorstCaseLocalityMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			break;
+		case random:
+			test = new RandomLocalityMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
 			break;
 		default:
 			test = new LocalityAwareMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
