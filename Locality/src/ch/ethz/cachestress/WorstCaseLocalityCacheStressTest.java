@@ -20,7 +20,7 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 			}
 
 			// Debug output
-			System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
+			//System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
 
 			Affinity.set(Config.units.get(unit));
 		} catch (SetAffinityException e) {
