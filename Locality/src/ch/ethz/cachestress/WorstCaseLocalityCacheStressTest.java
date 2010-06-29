@@ -15,7 +15,7 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 		try {
 			int unit = getWorkerId();
 
-			if (unit % 2 == 1) {
+			if (getWorkerId() % 2 == 1) {
 				unit = Config.units.get((getWorkerId() + (units / 2)) % units);
 			}
 
