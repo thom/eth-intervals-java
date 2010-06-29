@@ -16,14 +16,14 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 			int unit = getWorkerId();
 
 			if (getWorkerId() % 2 == 1) {
-				unit = Config.units.get((getWorkerId() + (units / 2)) % units);
+				unit = (unit + (units / 2)) % units;
 			}
 
 			// Debug output
 			System.out.printf("ID: %d, Unit: %d\n", getWorkerId(),
 					Config.units.get((getWorkerId() + (units / 2)) % units));
 
-			Affinity.set(unit);
+			Affinity.set(Config.units.get(unit));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);
