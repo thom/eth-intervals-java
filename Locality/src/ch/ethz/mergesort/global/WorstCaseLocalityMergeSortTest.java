@@ -11,8 +11,7 @@ class WorstCaseLocalitySortingWorker extends SortingWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get((this.id + (Config.units.size() / 2))
-					% Config.units.size()));
+			Affinity.set(Config.units.get(this.id));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
