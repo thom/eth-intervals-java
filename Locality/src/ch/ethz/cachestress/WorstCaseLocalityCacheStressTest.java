@@ -13,14 +13,14 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 
 	public void run() {
 		try {
-			int unit = getWorkerId();
+			int unit = id;
 
 			if (unit % 2 == 1) {
 				unit = (unit + (units / 2)) % units;
 			}
 
 			// Debug output
-			//System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
+			// System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
 
 			Affinity.set(Config.units.get(unit));
 		} catch (SetAffinityException e) {
@@ -32,8 +32,8 @@ class WorstCaseLocalityWorker extends CacheStressWorker {
 }
 
 public class WorstCaseLocalityCacheStressTest extends CacheStressTest {
-	public WorstCaseLocalityCacheStressTest(int arraySize) {
-		super(arraySize);
+	public WorstCaseLocalityCacheStressTest() {
+		super();
 	}
 
 	@Override

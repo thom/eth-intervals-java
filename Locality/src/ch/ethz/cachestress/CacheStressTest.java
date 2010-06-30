@@ -5,17 +5,13 @@ import java.util.Random;
 import ch.ethz.util.StopWatch;
 
 abstract class CacheStressWorker extends Thread {
-	private int id;
-	private int array[];
+	protected final int id;
+	protected final int array[];
 
 	public CacheStressWorker(int id, int[] array) {
 		super("cache-stress-worker-" + id);
 		this.id = id;
 		this.array = array;
-	}
-
-	public int getWorkerId() {
-		return id;
 	}
 
 	public void run() {
@@ -35,11 +31,9 @@ abstract class CacheStressWorker extends Thread {
 }
 
 public abstract class CacheStressTest {
-	private int arraySize;
 	private int units;
 
-	public CacheStressTest(int arraySize) {
-		this.arraySize = arraySize;
+	public CacheStressTest() {
 		this.units = Config.units.size();
 	}
 
@@ -53,8 +47,8 @@ public abstract class CacheStressTest {
 		stopWatch.start();
 
 		CacheStressWorker[] workers = new CacheStressWorker[units];
-		int[] array1 = createRandomIntegerArray(arraySize);
-		int[] array2 = createRandomIntegerArray(arraySize);
+		int[] array1 = createRandomIntegerArray(Config.ARRAY_SIZE);
+		int[] array2 = createRandomIntegerArray(Config.ARRAY_SIZE);
 
 		// Create workers
 		for (int i = 0; i < units; i++) {

@@ -6,13 +6,12 @@ import ch.ethz.hwloc.*;
 
 class Config {
 	public static Units units = new MafushiUnits();
-}
-
-public class RunCacheStressTests {
 	public static final int ARRAY_SIZE = 2097144;
 	public static final int RUNS = 10;
 	public static final int K_BEST = 3;
+}
 
+public class RunCacheStressTests {
 	public enum TestType {
 		locality, ignorant, worstcase, random
 	}
@@ -33,23 +32,23 @@ public class RunCacheStressTests {
 
 		switch (type) {
 		case locality:
-			test = new LocalityAwareCacheStressTest(ARRAY_SIZE);
+			test = new LocalityAwareCacheStressTest();
 			break;
 		case ignorant:
-			test = new LocalityIgnorantCacheStressTest(ARRAY_SIZE);
+			test = new LocalityIgnorantCacheStressTest();
 			break;
 		case worstcase:
-			test = new WorstCaseLocalityCacheStressTest(ARRAY_SIZE);
+			test = new WorstCaseLocalityCacheStressTest();
 			break;
 		case random:
-			test = new RandomLocalityCacheStressTest(ARRAY_SIZE);
+			test = new RandomLocalityCacheStressTest();
 			break;
 		default:
-			test = new LocalityAwareCacheStressTest(ARRAY_SIZE);
+			test = new LocalityAwareCacheStressTest();
 		}
 
 		long results[] = new long[10];
-		for (int i = 0; i < RUNS; i++) {
+		for (int i = 0; i < Config.RUNS; i++) {
 			results[i] = test.run();
 			System.out.printf("Run %d = %d\n", i, results[i]);
 		}
@@ -57,11 +56,11 @@ public class RunCacheStressTests {
 		Arrays.sort(results);
 
 		long result = 0;
-		for (int i = 0; i < K_BEST; i++) {
+		for (int i = 0; i < Config.K_BEST; i++) {
 			result += results[i];
 		}
 
-		System.out.printf("%d-best = %f\n", K_BEST, (new Double(result))
-				/ K_BEST);
+		System.out.printf("%d-best = %f\n", Config.K_BEST, (new Double(result))
+				/ Config.K_BEST);
 	}
 }

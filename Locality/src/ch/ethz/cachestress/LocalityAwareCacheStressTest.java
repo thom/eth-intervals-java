@@ -10,7 +10,7 @@ class LocalityAwareWorker extends CacheStressWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get(getWorkerId()));
+			Affinity.set(Config.units.get(id));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -21,8 +21,8 @@ class LocalityAwareWorker extends CacheStressWorker {
 }
 
 public class LocalityAwareCacheStressTest extends CacheStressTest {
-	public LocalityAwareCacheStressTest(int arraySize) {
-		super(arraySize);
+	public LocalityAwareCacheStressTest() {
+		super();
 	}
 
 	@Override

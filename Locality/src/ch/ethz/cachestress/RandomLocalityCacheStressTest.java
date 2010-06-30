@@ -27,8 +27,8 @@ class RandomLocalityWorker extends CacheStressWorker {
 }
 
 public class RandomLocalityCacheStressTest extends CacheStressTest {
-	public RandomLocalityCacheStressTest(int arraySize) {
-		super(arraySize);
+	public RandomLocalityCacheStressTest() {
+		super();
 	}
 
 	@Override

@@ -11,8 +11,8 @@ class LocalityIgnorantWorker extends CacheStressWorker {
 }
 
 public class LocalityIgnorantCacheStressTest extends CacheStressTest {
-	public LocalityIgnorantCacheStressTest(int arraySize) {
-		super(arraySize);
+	public LocalityIgnorantCacheStressTest() {
+		super();
 	}
 
 	@Override
