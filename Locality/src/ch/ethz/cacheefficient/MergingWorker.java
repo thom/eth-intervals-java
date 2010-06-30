@@ -11,6 +11,10 @@ public abstract class MergingWorker extends MergeSortWorker {
 	}
 
 	public void run() {
+		// Start sorting
+		left.start();
+		right.start();
+
 		// Wait for left and right predecessor to finish
 		try {
 			left.join();

@@ -7,7 +7,7 @@ import ch.ethz.hwloc.*;
 class Config {
 	public static Units units = new MafushiUnits();
 	public static final int MAIN_WORKERS = 100;
-	public static final int ARRAY_SIZE = 2 * 2097144;
+	public static final int ARRAY_SIZE = 2097144;
 	public static final int UPPER_BOUND = 100;
 	public static final int RUNS = 10;
 	public static final int K_BEST = 3;
