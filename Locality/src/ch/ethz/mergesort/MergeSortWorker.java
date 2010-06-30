@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.global;
+package ch.ethz.mergesort;
 
 public abstract class MergeSortWorker extends Thread {
 	protected final int[] sharedArray;

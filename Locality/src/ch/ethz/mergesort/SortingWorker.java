@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.global;
+package ch.ethz.mergesort;
 
 import java.util.Arrays;
 

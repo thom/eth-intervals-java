@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.local;
+package ch.ethz.mergesort;
 
 import java.util.Random;
 
@@ -8,8 +8,9 @@ import ch.ethz.hwloc.SetAffinityException;
 class RandomLocalitySortingWorker extends SortingWorker {
 	private Random random;
 
-	public RandomLocalitySortingWorker(int id, int size, int upperBound) {
-		super(id, size, upperBound);
+	public RandomLocalitySortingWorker(int id, int[] sharedArray, int start,
+			int end, int upperBound) {
+		super(id, sharedArray, start, end, upperBound);
 		random = new Random();
 	}
 
@@ -27,9 +28,9 @@ class RandomLocalitySortingWorker extends SortingWorker {
 class RandomLocalityMergingWorker extends MergingWorker {
 	private Random random;
 
-	public RandomLocalityMergingWorker(int id, MergeSortWorker left,
-			MergeSortWorker right) {
-		super(id, left, right);
+	public RandomLocalityMergingWorker(int id, int[] sharedArray,
+			MergeSortWorker left, MergeSortWorker right) {
+		super(id, sharedArray, left, right);
 		random = new Random();
 	}
 
@@ -50,13 +51,15 @@ public class RandomLocalityMergeSortTest extends MergeSortTest {
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size, int upperBound) {
-		return new RandomLocalitySortingWorker(id, size, upperBound);
+	public SortingWorker createSortingWorker(int id, int[] sharedArray,
+			int start, int end, int upperBound) {
+		return new RandomLocalitySortingWorker(id, sharedArray, start, end,
+				upperBound);
 	}
 
 	@Override
-	public MergingWorker createMergingWorker(int id, MergeSortWorker left,
-			MergeSortWorker right) {
-		return new RandomLocalityMergingWorker(id, left, right);
+	public MergingWorker createMergingWorker(int id, int[] sharedArray,
+			MergeSortWorker left, MergeSortWorker right) {
+		return new RandomLocalityMergingWorker(id, sharedArray, left, right);
 	}
 }

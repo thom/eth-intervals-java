@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.global;
+package ch.ethz.mergesort;
 
 public abstract class MergingWorker extends MergeSortWorker {
 	protected final MergeSortWorker left;
