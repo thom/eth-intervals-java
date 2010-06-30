@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.local;
+package ch.ethz.mergesort;
 
 import java.util.Random;
 

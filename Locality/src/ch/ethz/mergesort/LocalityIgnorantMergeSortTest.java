@@ -1,4 +1,4 @@
-package ch.ethz.mergesort.local;
+package ch.ethz.mergesort;
 
 class LocalityIgnorantSortingWorker extends SortingWorker {
 	public LocalityIgnorantSortingWorker(int id, int size, int upperBound) {
