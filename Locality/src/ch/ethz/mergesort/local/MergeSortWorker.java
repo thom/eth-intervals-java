@@ -1,11 +1,11 @@
 package ch.ethz.mergesort.local;
 
 public abstract class MergeSortWorker extends Thread {
-	public MergeSortWorker(String name) {
-		super(name);
+	protected final int id;
+	protected Integer[] array;
+
+	public MergeSortWorker(String name, int id) {
+		super(name + id);
+		this.id = id;
 	}
-
-	public abstract int getWorkerId();
-
-	public abstract Integer[] getArray();
 }

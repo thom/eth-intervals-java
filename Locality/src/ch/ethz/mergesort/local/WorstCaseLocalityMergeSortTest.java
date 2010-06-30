@@ -10,7 +10,7 @@ class WorstCaseLocalitySortingWorker extends SortingWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get(this.getWorkerId()));
+			Affinity.set(Config.units.get(id));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -27,9 +27,8 @@ class WorstCaseLocalityMergingWorker extends MergingWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units
-					.get((getLeft().getWorkerId() + (Config.units.size() / 2))
-							% Config.units.size()));
+			Affinity.set(Config.units.get((left.id + (Config.units.size() / 2))
+					% Config.units.size()));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}

@@ -4,24 +4,13 @@ import java.util.Arrays;
 import java.util.Random;
 
 public abstract class SortingWorker extends MergeSortWorker {
-	private int id;
-	private Integer[] array;
 	private int size;
 	private int upperBound;
 
 	public SortingWorker(int id, int size, int upperBound) {
-		super("sorting-worker-" + id);
-		this.id = id;
+		super("sorting-worker-", id);
 		this.size = size;
 		this.upperBound = upperBound;
-	}
-
-	public int getWorkerId() {
-		return id;
-	}
-
-	public Integer[] getArray() {
-		return array;
 	}
 
 	public void run() {

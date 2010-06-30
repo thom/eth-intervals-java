@@ -10,7 +10,7 @@ class LocalityAwareSortingWorker extends SortingWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get(getWorkerId()));
+			Affinity.set(Config.units.get(id));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -27,7 +27,7 @@ class LocalityAwareMergingWorker extends MergingWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get(getLeft().getWorkerId()));
+			Affinity.set(Config.units.get(left.id));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}

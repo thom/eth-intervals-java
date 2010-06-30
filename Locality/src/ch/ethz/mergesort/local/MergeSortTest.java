@@ -60,7 +60,7 @@ public abstract class MergeSortTest {
 		stopWatch.stop();
 
 		// Check result
-		Integer[] result = lastMerger.getArray();
+		Integer[] result = lastMerger.array;
 		for (int i = 0; i < result.length - 1; i++) {
 			if (result[i] > result[i + 1]) {
 				System.out.println("Array is not sorted!!!");

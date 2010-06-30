@@ -1,32 +1,13 @@
 package ch.ethz.mergesort.local;
 
 public abstract class MergingWorker extends MergeSortWorker {
-	private int id;
-	private MergeSortWorker left;
-	private MergeSortWorker right;
-	private Integer[] array;
+	protected final MergeSortWorker left;
+	protected final MergeSortWorker right;
 
 	public MergingWorker(int id, MergeSortWorker left, MergeSortWorker right) {
-		super("merging-worker-" + id);
-		this.id = id;
+		super("merging-worker-", id);
 		this.left = left;
 		this.right = right;
-	}
-
-	public int getWorkerId() {
-		return id;
-	}
-
-	public MergeSortWorker getLeft() {
-		return left;
-	}
-
-	public MergeSortWorker getRight() {
-		return right;
-	}
-
-	public Integer[] getArray() {
-		return array;
 	}
 
 	public void run() {
@@ -39,8 +20,8 @@ public abstract class MergingWorker extends MergeSortWorker {
 		}
 
 		// Get sorted arrays
-		Integer[] leftArray = left.getArray();
-		Integer[] rightArray = right.getArray();
+		Integer[] leftArray = left.array;
+		Integer[] rightArray = right.array;
 
 		// Initialize merged array
 		array = new Integer[leftArray.length + rightArray.length];
