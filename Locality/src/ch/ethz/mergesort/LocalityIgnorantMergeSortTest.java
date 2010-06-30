@@ -1,8 +1,8 @@
 package ch.ethz.mergesort;
 
 class LocalityIgnorantSortingWorker extends SortingWorker {
-	public LocalityIgnorantSortingWorker(int id, int size, int upperBound) {
-		super(id, size, upperBound);
+	public LocalityIgnorantSortingWorker(int id, int size) {
+		super(id, size);
 	}
 
 	public void run() {
@@ -22,13 +22,13 @@ class LocalityIgnorantMergingWorker extends MergingWorker {
 }
 
 public class LocalityIgnorantMergeSortTest extends MergeSortTest {
-	public LocalityIgnorantMergeSortTest(int arraySize, int upperBound) {
-		super(arraySize, upperBound);
+	public LocalityIgnorantMergeSortTest() {
+		super();
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size, int upperBound) {
-		return new LocalityIgnorantSortingWorker(id, size, upperBound);
+	public SortingWorker createSortingWorker(int id, int size) {
+		return new LocalityIgnorantSortingWorker(id, size);
 	}
 
 	@Override

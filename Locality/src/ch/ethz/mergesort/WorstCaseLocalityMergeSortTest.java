@@ -4,8 +4,8 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class WorstCaseLocalitySortingWorker extends SortingWorker {
-	public WorstCaseLocalitySortingWorker(int id, int size, int upperBound) {
-		super(id, size, upperBound);
+	public WorstCaseLocalitySortingWorker(int id, int size) {
+		super(id, size);
 	}
 
 	public void run() {
@@ -38,13 +38,13 @@ class WorstCaseLocalityMergingWorker extends MergingWorker {
 }
 
 public class WorstCaseLocalityMergeSortTest extends MergeSortTest {
-	public WorstCaseLocalityMergeSortTest(int arraySize, int upperBound) {
-		super(arraySize, upperBound);
+	public WorstCaseLocalityMergeSortTest() {
+		super();
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size, int upperBound) {
-		return new WorstCaseLocalitySortingWorker(id, size, upperBound);
+	public SortingWorker createSortingWorker(int id, int size) {
+		return new WorstCaseLocalitySortingWorker(id, size);
 	}
 
 	@Override

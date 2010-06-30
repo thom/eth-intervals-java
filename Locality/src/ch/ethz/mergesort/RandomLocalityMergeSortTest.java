@@ -8,8 +8,8 @@ import ch.ethz.hwloc.SetAffinityException;
 class RandomLocalitySortingWorker extends SortingWorker {
 	private Random random;
 
-	public RandomLocalitySortingWorker(int id, int size, int upperBound) {
-		super(id, size, upperBound);
+	public RandomLocalitySortingWorker(int id, int size) {
+		super(id, size);
 		random = new Random();
 	}
 
@@ -45,13 +45,13 @@ class RandomLocalityMergingWorker extends MergingWorker {
 }
 
 public class RandomLocalityMergeSortTest extends MergeSortTest {
-	public RandomLocalityMergeSortTest(int arraySize, int upperBound) {
-		super(arraySize, upperBound);
+	public RandomLocalityMergeSortTest() {
+		super();
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size, int upperBound) {
-		return new RandomLocalitySortingWorker(id, size, upperBound);
+	public SortingWorker createSortingWorker(int id, int size) {
+		return new RandomLocalitySortingWorker(id, size);
 	}
 
 	@Override

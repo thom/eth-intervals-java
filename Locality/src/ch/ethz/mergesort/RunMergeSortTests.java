@@ -6,15 +6,14 @@ import ch.ethz.hwloc.*;
 
 class Config {
 	public static Units units = new MafushiUnits();
-}
-
-public class RunMergeSortTests {
 	// public static final int ARRAY_SIZE = 4194296;
 	public static final int ARRAY_SIZE = 2 * 2097144;
 	public static final int UPPER_BOUND = 100;
 	public static final int RUNS = 10;
 	public static final int K_BEST = 3;
+}
 
+public class RunMergeSortTests {
 	public enum TestType {
 		locality, ignorant, worstcase, random
 	}
@@ -35,23 +34,23 @@ public class RunMergeSortTests {
 
 		switch (type) {
 		case locality:
-			test = new LocalityAwareMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			test = new LocalityAwareMergeSortTest();
 			break;
 		case ignorant:
-			test = new LocalityIgnorantMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			test = new LocalityIgnorantMergeSortTest();
 			break;
 		case worstcase:
-			test = new WorstCaseLocalityMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			test = new WorstCaseLocalityMergeSortTest();
 			break;
 		case random:
-			test = new RandomLocalityMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			test = new RandomLocalityMergeSortTest();
 			break;
 		default:
-			test = new LocalityAwareMergeSortTest(ARRAY_SIZE, UPPER_BOUND);
+			test = new LocalityAwareMergeSortTest();
 		}
 
 		long results[] = new long[10];
-		for (int i = 0; i < RUNS; i++) {
+		for (int i = 0; i < Config.RUNS; i++) {
 			results[i] = test.run();
 			System.out.printf("Run %d = %d\n", i, results[i]);
 		}
@@ -59,11 +58,11 @@ public class RunMergeSortTests {
 		Arrays.sort(results);
 
 		long result = 0;
-		for (int i = 0; i < K_BEST; i++) {
+		for (int i = 0; i < Config.K_BEST; i++) {
 			result += results[i];
 		}
 
-		System.out.printf("%d-best = %f\n", K_BEST, (new Double(result))
-				/ K_BEST);
+		System.out.printf("%d-best = %f\n", Config.K_BEST, (new Double(result))
+				/ Config.K_BEST);
 	}
 }

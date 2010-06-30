@@ -5,20 +5,15 @@ import java.util.ArrayList;
 import ch.ethz.util.StopWatch;
 
 public abstract class MergeSortTest {
-	private int arraySize;
-	private int upperBound;
 	private int units;
 	private ArrayList<MergingWorker> mergingWorkers;
 	private SortingWorker[] sortingWorkers;
 
-	public MergeSortTest(int arraySize, int upperBound) {
-		this.arraySize = arraySize;
-		this.upperBound = upperBound;
+	public MergeSortTest() {
 		this.units = Config.units.size();
 	}
 
-	public abstract SortingWorker createSortingWorker(int id, int size,
-			int upperBound);
+	public abstract SortingWorker createSortingWorker(int id, int size);
 
 	public abstract MergingWorker createMergingWorker(int id,
 			MergeSortWorker left, MergeSortWorker right);
@@ -31,10 +26,9 @@ public abstract class MergeSortTest {
 
 		// Create workers hierarchy
 		sortingWorkers = new SortingWorker[units];
-		int sorterArraySize = arraySize / units;
+		int sorterArraySize = Config.ARRAY_SIZE / units;
 		for (int i = 0; i < units; i++) {
-			sortingWorkers[i] = createSortingWorker(i, sorterArraySize,
-					upperBound);
+			sortingWorkers[i] = createSortingWorker(i, sorterArraySize);
 		}
 		mergingWorkers = new ArrayList<MergingWorker>();
 		createMergerHierarchy(units / 2, 0, sortingWorkers);

@@ -4,8 +4,8 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class LocalityAwareSortingWorker extends SortingWorker {
-	public LocalityAwareSortingWorker(int id, int size, int upperBound) {
-		super(id, size, upperBound);
+	public LocalityAwareSortingWorker(int id, int size) {
+		super(id, size);
 	}
 
 	public void run() {
@@ -37,13 +37,13 @@ class LocalityAwareMergingWorker extends MergingWorker {
 }
 
 public class LocalityAwareMergeSortTest extends MergeSortTest {
-	public LocalityAwareMergeSortTest(int arraySize, int upperBound) {
-		super(arraySize, upperBound);
+	public LocalityAwareMergeSortTest() {
+		super();
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size, int upperBound) {
-		return new LocalityAwareSortingWorker(id, size, upperBound);
+	public SortingWorker createSortingWorker(int id, int size) {
+		return new LocalityAwareSortingWorker(id, size);
 	}
 
 	@Override
