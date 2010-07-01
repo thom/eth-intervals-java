@@ -4,7 +4,13 @@ import java.util.Date;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import ch.ethz.hwloc.Affinity;
+import ch.ethz.hwloc.MafushiUnits;
+import ch.ethz.hwloc.SetAffinityException;
+import ch.ethz.hwloc.Units;
+
 public class Sor {
+	public final static Units units = new MafushiUnits();
 	public final static int N = 500;
 	public final static int M = 500;
 
@@ -109,6 +115,12 @@ class SorFirstRowOdd extends Thread {
 	}
 
 	public void run() {
+		try {
+			Affinity.set(Sor.units.getNode(0));
+		} catch (SetAffinityException e1) {
+			e1.printStackTrace();
+		}
+
 		int i, j, k;
 
 		for (i = 0; i < Sor.iterations; i++) {
@@ -180,6 +192,12 @@ class SorFirstRowEven extends Thread {
 	}
 
 	public void run() {
+		try {
+			Affinity.set(Sor.units.getNode(1));
+		} catch (SetAffinityException e1) {
+			e1.printStackTrace();
+		}
+
 		int i, j, k;
 
 		for (i = 0; i < Sor.iterations; i++) {
