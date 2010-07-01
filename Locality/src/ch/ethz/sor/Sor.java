@@ -7,18 +7,17 @@ import java.util.concurrent.CyclicBarrier;
 public class Sor {
 	public final static int N = 500;
 	public final static int M = 500;
+
 	public static int iterations = 100;
-
-	public static float[][] black_ = new float[M + 2][N + 1];
-	public static float[][] red_ = new float[M + 2][N + 1];
-
-	public static int nprocs = 1;
+	public static float[][] black = new float[M + 2][N + 1];
+	public static float[][] red = new float[M + 2][N + 1];
+	public static int numberOfThreads = 1;
 	public static CyclicBarrier barrier;
-	static Thread[] t;
+	public static Thread[] threads;
 
 	public static void main(String[] args) {
 		try {
-			nprocs = Integer.parseInt(args[1]);
+			numberOfThreads = Integer.parseInt(args[1]);
 			iterations = Integer.parseInt(args[0]);
 		} catch (Exception e) {
 			System.out
@@ -26,120 +25,112 @@ public class Sor {
 			System.exit(-1);
 		}
 
-		t = new Thread[nprocs];
-		barrier = new CyclicBarrier(nprocs);
+		threads = new Thread[numberOfThreads];
+		barrier = new CyclicBarrier(numberOfThreads);
 
 		// initialize arrays
-		int first_row = 1;
-		int last_row = M;
+		int firstRow = 1;
+		int lastRow = M;
 
-		for (int i = first_row; i <= last_row; i++) {
-			/*
-			 * Initialize the top edge.
-			 */
+		for (int i = firstRow; i <= lastRow; i++) {
+			// Initialize the top edge
 			if (i == 1)
 				for (int j = 0; j <= N; j++)
-					red_[0][j] = black_[0][j] = (float) 1.0;
-			/*
-			 * Initialize the left and right edges.
-			 */
+					red[0][j] = black[0][j] = (float) 1.0;
+
+			// Initialize the left and right edges
 			if ((i & 1) != 0) {
-				red_[i][0] = (float) 1.0;
-				black_[i][N] = (float) 1.0;
+				red[i][0] = (float) 1.0;
+				black[i][N] = (float) 1.0;
 			} else {
-				black_[i][0] = (float) 1.0;
-				red_[i][N] = (float) 1.0;
+				black[i][0] = (float) 1.0;
+				red[i][N] = (float) 1.0;
 			}
-			/*
-			 * Initialize the bottom edge.
-			 */
+
+			// Initialize the bottom edge.
 			if (i == M)
 				for (int j = 0; j <= N; j++)
-					red_[i + 1][j] = black_[i + 1][j] = (float) 1.0;
+					red[i + 1][j] = black[i + 1][j] = (float) 1.0;
 		}
 
-		// start computation
+		// Start computation
 		System.gc();
-		long a = new Date().getTime();
+		long start = new Date().getTime();
 
-		for (int proc_id = 0; proc_id < nprocs; proc_id++) {
-			first_row = (M * proc_id) / nprocs + 1;
-			last_row = (M * (proc_id + 1)) / nprocs;
+		for (int id = 0; id < numberOfThreads; id++) {
+			firstRow = (M * id) / numberOfThreads + 1;
+			lastRow = (M * (id + 1)) / numberOfThreads;
 
-			if ((first_row & 1) != 0)
-				t[proc_id] = new sor_first_row_odd(first_row, last_row);
+			if ((firstRow & 1) != 0)
+				threads[id] = new SorFirstRowOdd(firstRow, lastRow);
 			else
-				t[proc_id] = new sor_first_row_even(first_row, last_row);
-			t[proc_id].start();
+				threads[id] = new SorFirstRowEven(firstRow, lastRow);
+			threads[id].start();
 		}
 
-		for (int proc_id = 0; proc_id < nprocs; proc_id++) {
+		for (int id = 0; id < numberOfThreads; id++) {
 			try {
-				t[proc_id].join();
+				threads[id].join();
 			} catch (InterruptedException e) {
 			}
 		}
 
-		long b = new Date().getTime();
+		long end = new Date().getTime();
 
-		System.out.println("Sor-" + nprocs + "\t" + Long.toString(b - a));
+		System.out.println("Sor-" + numberOfThreads + "\t"
+				+ Long.toString(end - start));
 
-		// print out results
-		float red_sum = 0, black_sum = 0;
+		// Print results
+		float redSum = 0, blackSum = 0;
 		for (int i = 0; i < M + 2; i++)
 			for (int j = 0; j < N + 1; j++) {
-				red_sum += red_[i][j];
-				black_sum += black_[i][j];
+				redSum += red[i][j];
+				blackSum += black[i][j];
 			}
-		System.out.println("Exiting. red_sum = " + red_sum + ", black_sum = "
-				+ black_sum);
+		System.out.println("Exiting. red sum = " + redSum + ", black sum = "
+				+ blackSum);
 	}
 
 	public static void print(String s) {
 		System.out.println(Thread.currentThread().getName() + ":" + s);
 	}
-
 }
 
-class sor_first_row_odd extends Thread {
-
-	int first_row;
-	int end;
+class SorFirstRowOdd extends Thread {
+	int firstRow, end;
 	int N = Sor.N;
 	int M = Sor.M;
-	float[][] black_ = Sor.black_;
-	float[][] red_ = Sor.red_;
+	float[][] black = Sor.black;
+	float[][] red = Sor.red;
 
-	public sor_first_row_odd(int a, int b) {
-		first_row = a;
-		end = b;
+	public SorFirstRowOdd(int firstRow, int end) {
+		this.firstRow = firstRow;
+		this.end = end;
 	}
 
 	public void run() {
 		int i, j, k;
 
 		for (i = 0; i < Sor.iterations; i++) {
-			// Sor.print("iteration A "+i);
-			for (j = first_row; j <= end; j++) {
-
+			// Sor.print("iteration A " + i);
+			for (j = firstRow; j <= end; j++) {
 				for (k = 0; k < N; k++) {
-
-					black_[j][k] = (red_[j - 1][k] + red_[j + 1][k]
-							+ red_[j][k] + red_[j][k + 1])
+					black[j][k] = (red[j - 1][k] + red[j + 1][k] + red[j][k] + red[j][k + 1])
 							/ (float) 4.0;
 				}
+
 				if ((j += 1) > end)
 					break;
 
 				for (k = 1; k <= N; k++) {
-
-					black_[j][k] = (red_[j - 1][k] + red_[j + 1][k]
-							+ red_[j][k - 1] + red_[j][k])
+					black[j][k] = (red[j - 1][k] + red[j + 1][k]
+							+ red[j][k - 1] + red[j][k])
 							/ (float) 4.0;
 				}
 			}
+
 			try {
-				// Sor.print("barrier 1a - "+System.currentTimeMillis());
+				// Sor.print("barrier 1a - " + System.currentTimeMillis());
 				Sor.barrier.await();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
@@ -147,64 +138,58 @@ class sor_first_row_odd extends Thread {
 				throw new RuntimeException(e);
 			}
 
-			for (j = first_row; j <= end; j++) {
-
+			for (j = firstRow; j <= end; j++) {
 				for (k = 1; k <= N; k++) {
-
-					red_[j][k] = (black_[j - 1][k] + black_[j + 1][k]
-							+ black_[j][k - 1] + black_[j][k])
+					red[j][k] = (black[j - 1][k] + black[j + 1][k]
+							+ black[j][k - 1] + black[j][k])
 							/ (float) 4.0;
 				}
+
 				if ((j += 1) > end)
 					break;
 
 				for (k = 0; k < N; k++) {
-
-					red_[j][k] = (black_[j - 1][k] + black_[j + 1][k]
-							+ black_[j][k] + black_[j][k + 1])
+					red[j][k] = (black[j - 1][k] + black[j + 1][k]
+							+ black[j][k] + black[j][k + 1])
 							/ (float) 4.0;
 				}
 			}
+
 			try {
-				// Sor.print("barrier 2a - "+System.currentTimeMillis());
+				// Sor.print("barrier 2a - " + System.currentTimeMillis());
 				Sor.barrier.await();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			} catch (BrokenBarrierException e) {
 				throw new RuntimeException(e);
 			}
-
 		}
-
 	}
-
 }
 
-class sor_first_row_even extends Thread {
-
-	int first_row;
-	int end;
+class SorFirstRowEven extends Thread {
+	int firstRow, end;
 	int N = Sor.N;
 	int M = Sor.M;
-	float[][] black_ = Sor.black_;
-	float[][] red_ = Sor.red_;
+	float[][] black = Sor.black;
+	float[][] red = Sor.red;
 
-	public sor_first_row_even(int a, int b) {
-		first_row = a;
-		end = b;
+	public SorFirstRowEven(int firstRow, int end) {
+		this.firstRow = firstRow;
+		this.end = end;
 	}
 
 	public void run() {
 		int i, j, k;
 
 		for (i = 0; i < Sor.iterations; i++) {
-			// Sor.print("iteration B "+i);
-			for (j = first_row; j <= end; j++) {
+			// Sor.print("iteration B " + i);
+			for (j = firstRow; j <= end; j++) {
 
 				for (k = 1; k <= N; k++) {
 
-					black_[j][k] = (red_[j - 1][k] + red_[j + 1][k]
-							+ red_[j][k - 1] + red_[j][k])
+					black[j][k] = (red[j - 1][k] + red[j + 1][k]
+							+ red[j][k - 1] + red[j][k])
 							/ (float) 4.0;
 				}
 				if ((j += 1) > end)
@@ -212,13 +197,13 @@ class sor_first_row_even extends Thread {
 
 				for (k = 0; k < N; k++) {
 
-					black_[j][k] = (red_[j - 1][k] + red_[j + 1][k]
-							+ red_[j][k] + red_[j][k + 1])
+					black[j][k] = (red[j - 1][k] + red[j + 1][k] + red[j][k] + red[j][k + 1])
 							/ (float) 4.0;
 				}
 			}
+
 			try {
-				// Sor.print("barrier 1b - "+System.currentTimeMillis());
+				// Sor.print("barrier 1b - " + System.currentTimeMillis());
 				Sor.barrier.await();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
@@ -226,12 +211,12 @@ class sor_first_row_even extends Thread {
 				throw new RuntimeException(e);
 			}
 
-			for (j = first_row; j <= end; j++) {
+			for (j = firstRow; j <= end; j++) {
 
 				for (k = 0; k < N; k++) {
 
-					red_[j][k] = (black_[j - 1][k] + black_[j + 1][k]
-							+ black_[j][k] + black_[j][k + 1])
+					red[j][k] = (black[j - 1][k] + black[j + 1][k]
+							+ black[j][k] + black[j][k + 1])
 							/ (float) 4.0;
 				}
 				if ((j += 1) > end)
@@ -239,20 +224,20 @@ class sor_first_row_even extends Thread {
 
 				for (k = 1; k <= N; k++) {
 
-					red_[j][k] = (black_[j - 1][k] + black_[j + 1][k]
-							+ black_[j][k - 1] + black_[j][k])
+					red[j][k] = (black[j - 1][k] + black[j + 1][k]
+							+ black[j][k - 1] + black[j][k])
 							/ (float) 4.0;
 				}
 			}
+
 			try {
-				// Sor.print("barrier 2b - "+System.currentTimeMillis());
+				// Sor.print("barrier 2b - " + System.currentTimeMillis());
 				Sor.barrier.await();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			} catch (BrokenBarrierException e) {
 				throw new RuntimeException(e);
 			}
-
 		}
 	}
 }
