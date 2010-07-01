@@ -17,20 +17,12 @@ public class Sor {
 	static Thread[] t;
 
 	public static void main(String[] args) {
-
-		boolean nop = false;
-
 		try {
-			if (args[0].equals("--nop"))
-				nop = true;
-			else {
-				nprocs = Integer.parseInt(args[1]);
-				iterations = Integer.parseInt(args[0]);
-			}
+			nprocs = Integer.parseInt(args[1]);
+			iterations = Integer.parseInt(args[0]);
 		} catch (Exception e) {
 			System.out
 					.println("usage: java Sor <iterations> <number of threads>");
-			System.out.println("    or java Sor --nop");
 			System.exit(-1);
 		}
 
@@ -70,24 +62,21 @@ public class Sor {
 		System.gc();
 		long a = new Date().getTime();
 
-		if (!nop) {
+		for (int proc_id = 0; proc_id < nprocs; proc_id++) {
+			first_row = (M * proc_id) / nprocs + 1;
+			last_row = (M * (proc_id + 1)) / nprocs;
 
-			for (int proc_id = 0; proc_id < nprocs; proc_id++) {
-				first_row = (M * proc_id) / nprocs + 1;
-				last_row = (M * (proc_id + 1)) / nprocs;
+			if ((first_row & 1) != 0)
+				t[proc_id] = new sor_first_row_odd(first_row, last_row);
+			else
+				t[proc_id] = new sor_first_row_even(first_row, last_row);
+			t[proc_id].start();
+		}
 
-				if ((first_row & 1) != 0)
-					t[proc_id] = new sor_first_row_odd(first_row, last_row);
-				else
-					t[proc_id] = new sor_first_row_even(first_row, last_row);
-				t[proc_id].start();
-			}
-
-			for (int proc_id = 0; proc_id < nprocs; proc_id++) {
-				try {
-					t[proc_id].join();
-				} catch (InterruptedException e) {
-				}
+		for (int proc_id = 0; proc_id < nprocs; proc_id++) {
+			try {
+				t[proc_id].join();
+			} catch (InterruptedException e) {
 			}
 		}
 
