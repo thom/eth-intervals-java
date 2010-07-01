@@ -11,8 +11,8 @@ import ch.ethz.hwloc.Units;
 
 public class Sor {
 	public final static Units units = new MafushiUnits();
-	public final static int N = 500;
-	public final static int M = 500;
+	public final static int N = 2000;
+	public final static int M = 2000;
 
 	public static int iterations = 100;
 	public static float[][] black = new float[M + 2][N + 1];
@@ -68,9 +68,9 @@ public class Sor {
 			lastRow = (M * (id + 1)) / numberOfThreads;
 
 			if ((firstRow & 1) != 0)
-				threads[id] = new SorFirstRowOdd(firstRow, lastRow);
+				threads[id] = new SorFirstRowOdd(id, firstRow, lastRow);
 			else
-				threads[id] = new SorFirstRowEven(firstRow, lastRow);
+				threads[id] = new SorFirstRowEven(id, firstRow, lastRow);
 			threads[id].start();
 		}
 
@@ -103,20 +103,21 @@ public class Sor {
 }
 
 class SorFirstRowOdd extends Thread {
-	int firstRow, end;
+	int id, firstRow, end;
 	int N = Sor.N;
 	int M = Sor.M;
 	float[][] black = Sor.black;
 	float[][] red = Sor.red;
 
-	public SorFirstRowOdd(int firstRow, int end) {
+	public SorFirstRowOdd(int id, int firstRow, int end) {
+		this.id = id;
 		this.firstRow = firstRow;
 		this.end = end;
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Sor.units.getNode(0));
+			Affinity.set(Sor.units.get(id));
 		} catch (SetAffinityException e1) {
 			e1.printStackTrace();
 		}
@@ -180,20 +181,21 @@ class SorFirstRowOdd extends Thread {
 }
 
 class SorFirstRowEven extends Thread {
-	int firstRow, end;
+	int id, firstRow, end;
 	int N = Sor.N;
 	int M = Sor.M;
 	float[][] black = Sor.black;
 	float[][] red = Sor.red;
 
-	public SorFirstRowEven(int firstRow, int end) {
+	public SorFirstRowEven(int id, int firstRow, int end) {
+		this.id = id;
 		this.firstRow = firstRow;
 		this.end = end;
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Sor.units.getNode(1));
+			Affinity.set(Sor.units.get(id));
 		} catch (SetAffinityException e1) {
 			e1.printStackTrace();
 		}
