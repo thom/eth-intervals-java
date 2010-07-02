@@ -1,39 +1,17 @@
-/**************************************************************************
- *                                                                         *
- *         Java Grande Forum Benchmark Suite - Thread Version 1.0          *
- *                                                                         *
- *                            produced by                                  *
- *                                                                         *
- *                  Java Grande Benchmarking Project                       *
- *                                                                         *
- *                                at                                       *
- *                                                                         *
- *                Edinburgh Parallel Computing Centre                      *
- *                                                                         * 
- *                email: epcc-javagrande@epcc.ed.ac.uk                     *
- *                                                                         *
- *                                                                         *
- *      This version copyright (c) The University of Edinburgh, 1999.      *
- *                         All rights reserved.                            *
- *                                                                         *
- **************************************************************************/
-
 package ch.ethz.sor;
 
 import java.util.Hashtable;
 
 public class JGFInstrumentor {
-
-	private static Hashtable<String,JGFTimer> timers;
-	private static Hashtable<String,Object> data;
+	private static Hashtable<String, JGFTimer> timers;
+	private static Hashtable<String, Object> data;
 
 	static {
-		timers = new Hashtable<String,JGFTimer>();
-		data = new Hashtable<String,Object>();
+		timers = new Hashtable<String, JGFTimer>();
+		data = new Hashtable<String, Object>();
 	}
 
 	public static synchronized void addTimer(String name) {
-
 		if (timers.containsKey(name)) {
 			System.out.println("JGFInstrumentor.addTimer: warning -  timer "
 					+ name + " already exists");
@@ -43,29 +21,22 @@ public class JGFInstrumentor {
 	}
 
 	public static synchronized void addTimer(String name, String opname) {
-
 		if (timers.containsKey(name)) {
 			System.out.println("JGFInstrumentor.addTimer: warning -  timer "
 					+ name + " already exists");
 		} else {
 			timers.put(name, new JGFTimer(name, opname));
 		}
-
 	}
 
-	public static synchronized void addTimer(
-			String name,
-			String opname,
-			int size)
-	{
-
+	public static synchronized void addTimer(String name, String opname,
+			int size) {
 		if (timers.containsKey(name)) {
 			System.out.println("JGFInstrumentor.addTimer: warning -  timer "
 					+ name + " already exists");
 		} else {
 			timers.put(name, new JGFTimer(name, opname, size));
 		}
-
 	}
 
 	public static synchronized void startTimer(String name) {
@@ -75,7 +46,6 @@ public class JGFInstrumentor {
 			System.out.println("JGFInstrumentor.startTimer: failed -  timer "
 					+ name + " does not exist");
 		}
-
 	}
 
 	public static synchronized void stopTimer(String name) {
@@ -97,10 +67,8 @@ public class JGFInstrumentor {
 		}
 	}
 
-	public static synchronized void addTimeToTimer(
-			String name,
-			double added_time)
-	{
+	public static synchronized void addTimeToTimer(String name,
+			double added_time) {
 		if (timers.containsKey(name)) {
 			((JGFTimer) timers.get(name)).addtime(added_time);
 		} else {
@@ -108,7 +76,6 @@ public class JGFInstrumentor {
 					.println("JGFInstrumentor.addTimeToTimer: failed -  timer "
 							+ name + " does not exist");
 		}
-
 	}
 
 	public static synchronized double readTimer(String name) {
@@ -158,12 +125,8 @@ public class JGFInstrumentor {
 		obj = data.get(name);
 	}
 
-	public static synchronized void printHeader(
-			int section,
-			int size,
-			int nthreads)
-	{
-
+	public static synchronized void printHeader(int section, int size,
+			int nthreads) {
 		String header, base;
 
 		header = "";
@@ -207,7 +170,5 @@ public class JGFInstrumentor {
 		}
 
 		System.out.println("");
-
 	}
-
 }
