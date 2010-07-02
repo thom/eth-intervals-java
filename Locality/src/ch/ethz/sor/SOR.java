@@ -1,87 +1,49 @@
-/**************************************************************************
- *                                                                         *
- *         Java Grande Forum Benchmark Suite - Thread Version 1.0          *
- *                                                                         *
- *                            produced by                                  *
- *                                                                         *
- *                  Java Grande Benchmarking Project                       *
- *                                                                         *
- *                                at                                       *
- *                                                                         *
- *                Edinburgh Parallel Computing Centre                      *
- *                                                                         *
- *                email: epcc-javagrande@epcc.ed.ac.uk                     *
- *                                                                         *
- *      adapted from SciMark 2.0, author Roldan Pozo (pozo@cam.nist.gov)   *
- *                                                                         *
- *      This version copyright (c) The University of Edinburgh, 2001.      *
- *                         All rights reserved.                            *
- *                                                                         *
- **************************************************************************/
-
 package ch.ethz.sor;
 
-
 public class SOR {
-
-	public static double Gtotal = 0.0;
-	public static final int cachelinesize = 128;
+	public static double gTotal = 0.0;
+	public static final int cachelineSize = 128;
 	public static volatile long sync[][];
 
-	public static final void SORrun(
-			double omega,
-			double G[][],
-			int num_iterations)
-	{
-		int M = G.length;
-		int N = G[0].length;
-
-		@SuppressWarnings("unused")
-		double omega_over_four = omega * 0.25;
-		@SuppressWarnings("unused")
-		double one_minus_omega = 1.0 - omega;
-
-		// update interior points
-		//
-		@SuppressWarnings("unused")
-		int Mm1 = M - 1;
-		int Nm1 = N - 1;
-
-		SORRunner thobjects[] = new SORRunner[JGFSORBench.nthreads];
-		Thread th[] = new Thread[JGFSORBench.nthreads];
-		sync = init_sync(JGFSORBench.nthreads);
+	public static final void SORrun(double omega, double g[][],
+			int numberOfIterations) {
+		SORRunner threadObjects[] = new SORRunner[JGFSORBench.numberOfThreads];
+		Thread threads[] = new Thread[JGFSORBench.numberOfThreads];
+		sync = initSync(JGFSORBench.numberOfThreads);
 
 		JGFInstrumentor.startTimer("Section2:SOR:Kernel");
 
-		for (int i = 1; i < JGFSORBench.nthreads; i++) {
-			thobjects[i] = new SORRunner(i, omega, G, num_iterations, sync);
-			th[i] = new Thread(thobjects[i]);
-			th[i].start();
+		for (int i = 1; i < JGFSORBench.numberOfThreads; i++) {
+			threadObjects[i] = new SORRunner(i, omega, g, numberOfIterations,
+					sync);
+			threads[i] = new Thread(threadObjects[i]);
+			threads[i].start();
 		}
 
-		thobjects[0] = new SORRunner(0, omega, G, num_iterations, sync);
-		thobjects[0].run();
+		threadObjects[0] = new SORRunner(0, omega, g, numberOfIterations, sync);
+		threadObjects[0].run();
 
-		for (int i = 1; i < JGFSORBench.nthreads; i++) {
+		for (int i = 1; i < JGFSORBench.numberOfThreads; i++) {
 			try {
-				th[i].join();
+				threads[i].join();
 			} catch (InterruptedException e) {
 			}
 		}
 
 		JGFInstrumentor.stopTimer("Section2:SOR:Kernel");
 
-		for (int i = 1; i < Nm1; i++) {
-			for (int j = 1; j < Nm1; j++) {
-				Gtotal += G[i][j];
+		int length = g[0].length - 1;
+		for (int i = 1; i < length; i++) {
+			for (int j = 1; j < length; j++) {
+				gTotal += g[i][j];
 			}
 		}
 
 	}
 
-	private static long[][] init_sync(int nthreads) {
-		long sync[][] = new long[JGFSORBench.nthreads][cachelinesize];
-		for (int i = 0; i < JGFSORBench.nthreads; i++)
+	private static long[][] initSync(int nthreads) {
+		long sync[][] = new long[JGFSORBench.numberOfThreads][cachelineSize];
+		for (int i = 0; i < JGFSORBench.numberOfThreads; i++)
 			sync[i][0] = 0;
 		return sync;
 	}
@@ -89,92 +51,82 @@ public class SOR {
 }
 
 class SORRunner implements Runnable {
-
-	int id, num_iterations;
-	double G[][], omega;
+	int id, numberOfIterations;
+	double g[][], omega;
 	volatile long sync[][];
 
-	public SORRunner(
-			int id,
-			double omega,
-			double G[][],
-			int num_iterations,
-			long[][] sync)
-	{
+	public SORRunner(int id, double omega, double g[][],
+			int numberOfIterations, long[][] sync) {
 		this.id = id;
 		this.omega = omega;
-		this.G = G;
-		this.num_iterations = num_iterations;
+		this.g = g;
+		this.numberOfIterations = numberOfIterations;
 		this.sync = sync;
 	}
 
 	public void run() {
+		int m = g.length;
+		int n = g[0].length;
 
-		int M = G.length;
-		int N = G[0].length;
+		double omegaOverFour = omega * 0.25;
+		double oneMinusOmega = 1.0 - omega;
 
-		double omega_over_four = omega * 0.25;
-		double one_minus_omega = 1.0 - omega;
+		// Update interior points
+		int mm1 = m - 1;
+		int nm1 = n - 1;
 
-		// update interior points
-		//
-		int Mm1 = M - 1;
-		int Nm1 = N - 1;
+		int iLow, iUpper, slice, tSlice, ttSlice;
 
-		int ilow, iupper, slice, tslice, ttslice;
+		tSlice = (mm1) / 2;
+		ttSlice = (tSlice + JGFSORBench.numberOfThreads - 1)
+				/ JGFSORBench.numberOfThreads;
+		slice = ttSlice * 2;
 
-		tslice = (Mm1) / 2;
-		ttslice = (tslice + JGFSORBench.nthreads - 1) / JGFSORBench.nthreads;
-		slice = ttslice * 2;
+		iLow = id * slice + 1;
+		iUpper = ((id + 1) * slice) + 1;
+		if (iUpper > mm1)
+			iUpper = mm1 + 1;
+		if (id == (JGFSORBench.numberOfThreads - 1))
+			iUpper = mm1 + 1;
 
-		ilow = id * slice + 1;
-		iupper = ((id + 1) * slice) + 1;
-		if (iupper > Mm1)
-			iupper = Mm1 + 1;
-		if (id == (JGFSORBench.nthreads - 1))
-			iupper = Mm1 + 1;
-
-		for (int p = 0; p < 2 * num_iterations; p++) {
-			for (int i = ilow + (p % 2); i < iupper; i = i + 2) {
-
-				double[] Gi = G[i];
-				double[] Gim1 = G[i - 1];
+		for (int p = 0; p < 2 * numberOfIterations; p++) {
+			for (int i = iLow + (p % 2); i < iUpper; i = i + 2) {
+				double[] gI = g[i];
+				double[] gIm1 = g[i - 1];
 
 				if (i == 1) {
-					double[] Gip1 = G[i + 1];
+					double[] gIp1 = g[i + 1];
 
-					for (int j = 1; j < Nm1; j = j + 2) {
-						Gi[j] = omega_over_four
-								* (Gim1[j] + Gip1[j] + Gi[j - 1] + Gi[j + 1])
-								+ one_minus_omega * Gi[j];
+					for (int j = 1; j < nm1; j = j + 2) {
+						gI[j] = omegaOverFour
+								* (gIm1[j] + gIp1[j] + gI[j - 1] + gI[j + 1])
+								+ oneMinusOmega * gI[j];
 
 					}
-				} else if (i == Mm1) {
+				} else if (i == mm1) {
+					double[] gIm2 = g[i - 2];
 
-					double[] Gim2 = G[i - 2];
-
-					for (int j = 1; j < Nm1; j = j + 2) {
-						if ((j + 1) != Nm1) {
-							Gim1[j + 1] = omega_over_four
-									* (Gim2[j + 1] + Gi[j + 1] + Gim1[j] + Gim1[j + 2])
-									+ one_minus_omega * Gim1[j + 1];
+					for (int j = 1; j < nm1; j = j + 2) {
+						if ((j + 1) != nm1) {
+							gIm1[j + 1] = omegaOverFour
+									* (gIm2[j + 1] + gI[j + 1] + gIm1[j] + gIm1[j + 2])
+									+ oneMinusOmega * gIm1[j + 1];
 						}
 					}
 
 				} else {
+					double[] gIp1 = g[i + 1];
+					double[] gIm2 = g[i - 2];
 
-					double[] Gip1 = G[i + 1];
-					double[] Gim2 = G[i - 2];
+					for (int j = 1; j < nm1; j = j + 2) {
+						gI[j] = omegaOverFour
+								* (gIm1[j] + gIp1[j] + gI[j - 1] + gI[j + 1])
+								+ oneMinusOmega * gI[j];
 
-					for (int j = 1; j < Nm1; j = j + 2) {
-						Gi[j] = omega_over_four
-								* (Gim1[j] + Gip1[j] + Gi[j - 1] + Gi[j + 1])
-								+ one_minus_omega * Gi[j];
-
-						if ((j + 1) != Nm1) {
-							Gim1[j + 1] = omega_over_four
-									* (Gim2[j + 1] + Gi[j + 1] + Gim1[j] + Gim1[j + 2])
-									+ one_minus_omega * Gim1[j + 1];
+						if ((j + 1) != nm1) {
+							gIm1[j + 1] = omegaOverFour
+									* (gIm2[j + 1] + gI[j + 1] + gIm1[j] + gIm1[j + 2])
+									+ oneMinusOmega * gIm1[j + 1];
 						}
 					}
 				}
@@ -184,16 +136,15 @@ class SORRunner implements Runnable {
 			// Signal this thread has done iteration
 			sync[id][0]++;
 
-			// Wait for neighbours;
+			// Wait for neighbors
 			if (id > 0) {
-				while (sync[id - 1][0] < sync[id][0])
-					;
+				while (sync[id - 1][0] < sync[id][0]) {
+				}
 			}
-			if (id < JGFSORBench.nthreads - 1) {
-				while (sync[id + 1][0] < sync[id][0])
-					;
+			if (id < JGFSORBench.numberOfThreads - 1) {
+				while (sync[id + 1][0] < sync[id][0]) {
+				}
 			}
 		}
-
 	}
 }

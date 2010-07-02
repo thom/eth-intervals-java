@@ -28,14 +28,14 @@ public class JGFSORBench extends SOR implements JGFSection2 {
 	private int datasizes[] = { 1000, 1500, 2000 };
 	private static final int JACOBI_NUM_ITER = 100;
 	private static final long RANDOM_SEED = 10101010;
-	public static int nthreads;
+	public static int numberOfThreads;
 	public boolean failed; // NDM
 
 	Random R = new Random(RANDOM_SEED);
 
 	@SuppressWarnings("static-access")
 	public JGFSORBench(int nthreads) {
-		this.nthreads = nthreads;
+		this.numberOfThreads = nthreads;
 	}
 
 	public void JGFsetsize(int size) {
@@ -55,10 +55,10 @@ public class JGFSORBench extends SOR implements JGFSection2 {
 
 		double refval[] = { 0.498574406322512, 1.1234778980135105,
 				1.9954895063582696 };
-		double dev = Math.abs(Gtotal - refval[size]);
+		double dev = Math.abs(gTotal - refval[size]);
 		if (dev > 1.0e-12) {
 			System.out.println("Validation failed");
-			System.out.println("Gtotal = " + Gtotal + "  " + dev + "  " + size);
+			System.out.println("Gtotal = " + gTotal + "  " + dev + "  " + size);
 			failed = true; // NDM
 		}
 	}
