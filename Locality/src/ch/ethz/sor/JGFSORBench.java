@@ -2,18 +2,17 @@ package ch.ethz.sor;
 
 import java.util.Random;
 
-public class JGFSORBench extends SOR implements JGFSection2 {
+public class JGFSORBench extends SOR {
 	private int size;
 	private int dataSizes[] = { 1000, 1500, 2000 };
+	private Random R = new Random(RANDOM_SEED);
+
 	private static final int JACOBI_NUM_ITER = 100;
 	private static final long RANDOM_SEED = 10101010;
 	public static int numberOfThreads;
-	public boolean failed; // NDM
 
-	Random R = new Random(RANDOM_SEED);
-
-	public JGFSORBench(int nthreads) {
-		numberOfThreads = nthreads;
+	public JGFSORBench(int threads) {
+		numberOfThreads = threads;
 	}
 
 	public void setSize(int size) {
@@ -36,7 +35,6 @@ public class JGFSORBench extends SOR implements JGFSection2 {
 		if (dev > 1.0e-12) {
 			System.out.println("Validation failed");
 			System.out.println("Gtotal = " + gTotal + "  " + dev + "  " + size);
-			failed = true; // NDM
 		}
 	}
 
@@ -67,8 +65,7 @@ public class JGFSORBench extends SOR implements JGFSection2 {
 				a[i][j] = r.nextDouble() * 1e-6;
 			}
 		}
-		
+
 		return a;
 	}
-
 }
