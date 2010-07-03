@@ -59,7 +59,7 @@ public class JGFInstrumentor {
 
 	public static synchronized void addOpsToTimer(String name, double count) {
 		if (timers.containsKey(name)) {
-			((JGFTimer) timers.get(name)).addops(count);
+			((JGFTimer) timers.get(name)).addOps(count);
 		} else {
 			System.out
 					.println("JGFInstrumentor.addOpsToTimer: failed -  timer "
@@ -70,7 +70,7 @@ public class JGFInstrumentor {
 	public static synchronized void addTimeToTimer(String name,
 			double added_time) {
 		if (timers.containsKey(name)) {
-			((JGFTimer) timers.get(name)).addtime(added_time);
+			((JGFTimer) timers.get(name)).addTime(added_time);
 		} else {
 			System.out
 					.println("JGFInstrumentor.addTimeToTimer: failed -  timer "
@@ -110,7 +110,7 @@ public class JGFInstrumentor {
 
 	public static synchronized void printperfTimer(String name) {
 		if (timers.containsKey(name)) {
-			((JGFTimer) timers.get(name)).printperf();
+			((JGFTimer) timers.get(name)).printPerf();
 		} else {
 			System.out.println("JGFInstrumentor.printTimer: failed -  timer "
 					+ name + " does not exist");

@@ -1,46 +1,25 @@
-/**************************************************************************
- *                                                                         *
- *         Java Grande Forum Benchmark Suite - Thread Version 1.0          *
- *                                                                         *
- *                            produced by                                  *
- *                                                                         *
- *                  Java Grande Benchmarking Project                       *
- *                                                                         *
- *                                at                                       *
- *                                                                         *
- *                Edinburgh Parallel Computing Centre                      *
- *                                                                         * 
- *                email: epcc-javagrande@epcc.ed.ac.uk                     *
- *                                                                         *
- *                                                                         *
- *      This version copyright (c) The University of Edinburgh, 1999.      *
- *                         All rights reserved.                            *
- *                                                                         *
- **************************************************************************/
-
 package ch.ethz.sor;
 
 public class JGFTimer {
-
 	public String name;
-	public String opname;
+	public String opName;
 	public double time;
-	public double opcount;
+	public double opCount;
 	public long calls;
 	public int size = -1;
 
-	private long start_time;
+	private long startTime;
 	private boolean on;
 
-	public JGFTimer(String name, String opname) {
+	public JGFTimer(String name, String opName) {
 		this.name = name;
-		this.opname = opname;
+		this.opName = opName;
 		reset();
 	}
 
-	public JGFTimer(String name, String opname, int size) {
+	public JGFTimer(String name, String opName, int size) {
 		this.name = name;
-		this.opname = opname;
+		this.opName = opName;
 		this.size = size;
 		reset();
 	}
@@ -54,82 +33,80 @@ public class JGFTimer {
 			System.out.println("Warning timer " + name
 					+ " was already turned on");
 		on = true;
-		start_time = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 	}
 
 	public void stop() {
-		time += (double) (System.currentTimeMillis() - start_time) / 1000.;
+		time += (double) (System.currentTimeMillis() - startTime) / 1000.;
 		if (!on)
 			System.out.println("Warning timer " + name + " wasn't turned on");
 		calls++;
 		on = false;
 	}
 
-	public void addops(double count) {
-		opcount += count;
+	public void addOps(double count) {
+		opCount += count;
 	}
 
-	public void addtime(double added_time) {
-		time += added_time;
+	public void addTime(double addedTime) {
+		time += addedTime;
 	}
 
 	public void reset() {
 		time = 0.0;
 		calls = 0;
-		opcount = 0;
+		opCount = 0;
 		on = false;
 	}
 
 	public double perf() {
-		return opcount / time;
+		return opCount / time;
 	}
 
-	public void longprint() {
+	public void longPrint() {
 		System.out
 				.println("Timer            Calls         Time(s)       Performance("
-						+ opname + "/s)");
+						+ opName + "/s)");
 		System.out.println(name + "           " + calls + "           " + time
 				+ "        " + this.perf());
 	}
 
 	public void print() {
-		if (opname.equals("")) {
+		if (opName.equals("")) {
 			System.out.println(name + "   " + time + " (s)");
 		} else {
 
 			switch (size) {
 			case 0:
 				System.out.println(name + ":SizeA" + "\t" + time + " (s) \t "
-						+ (float) this.perf() + "\t" + " (" + opname + "/s)");
+						+ (float) this.perf() + "\t" + " (" + opName + "/s)");
 				break;
 			case 1:
 				System.out.println(name + ":SizeB" + "\t" + time + " (s) \t "
-						+ (float) this.perf() + "\t" + " (" + opname + "/s)");
+						+ (float) this.perf() + "\t" + " (" + opName + "/s)");
 				break;
 			case 2:
 				System.out.println(name + ":SizeC" + "\t" + time + " (s) \t "
-						+ (float) this.perf() + "\t" + " (" + opname + "/s)");
+						+ (float) this.perf() + "\t" + " (" + opName + "/s)");
 				break;
 			default:
 				System.out.println(name + "\t" + time + " (s) \t "
-						+ (float) this.perf() + "\t" + " (" + opname + "/s)");
+						+ (float) this.perf() + "\t" + " (" + opName + "/s)");
 				break;
 			}
 
 		}
 	}
 
-	public void printperf() {
-
-		String name;
-		name = this.name;
+	public void printPerf() {
+		String name = this.name;
 
 		// pad name to 40 characters
 		while (name.length() < 40)
 			name = name + " ";
 
 		System.out.println(name + "\t" + (float) this.perf() + "\t" + " ("
-				+ opname + "/s)");
+				+ opName + "/s)");
 	}
 
 }
