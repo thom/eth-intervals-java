@@ -1,35 +1,15 @@
-/**************************************************************************
- *                                                                         *
- *         Java Grande Forum Benchmark Suite - Thread Version 1.0          *
- *                                                                         *
- *                            produced by                                  *
- *                                                                         *
- *                  Java Grande Benchmarking Project                       *
- *                                                                         *
- *                                at                                       *
- *                                                                         *
- *                Edinburgh Parallel Computing Centre                      *
- *                                                                         * 
- *                email: epcc-javagrande@epcc.ed.ac.uk                     *
- *                                                                         *
- *                                                                         *
- *      This version copyright (c) The University of Edinburgh, 1999.      *
- *                         All rights reserved.                            *
- *                                                                         *
- **************************************************************************/
-
 package ch.ethz.sor;
 
 public interface JGFSection2 {
-	public void JGFsetsize(int size);
+	public void setSize(int size);
 
-	public void JGFinitialise();
+	public void initialize();
 
-	public void JGFkernel();
+	public void runKernel();
 
-	public void JGFvalidate();
+	public void validate();
 
-	public void JGFtidyup();
+	public void tidyUp();
 
-	public void JGFrun(int size);
+	public void run(int size);
 }
