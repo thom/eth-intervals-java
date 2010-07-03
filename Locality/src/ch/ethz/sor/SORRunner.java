@@ -1,5 +1,7 @@
 package ch.ethz.sor;
 
+import java.util.Random;
+
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.MafushiUnits;
 import ch.ethz.hwloc.SetAffinityException;
@@ -10,6 +12,7 @@ public class SORRunner implements Runnable {
 	double g[][], omega;
 	volatile long sync[][];
 	Units units;
+	Random random;
 
 	public SORRunner(int id, double omega, double g[][],
 			int numberOfIterations, long[][] sync) {
@@ -19,11 +22,12 @@ public class SORRunner implements Runnable {
 		this.numberOfIterations = numberOfIterations;
 		this.sync = sync;
 		this.units = new MafushiUnits();
+		this.random = new Random();
 	}
 
 	public void run() {
 		try {
-			Affinity.set(units.get(id));
+			Affinity.set(units.get(random.nextInt(units.size())));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
