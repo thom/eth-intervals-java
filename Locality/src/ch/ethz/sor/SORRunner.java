@@ -1,9 +1,15 @@
 package ch.ethz.sor;
 
+import ch.ethz.hwloc.Affinity;
+import ch.ethz.hwloc.MafushiUnits;
+import ch.ethz.hwloc.SetAffinityException;
+import ch.ethz.hwloc.Units;
+
 public class SORRunner implements Runnable {
 	int id, numberOfIterations;
 	double g[][], omega;
 	volatile long sync[][];
+	Units units;
 
 	public SORRunner(int id, double omega, double g[][],
 			int numberOfIterations, long[][] sync) {
@@ -12,9 +18,16 @@ public class SORRunner implements Runnable {
 		this.g = g;
 		this.numberOfIterations = numberOfIterations;
 		this.sync = sync;
+		this.units = new MafushiUnits();
 	}
 
 	public void run() {
+		try {
+			Affinity.set(units.get(id));
+		} catch (SetAffinityException e) {
+			e.printStackTrace();
+		}
+
 		int m = g.length;
 		int n = g[0].length;
 
