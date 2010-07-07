@@ -43,44 +43,28 @@ public class MatrixTask {
 				Matrix[][] aa = a.split(), bb = b.split();
 				Matrix[][] ll = lhs.split(), rr = rhs.split();
 
-				// TODO: use loop to initialize and start threads
-				MulTask mulTaskLeft00 = new MulTask(aa[0][0], bb[0][0],
-						ll[0][0]);
-				MulTask mulTaskLeft01 = new MulTask(aa[0][0], bb[0][1],
-						ll[0][1]);
-				MulTask mulTaskLeft10 = new MulTask(aa[1][0], bb[0][0],
-						ll[1][0]);
-				MulTask mulTaskLeft11 = new MulTask(aa[1][0], bb[0][1],
-						ll[1][1]);
-				MulTask mulTaskRight00 = new MulTask(aa[0][1], bb[1][0],
-						rr[0][0]);
-				MulTask mulTaskRight01 = new MulTask(aa[0][1], bb[1][1],
-						rr[0][1]);
-				MulTask mulTaskRight10 = new MulTask(aa[1][1], bb[1][0],
-						rr[1][0]);
-				MulTask mulTaskRight11 = new MulTask(aa[1][1], bb[1][1],
-						rr[1][1]);
+				MulTask[][][] mulTasks = new MulTask[2][2][2];
 
-				mulTaskLeft00.start();
-				mulTaskLeft01.start();
-				mulTaskLeft10.start();
-				mulTaskLeft11.start();
-				mulTaskRight00.start();
-				mulTaskRight01.start();
-				mulTaskRight10.start();
-				mulTaskRight11.start();
+				for (int row = 0; row < 2; row++) {
+					for (int col = 0; col < 2; col++) {
+						mulTasks[row][col][0] = new MulTask(aa[row][0],
+								bb[0][col], ll[row][col]);
+						mulTasks[row][col][1] = new MulTask(aa[row][1],
+								bb[1][col], rr[row][col]);
+						mulTasks[row][col][0].start();
+						mulTasks[row][col][1].start();
+					}
+				}
 
-				try {
-					mulTaskLeft00.join();
-					mulTaskLeft01.join();
-					mulTaskLeft10.join();
-					mulTaskLeft11.join();
-					mulTaskRight00.join();
-					mulTaskRight01.join();
-					mulTaskRight10.join();
-					mulTaskRight11.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				for (int row = 0; row < 2; row++) {
+					for (int col = 0; col < 2; col++) {
+						try {
+							mulTasks[row][col][0].join();
+							mulTasks[row][col][1].join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 
 				// Do sum
@@ -111,24 +95,24 @@ public class MatrixTask {
 			} else {
 				Matrix[][] aa = a.split(), bb = b.split(), cc = c.split();
 
-				// TODO: use loop to initialize and start threads
-				AddTask addTask00 = new AddTask(aa[0][0], bb[0][0], cc[0][0]);
-				AddTask addTask01 = new AddTask(aa[0][1], bb[0][1], cc[0][1]);
-				AddTask addTask10 = new AddTask(aa[1][0], bb[1][0], cc[1][0]);
-				AddTask addTask11 = new AddTask(aa[1][1], bb[1][1], cc[1][1]);
+				AddTask[][] addTasks = new AddTask[2][2];
 
-				addTask00.start();
-				addTask01.start();
-				addTask10.start();
-				addTask11.start();
+				for (int row = 0; row < 2; row++) {
+					for (int col = 0; col < 2; col++) {
+						addTasks[row][col] = new AddTask(aa[row][col],
+								bb[row][col], cc[row][col]);
+						addTasks[row][col].start();
+					}
+				}
 
-				try {
-					addTask00.join();
-					addTask01.join();
-					addTask10.join();
-					addTask11.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				for (int row = 0; row < 2; row++) {
+					for (int col = 0; col < 2; col++) {
+						try {
+							addTasks[row][col].join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}
