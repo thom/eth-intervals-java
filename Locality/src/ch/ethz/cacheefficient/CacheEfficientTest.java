@@ -9,6 +9,7 @@ public abstract class CacheEfficientTest {
 
 	public long run() {
 		StopWatch stopWatch = new StopWatch();
+		cleanJvm();
 
 		// Start stop watch
 		stopWatch.start();
@@ -49,6 +50,12 @@ public abstract class CacheEfficientTest {
 			}
 		}
 
+		cleanJvm();
 		return stopWatch.getElapsedTime();
+	}
+
+	private void cleanJvm() {
+		System.runFinalization();
+		System.gc();
 	}
 }
