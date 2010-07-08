@@ -31,11 +31,11 @@ class Config {
 
 public class RunMatrixMultiplicationTests {
 	public enum TestType {
-		locality, ignorant, worstcase, random
+		locality_row, locality_col, locality_diag, ignorant, worstcase, random
 	}
 
 	public static void main(String[] args) {
-		TestType type = TestType.locality;
+		TestType type = TestType.locality_row;
 
 		if (args.length > 0) {
 			try {
