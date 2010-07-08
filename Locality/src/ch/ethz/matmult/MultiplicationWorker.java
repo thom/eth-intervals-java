@@ -17,27 +17,27 @@ public abstract class MultiplicationWorker extends MatrixWorker {
 			Matrix[][] aa = a.split(), bb = b.split();
 			Matrix[][] ll = lhs.split(), rr = rhs.split();
 
-			MultiplicationWorker[][][] mulTasks = new MultiplicationWorker[2][2][2];
+			MultiplicationWorker[][][] multiplicationWorkers = new MultiplicationWorker[2][2][2];
 			Quadrant[][] quadrants = Quadrant.matrix();
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
-					mulTasks[row][col][0] = createMultiplicationWorker(
+					multiplicationWorkers[row][col][0] = createMultiplicationWorker(
 							aa[row][0], bb[0][col], ll[row][col],
 							quadrants[row][col]);
-					mulTasks[row][col][1] = createMultiplicationWorker(
+					multiplicationWorkers[row][col][1] = createMultiplicationWorker(
 							aa[row][1], bb[1][col], rr[row][col],
 							quadrants[row][col]);
-					mulTasks[row][col][0].start();
-					mulTasks[row][col][1].start();
+					multiplicationWorkers[row][col][0].start();
+					multiplicationWorkers[row][col][1].start();
 				}
 			}
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
 					try {
-						mulTasks[row][col][0].join();
-						mulTasks[row][col][1].join();
+						multiplicationWorkers[row][col][0].join();
+						multiplicationWorkers[row][col][1].join();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
