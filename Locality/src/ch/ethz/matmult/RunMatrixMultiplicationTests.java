@@ -49,15 +49,15 @@ public class RunMatrixMultiplicationTests {
 		MatrixMultiplicationTest test;
 
 		switch (type) {
-		// case locality_row:
-		// test = new LocalityAwareRowMatrixMultiplicationTest();
-		// break;
-		// case locality_col:
-		// test = new LocalityAwareColMatrixMultiplicationTest();
-		// break;
-		// case locality_diag:
-		// test = new LocalityAwareDiagMatrixMultiplicationTest();
-		// break;
+		case locality_row:
+			test = new LocalityAwareRowMatrixMultiplicationTest();
+			break;
+		case locality_col:
+			test = new LocalityAwareColMatrixMultiplicationTest();
+			break;
+		case locality_diag:
+			test = new LocalityAwareDiagMatrixMultiplicationTest();
+			break;
 		case ignorant:
 			test = new LocalityIgnorantMatrixMultiplicationTest();
 			break;
@@ -71,8 +71,7 @@ public class RunMatrixMultiplicationTests {
 			test = new RandomCoreLocalityMatrixMultiplicationTest();
 			break;
 		default:
-			// test = new LocalityAwareRowMatrixMultiplicationTest();
-			test = new LocalityIgnorantMatrixMultiplicationTest();
+			test = new LocalityAwareRowMatrixMultiplicationTest();
 		}
 
 		long results[] = new long[10];
