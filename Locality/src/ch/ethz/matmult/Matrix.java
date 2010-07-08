@@ -27,18 +27,18 @@ public class Matrix {
 	 * 
 	 * @param matrix
 	 *            backing array for matrix
-	 * @param x
+	 * @param rowDisplace
 	 *            offset of x origin
-	 * @param y
+	 * @param colDisplace
 	 *            offset of y origin
-	 * @param d
+	 * @param dim
 	 *            dimension
 	 */
-	public Matrix(int[][] matrix, int x, int y, int d) {
+	public Matrix(int[][] matrix, int rowDisplace, int colDisplace, int dim) {
 		data = matrix;
-		rowDisplace = x;
-		colDisplace = y;
-		dim = d;
+		this.rowDisplace = rowDisplace;
+		this.colDisplace = colDisplace;
+		this.dim = dim;
 	}
 
 	public static Matrix random(int n) {
