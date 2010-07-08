@@ -4,9 +4,16 @@ import java.util.Arrays;
 
 import ch.ethz.hwloc.*;
 
+enum Quadrant {
+	Quadrant0, Quadrant1, Quadrant2, Quadrant3, None
+}
+
 class Config {
 	public static Units units = new MafushiUnits();
-	public static final int ARRAY_DIMENSION = 2048;
+
+	// Must be a power of 2!
+	public static final int MATRIX_DIMENSION = 16;
+
 	public static final int UPPER_BOUND = 100;
 	public static final int RUNS = 10;
 	public static final int K_BEST = 3;
@@ -29,28 +36,29 @@ public class RunMatrixMultiplicationTests {
 			}
 		}
 
-		// MatrixMultiplicationTest test;
+		MatrixMultiplicationTest test;
 
 		switch (type) {
-		case locality:
-			// test = new LocalityAwareMatrixMultiplicationTest();
-			break;
+		// case locality:
+		// test = new LocalityAwareMatrixMultiplicationTest();
+		// break;
 		case ignorant:
-			// test = new LocalityIgnorantMatrixMultiplicationTest();
+			test = new LocalityIgnorantMatrixMultiplicationTest();
 			break;
-		case worstcase:
-			// test = new WorstCaseLocalityMatrixMultiplicationTest();
-			break;
-		case random:
-			// test = new RandomLocalityMatrixMultiplicationTest();
-			break;
+		// case worstcase:
+		// test = new WorstCaseLocalityMatrixMultiplicationTest();
+		// break;
+		// case random:
+		// test = new RandomLocalityMatrixMultiplicationTest();
+		// break;
 		default:
 			// test = new LocalityAwareMatrixMultiplicationTest();
+			test = new LocalityIgnorantMatrixMultiplicationTest();
 		}
 
 		long results[] = new long[10];
 		for (int i = 0; i < Config.RUNS; i++) {
-			// results[i] = test.run();
+			results[i] = test.run();
 			System.out.printf("Run %d = %d\n", i, results[i]);
 		}
 
