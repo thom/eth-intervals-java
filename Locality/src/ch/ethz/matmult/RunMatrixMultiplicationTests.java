@@ -21,8 +21,8 @@ class Config {
 	public static Units units = new MafushiUnits();
 
 	// Must be a power of 2!
-	public static final int MATRIX_DIMENSION = 16;
-	public static final int STOP_RECURSION = 4;
+	public static final int MATRIX_DIMENSION = 2048;
+	public static final int STOP_RECURSION = 256;
 
 	public static final int UPPER_BOUND = 100;
 	public static final int RUNS = 10;
