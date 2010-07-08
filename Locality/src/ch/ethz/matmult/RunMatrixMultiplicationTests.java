@@ -31,7 +31,7 @@ class Config {
 
 public class RunMatrixMultiplicationTests {
 	public enum TestType {
-		locality_row, locality_col, locality_diag, ignorant, worstcase, random
+		locality_row, locality_col, locality_diag, ignorant, worstcase, random_node, random_core
 	}
 
 	public static void main(String[] args) {
@@ -49,8 +49,14 @@ public class RunMatrixMultiplicationTests {
 		MatrixMultiplicationTest test;
 
 		switch (type) {
-		// case locality:
-		// test = new LocalityAwareMatrixMultiplicationTest();
+		// case locality_row:
+		// test = new LocalityAwareRowMatrixMultiplicationTest();
+		// break;
+		// case locality_col:
+		// test = new LocalityAwareColMatrixMultiplicationTest();
+		// break;
+		// case locality_diag:
+		// test = new LocalityAwareDiagMatrixMultiplicationTest();
 		// break;
 		case ignorant:
 			test = new LocalityIgnorantMatrixMultiplicationTest();
@@ -58,11 +64,14 @@ public class RunMatrixMultiplicationTests {
 		// case worstcase:
 		// test = new WorstCaseLocalityMatrixMultiplicationTest();
 		// break;
-		// case random:
-		// test = new RandomLocalityMatrixMultiplicationTest();
-		// break;
+		case random_node:
+			test = new RandomNodeLocalityMatrixMultiplicationTest();
+			break;
+		case random_core:
+			test = new RandomCoreLocalityMatrixMultiplicationTest();
+			break;
 		default:
-			// test = new LocalityAwareMatrixMultiplicationTest();
+			// test = new LocalityAwareRowMatrixMultiplicationTest();
 			test = new LocalityIgnorantMatrixMultiplicationTest();
 		}
 
