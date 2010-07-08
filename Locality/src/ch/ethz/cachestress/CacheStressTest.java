@@ -42,6 +42,7 @@ public abstract class CacheStressTest {
 
 	public long run() {
 		StopWatch stopWatch = new StopWatch();
+		cleanJvm();
 
 		// Start stop watch
 		stopWatch.start();
@@ -75,6 +76,7 @@ public abstract class CacheStressTest {
 
 		// Stop stop watch
 		stopWatch.stop();
+		cleanJvm();
 		return stopWatch.getElapsedTime();
 	}
 
@@ -87,5 +89,10 @@ public abstract class CacheStressTest {
 		}
 
 		return tmp;
+	}
+
+	private void cleanJvm() {
+		System.runFinalization();
+		System.gc();
 	}
 }
