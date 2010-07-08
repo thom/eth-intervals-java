@@ -1,8 +1,7 @@
-package ch.ethz.matmult.recursive;
+package ch.ethz.matmult;
 
 import java.util.concurrent.ExecutionException;
 
-import ch.ethz.matmult.Matrix;
 
 public class MatrixTest {
 	public static void main(String[] args) throws InterruptedException,

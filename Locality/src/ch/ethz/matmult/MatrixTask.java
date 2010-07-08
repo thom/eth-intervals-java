@@ -1,6 +1,5 @@
-package ch.ethz.matmult.recursive;
+package ch.ethz.matmult;
 
-import ch.ethz.matmult.Matrix;
 
 /**
  * Parallel Matrix Multiplication
