@@ -20,6 +20,7 @@ public abstract class MergeSortTest {
 
 	public long run() {
 		StopWatch stopWatch = new StopWatch();
+		cleanJvm();
 
 		// Start stop watch
 		stopWatch.start();
@@ -62,6 +63,7 @@ public abstract class MergeSortTest {
 			}
 		}
 
+		cleanJvm();
 		return stopWatch.getElapsedTime();
 	}
 
@@ -79,5 +81,10 @@ public abstract class MergeSortTest {
 			}
 			createMergerHierarchy(number / 2, newId, newPred);
 		}
+	}
+
+	private void cleanJvm() {
+		System.runFinalization();
+		System.gc();
 	}
 }
