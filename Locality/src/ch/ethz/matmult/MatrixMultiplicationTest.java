@@ -3,7 +3,7 @@ package ch.ethz.matmult;
 import ch.ethz.util.StopWatch;
 
 public abstract class MatrixMultiplicationTest {
-	protected abstract MultiplicationWorker createMultiplicationWorker(int id,
+	protected abstract MultiplicationWorker createMultiplicationWorker(
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant);
 
 	public long run() {
@@ -22,7 +22,7 @@ public abstract class MatrixMultiplicationTest {
 
 		// Create worker
 		MultiplicationWorker multiplicationWorker = createMultiplicationWorker(
-				0, a, b, c, Quadrant.None);
+				a, b, c, Quadrant.None);
 
 		// Start worker
 		multiplicationWorker.start();
@@ -41,8 +41,6 @@ public abstract class MatrixMultiplicationTest {
 		if (!a.multiply(b).isEqual(c)) {
 			System.out.println("Matrix multiplication is not correct!!!");
 			System.exit(1);
-		} else {
-			System.out.println("FUCKKKKK");
 		}
 
 		// Clean JVM
