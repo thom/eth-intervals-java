@@ -61,9 +61,9 @@ public class RunMatrixMultiplicationTests {
 		case ignorant:
 			test = new LocalityIgnorantMatrixMultiplicationTest();
 			break;
-		// case worstcase:
-		// test = new WorstCaseLocalityMatrixMultiplicationTest();
-		// break;
+		case worstcase:
+			test = new WorstCaseLocalityMatrixMultiplicationTest();
+			break;
 		case random_node:
 			test = new RandomNodeLocalityMatrixMultiplicationTest();
 			break;
