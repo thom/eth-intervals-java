@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.ethz.hwloc.Place;
 import ch.ethz.intervals.guard.Guard;
 import ch.ethz.intervals.mirror.PointMirror;
 
@@ -262,6 +263,10 @@ public class Intervals {
 	public static void schedule() {
 		Current.get().schedule();
 	}
+
+	public static <R> R inline(final InlineTask<R> task) {
+		return inline(task, null);
+	}
 	
 	/**
 	 * Creates a new interval which executes during the current interval.
@@ -272,14 +277,14 @@ public class Intervals {
 	 * wrapped in {@link RethrownException} and rethrown immediately.
 	 * Exceptions never propagate to the current interval.
 	 */
-	public static <R> R inline(final InlineTask<R> task) 
+	public static <R> R inline(final InlineTask<R> task, Place place)
 	{		
 		// This could be made more optimized, but it will do for now:
 		Current current = Current.get();
 		
 		String name = task.toString(); // WARNING: user code may throw an exception
 		
-		InlineIntervalImpl<R> subinterval = new InlineIntervalImpl<R>(name, current, task);
+		InlineIntervalImpl<R> subinterval = new InlineIntervalImpl<R>(name, current, task, place);
 		
 		if(current.mr != null && current.mr != current.start())
 			current.mr.addEdgeAfterOccurredWithoutException(subinterval.start, NORMAL);
@@ -301,10 +306,14 @@ public class Intervals {
 		return subinterval.readResultOrRethrowErrors();
 	}		
 	
+	public static void inline(final VoidInlineTask task) {
+		inline(task, null);
+	}
+
 	/**
 	 * Variant of {@link #inline(InlineTask)} for
 	 * subintervals that do not return a value. */
-	public static void inline(final VoidInlineTask task)
+	public static void inline(final VoidInlineTask task, Place place)
 	{
 		inline(new InlineTask<Void>() {			
 			@Override public String toString() {
@@ -317,7 +326,7 @@ public class Intervals {
 				task.run(subinterval);
 				return null;
 			}
-		});
+		}, place);
 	}
 
 	
