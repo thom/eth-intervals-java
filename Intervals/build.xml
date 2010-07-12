@@ -11,6 +11,11 @@
 			<classpath refid="java" />
 		</javac>
 
+		<javac destdir="bin">
+			<src path="locality" />
+			<classpath refid="java" />
+		</javac>
+
 		<exec executable="/bin/bash">
 			<arg value="jni-src/build.sh" />
 		</exec>
