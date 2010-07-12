@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import pcollections.Empty;
 import pcollections.HashTreePSet;
 import pcollections.PSet;
+import ch.ethz.hwloc.Place;
 import ch.ethz.intervals.ThreadPool.Worker;
 import ch.ethz.intervals.guard.Guard;
 import ch.ethz.intervals.mirror.IntervalMirror;
@@ -26,12 +27,21 @@ implements Dependency, Guard, IntervalMirror
 	public final @Is("Parent") Interval parent;
 	public final Point start;
 	public final Point end;
+	public final Place place;
 	
 	public Interval(@ParentForNew("Parent") Dependency dep) {
-		this(dep, null);
+		this(dep, null, null);
+	}
+
+	public Interval(@ParentForNew("Parent") Dependency dep, Place place) {
+		this(dep, null, place);
 	}
 	
 	public Interval(@ParentForNew("Parent") Dependency dep, String name) {
+		this(dep, name, null);
+	}
+
+	public Interval(@ParentForNew("Parent") Dependency dep, String name, Place place) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
 		else
@@ -54,6 +64,7 @@ implements Dependency, Guard, IntervalMirror
 		if(parent != null)
 			current.checkCanAddChild(parent);
 		
+		this.place = place;
 		this.name = name;
 		this.parent = parent;
 		end = new Point(name, Point.FLAG_END, parentEnd, 2, this);
@@ -383,11 +394,16 @@ implements Dependency, Guard, IntervalMirror
 	
 	/** Constructor used by blocking subintervals */
 	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount) {
+		this(name, current, parent, pntFlags, startWaitCount, endWaitCount, null);
+	}
+
+	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount, Place place) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
 		else
 			runningState = null;
 
+		this.place = place;
 		this.state = State.WAIT;
 		this.name = name;
 		this.parent = parent;		
