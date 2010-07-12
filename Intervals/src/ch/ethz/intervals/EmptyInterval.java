@@ -1,14 +1,17 @@
 package ch.ethz.intervals;
 
+import ch.ethz.hwloc.Place;
+
 public class EmptyInterval extends Interval {
-	
-	private final String name;
-	
 	public EmptyInterval(@ParentForNew("Parent") Dependency dep, String name) {
-		super(dep, name);
-		this.name = name;
+		this(dep, name, null);
 	}
-	
+
+	public EmptyInterval(@ParentForNew("Parent") Dependency dep, String name,
+			Place place) {
+		super(dep, name, place);
+	}
+
 	@Override
 	public String toString() {
 		return name;
@@ -17,5 +20,4 @@ public class EmptyInterval extends Interval {
 	@Override
 	protected void run() {
 	}
-
 }

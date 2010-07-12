@@ -312,7 +312,7 @@ implements Dependency, Guard, IntervalMirror
 	private static final long serialVersionUID = 8105268455633202522L;
 		
 	/** User-provided name for the interval, or null */
-	private final String name;
+	protected final String name;
 	
 	/** If we are unscheduled, who are we "unscheduled" by? */
 	private Current unscheduled;
