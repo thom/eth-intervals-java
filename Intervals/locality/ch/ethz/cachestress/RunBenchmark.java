@@ -10,7 +10,7 @@ enum Locality {
 	BEST, IGNORANT, WORST, RANDOM
 }
 
-public class RunBechmark {
+public class RunBenchmark {
 	public static void main(String[] args) throws Exception {
 		Locality locality = Locality.BEST;
 		TestType type = TestType.THREADS;
@@ -39,28 +39,35 @@ public class RunBechmark {
 								.toString().toLowerCase());
 
 		LocalityBenchmark benchmark;
-		String packageName = Config.packageName + "."
-				+ type.toString().toLowerCase() + ".";
-		Class<?> klass = null;
 
-		switch (locality) {
-		case BEST:
-			klass = Class.forName(packageName + "BestLocalityBenchmark");
-			break;
-		case IGNORANT:
-			klass = Class.forName(packageName + "IgnorantLocalityBenchmark");
-			break;
-		case WORST:
-			klass = Class.forName(packageName + "WorstLocalityBenchmark");
-			break;
-		case RANDOM:
-			klass = Class.forName(packageName + "RandomLocalityBenchmark");
-			break;
-		default:
-			benchmark = new BestLocalityBenchmark();
+		if (type != TestType.SINGLE) {
+			String packageName = Config.packageName + "."
+					+ type.toString().toLowerCase() + ".";
+			Class<?> klass = null;
+
+			switch (locality) {
+			case BEST:
+				klass = Class.forName(packageName + "BestLocalityBenchmark");
+				break;
+			case IGNORANT:
+				klass = Class
+						.forName(packageName + "IgnorantLocalityBenchmark");
+				break;
+			case WORST:
+				klass = Class.forName(packageName + "WorstLocalityBenchmark");
+				break;
+			case RANDOM:
+				klass = Class.forName(packageName + "RandomLocalityBenchmark");
+				break;
+			default:
+				benchmark = new BestLocalityBenchmark();
+			}
+
+			benchmark = (LocalityBenchmark) klass.getConstructor()
+					.newInstance();
+		} else {
+			benchmark = new ch.ethz.cachestress.single.Benchmark();
 		}
-
-		benchmark = (LocalityBenchmark) klass.getConstructor().newInstance();
 
 		long results[] = new long[10];
 		for (int i = 0; i < Config.RUNS; i++) {
