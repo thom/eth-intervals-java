@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import ch.ethz.cachestress.threads.BestLocalityBenchmark;
 import ch.ethz.util.LocalityBenchmark;
-import ch.ethz.util.TestType;
+import ch.ethz.util.BenchmarkType;
 
 enum Locality {
 	BEST, IGNORANT, WORST, RANDOM
@@ -12,35 +12,35 @@ enum Locality {
 
 public class RunBenchmark {
 	public static void main(String[] args) throws Exception {
+		BenchmarkType type = BenchmarkType.THREADS;
 		Locality locality = Locality.BEST;
-		TestType type = TestType.THREADS;
 
 		if (args.length > 0) {
 			try {
-				locality = Locality.valueOf(args[0].toUpperCase());
+				type = BenchmarkType.valueOf(args[0].toUpperCase());
 			} catch (IllegalArgumentException e) {
-				System.out.println("No such locality'" + args[0] + "'");
+				System.out.println("No such benchmark type '" + args[0] + "'");
 				System.exit(1);
 			}
 		}
 
 		if (args.length > 1) {
 			try {
-				type = TestType.valueOf(args[1].toUpperCase());
+				locality = Locality.valueOf(args[1].toUpperCase());
 			} catch (IllegalArgumentException e) {
-				System.out.println("No such test type '" + args[0] + "'");
+				System.out.println("No such locality'" + args[0] + "'");
 				System.exit(1);
 			}
 		}
 
-		System.out
-				.printf("Running %s benchmark with %s locality (%s implementation)\n\n",
-						Config.name, locality.toString().toLowerCase(), type
-								.toString().toLowerCase());
-
 		LocalityBenchmark benchmark;
 
-		if (type != TestType.SINGLE) {
+		if (type != BenchmarkType.SINGLE) {
+			System.out
+					.printf("Running %s benchmark with %s locality (%s implementation)\n\n",
+							Config.name, locality.toString().toLowerCase(),
+							type.toString().toLowerCase());
+
 			String packageName = Config.packageName + "."
 					+ type.toString().toLowerCase() + ".";
 			Class<?> klass = null;
@@ -66,6 +66,9 @@ public class RunBenchmark {
 			benchmark = (LocalityBenchmark) klass.getConstructor()
 					.newInstance();
 		} else {
+			System.out.printf("Running %s benchmark (%s implementation)\n\n",
+					Config.name, type.toString().toLowerCase());
+
 			benchmark = new ch.ethz.cachestress.single.Benchmark();
 		}
 
