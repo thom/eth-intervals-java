@@ -10,7 +10,7 @@ enum Locality {
 	BEST, IGNORANT, WORST, RANDOM
 }
 
-public class RunTests {
+public class RunBechmark {
 	public static void main(String[] args) throws Exception {
 		Locality locality = Locality.BEST;
 		TestType type = TestType.THREADS;
@@ -33,10 +33,10 @@ public class RunTests {
 			}
 		}
 
-		System.out.printf(
-				"Running %s test with %s locality (%s implementation)\n\n",
-				Config.name, locality.toString().toLowerCase(), type.toString()
-						.toLowerCase());
+		System.out
+				.printf("Running %s benchmark with %s locality (%s implementation)\n\n",
+						Config.name, locality.toString().toLowerCase(), type
+								.toString().toLowerCase());
 
 		LocalityBenchmark benchmark;
 		String packageName = Config.packageName + "."
