@@ -1,6 +1,6 @@
 package ch.ethz.cachestress.threads;
 
-import ch.ethz.cachestress.Config;
+import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
@@ -9,7 +9,7 @@ class WorstCacheStressWorker extends CacheStressWorker {
 
 	public WorstCacheStressWorker(int id, int[] array) {
 		super(id, array);
-		units = Config.units.size();
+		units = Main.units.size();
 	}
 
 	public void run() {
@@ -23,7 +23,7 @@ class WorstCacheStressWorker extends CacheStressWorker {
 			// Debug output
 			// System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
 
-			Affinity.set(Config.units.get(unit));
+			Affinity.set(Main.units.get(unit));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

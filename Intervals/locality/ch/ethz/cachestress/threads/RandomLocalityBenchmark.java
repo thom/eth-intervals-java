@@ -2,7 +2,7 @@ package ch.ethz.cachestress.threads;
 
 import java.util.Random;
 
-import ch.ethz.cachestress.Config;
+import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
@@ -12,13 +12,13 @@ class RandomCacheStressWorker extends CacheStressWorker {
 
 	public RandomCacheStressWorker(int id, int[] array) {
 		super(id, array);
-		units = Config.units.size();
+		units = Main.units.size();
 		random = new Random();
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Config.units.get(random.nextInt(units)));
+			Affinity.set(Main.units.get(random.nextInt(units)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

@@ -2,7 +2,7 @@ package ch.ethz.cachestress.threads;
 
 import java.util.Random;
 
-import ch.ethz.cachestress.Config;
+import ch.ethz.cachestress.Main;
 import ch.ethz.util.LocalityBenchmark;
 import ch.ethz.util.StopWatch;
 
@@ -36,7 +36,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 	private int units;
 
 	public Benchmark() {
-		this.units = Config.units.size();
+		this.units = Main.units.size();
 	}
 
 	public abstract CacheStressWorker createCacheStressWorker(int id,
@@ -50,8 +50,8 @@ public abstract class Benchmark extends LocalityBenchmark {
 		stopWatch.start();
 
 		CacheStressWorker[] workers = new CacheStressWorker[units];
-		int[] array1 = createRandomIntegerArray(Config.ARRAY_SIZE);
-		int[] array2 = createRandomIntegerArray(Config.ARRAY_SIZE);
+		int[] array1 = createRandomIntegerArray(Main.arraySize);
+		int[] array2 = createRandomIntegerArray(Main.arraySize);
 
 		// Create workers
 		for (int i = 0; i < units; i++) {
