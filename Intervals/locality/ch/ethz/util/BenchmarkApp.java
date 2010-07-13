@@ -12,6 +12,7 @@ public abstract class BenchmarkApp {
 
 	// Command line values
 	protected final CommandLineValues values;
+	protected final CmdLineParser parser;
 
 	// Locality benchmark
 	protected LocalityBenchmark benchmark;
@@ -34,7 +35,7 @@ public abstract class BenchmarkApp {
 			String packageName) {
 		// Parse the command line arguments and options
 		this.values = values;
-		CmdLineParser parser = new CmdLineParser(values);
+		parser = new CmdLineParser(values);
 
 		// Set width of the error display area
 		parser.setUsageWidth(80);
@@ -45,8 +46,8 @@ public abstract class BenchmarkApp {
 			if (!(values.getRuns() >= values.getKbest()))
 				throw new CmdLineException("runs must be >= than kbest");
 		} catch (CmdLineException e) {
-			System.err.printf("Usage:\n");
 			System.err.println(e.getMessage() + "\n");
+			System.err.printf("Usage:\n");
 
 			// Print the list of available options
 			parser.printUsage(System.err);
