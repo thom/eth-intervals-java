@@ -1,5 +1,9 @@
 package ch.ethz.util;
 
 public enum Locality {
-	Best, Ignorant, Random, Worst
+	// General
+	Best, Ignorant, Random, Worst,
+
+	// Matrix Multiplication
+	BestCol, BestDiag, BestRow, RandomCore, RandomNode
 }
