@@ -6,11 +6,11 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
-class RandomCacheStressWorker extends CacheStressWorker {
+class RandomLocalityCacheStressWorker extends CacheStressWorker {
 	private int units;
 	private Random random;
 
-	public RandomCacheStressWorker(int id, int[] array) {
+	public RandomLocalityCacheStressWorker(int id, int[] array) {
 		super(id, array);
 		units = Main.units.size();
 		random = new Random();
@@ -34,6 +34,6 @@ public class RandomLocalityBenchmark extends Benchmark {
 
 	@Override
 	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
-		return new RandomCacheStressWorker(id, array);
+		return new RandomLocalityCacheStressWorker(id, array);
 	}
 }

@@ -4,10 +4,10 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
-class WorstCacheStressWorker extends CacheStressWorker {
+class WorstLocalityCacheStressWorker extends CacheStressWorker {
 	private int units;
 
-	public WorstCacheStressWorker(int id, int[] array) {
+	public WorstLocalityCacheStressWorker(int id, int[] array) {
 		super(id, array);
 		units = Main.units.size();
 	}
@@ -39,6 +39,6 @@ public class WorstLocalityBenchmark extends Benchmark {
 
 	@Override
 	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
-		return new WorstCacheStressWorker(id, array);
+		return new WorstLocalityCacheStressWorker(id, array);
 	}
 }
