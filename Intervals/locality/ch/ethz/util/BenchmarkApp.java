@@ -76,8 +76,9 @@ public abstract class BenchmarkApp {
 					.toLowerCase());
 		}
 
-		System.out.printf("Machine: %s\nImplemenation: %s\n", machine
-				.toString().toLowerCase(), type.toString().toLowerCase());
+		System.out.printf("Machine: %s\nUnits: %s\nImplemenation: %s\n",
+				machine.toString().toLowerCase(), units.size(), type.toString()
+						.toLowerCase());
 
 		if (additional != null) {
 			System.out.println(additional);

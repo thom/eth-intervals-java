@@ -15,6 +15,15 @@ public class Main extends BenchmarkApp {
 		arraySize = values.getArraySize();
 		upperBound = values.getUpperBound();
 		sortersPerUnit = values.getSortersPerUnit();
+
+		if (arraySize % (sortersPerUnit * units.size()) != 0) {
+			System.err.println("Array size must be a multiple of the overall number of sorters\n");
+			System.err.printf("Usage:\n");
+
+			// Print the list of available options
+			parser.printUsage(System.err);
+			System.exit(1);
+		}
 	}
 
 	protected void run() {
