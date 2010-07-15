@@ -7,17 +7,17 @@ import ch.ethz.util.CommandLineValues;
 
 public class Main extends BenchmarkApp {
 	public static int arraySize = 2097144;
-	public static int workerPerUnit = 2;
+	public static int workersPerUnit = 2;
 
 	public Main(String[] args, MyCommandLineValues values) {
 		super(args, values, "cache stress", "ch.ethz.cachestress");
 		arraySize = values.getArraySize();
-		workerPerUnit = values.getWorkerPerUnit();
+		workersPerUnit = values.getWorkersPerUnit();
 	}
 
 	protected void run() {
 		printTitle(String.format("Array size: %d\nWorkers per unit: %d\n",
-				arraySize, workerPerUnit));
+				arraySize, workersPerUnit));
 		runBenchmark();
 		printResult();
 	}
@@ -31,15 +31,15 @@ public class Main extends BenchmarkApp {
 		@Option(name = "-a", aliases = { "--array-size" }, usage = "array size, default value: 2097144")
 		private int arraySize = 2097144;
 
-		@Option(name = "-u", aliases = { "--worker-per-unit" }, usage = "number of workers per unit, default value: 2")
-		private int workerPerUnit = 2;
+		@Option(name = "-u", aliases = { "--workers-per-unit" }, usage = "number of workers per unit, default value: 2")
+		private int workersPerUnit = 2;
 
 		public int getArraySize() {
 			return arraySize;
 		}
 
-		public int getWorkerPerUnit() {
-			return workerPerUnit;
+		public int getWorkersPerUnit() {
+			return workersPerUnit;
 		}
 	}
 }
