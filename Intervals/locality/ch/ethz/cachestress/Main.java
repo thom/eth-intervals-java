@@ -31,7 +31,7 @@ public class Main extends BenchmarkApp {
 		@Option(name = "-a", aliases = { "--array-size" }, usage = "array size, default value: 2097144")
 		private int arraySize = 2097144;
 
-		@Option(name = "-u", aliases = { "--workers-per-unit" }, usage = "number of workers per unit, default value: 2")
+		@Option(name = "-w", aliases = { "--workers-per-unit" }, usage = "number of workers per unit, default value: 2")
 		private int workersPerUnit = 2;
 
 		public int getArraySize() {
