@@ -60,13 +60,13 @@ public class Main extends BenchmarkApp {
 	}
 
 	protected static class MyCommandLineValues extends CommandLineValues {
-		@Option(name = "-d", aliases = { "--dimension" }, usage = "matrix dimension, must be power of 2 (default: 2048)")
+		@Option(name = "-d", aliases = { "--dimension" }, usage = "matrix dimension, must be power of 2, default value: 2048")
 		private int matrixDimension = 2048;
 
-		@Option(name = "-a", aliases = { "--stop-at" }, usage = "stop recursion at (default: 256)")
+		@Option(name = "-a", aliases = { "--stop-at" }, usage = "stop recursion at, default value: 256")
 		public int stopRecursionAt = 256;
 
-		@Option(name = "-u", aliases = { "--upper-bound" }, usage = "upper bound of random array elements (default: 100)")
+		@Option(name = "-u", aliases = { "--upper-bound" }, usage = "upper bound of random array elements, default value: 100")
 		private int upperBound = 100;
 
 		public int getMatrixDimension() {
