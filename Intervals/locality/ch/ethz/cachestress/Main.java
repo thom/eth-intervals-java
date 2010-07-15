@@ -16,7 +16,7 @@ public class Main extends BenchmarkApp {
 	}
 
 	protected void run() {
-		printTitle(String.format("Array size: %d\nRounds per core: %d\n",
+		printTitle(String.format("Array size: %d\nWorkers per unit: %d\n",
 				arraySize, workerPerUnit));
 		runBenchmark();
 		printResult();
