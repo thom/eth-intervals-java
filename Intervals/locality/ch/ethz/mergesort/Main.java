@@ -27,10 +27,10 @@ public class Main extends BenchmarkApp {
 	}
 
 	protected static class MyCommandLineValues extends CommandLineValues {
-		@Option(name = "-a", aliases = { "--array-size" }, usage = "array size (default: 2 * 2097144)")
+		@Option(name = "-a", aliases = { "--array-size" }, usage = "array size, default value: 2 * 2097144")
 		private int arraySize = 2 * 2097144;
 
-		@Option(name = "-u", aliases = { "--upper-bound" }, usage = "upper bound of random array elements (default: 100)")
+		@Option(name = "-u", aliases = { "--upper-bound" }, usage = "upper bound of random array elements, default value: 100")
 		private int upperBound = 100;
 
 		public int getArraySize() {
