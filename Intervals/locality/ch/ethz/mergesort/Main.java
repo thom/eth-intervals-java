@@ -8,15 +8,19 @@ import ch.ethz.util.CommandLineValues;
 public class Main extends BenchmarkApp {
 	public static int arraySize = 2 * 2097144;
 	public static int upperBound = 100;
+	public static int sortersPerUnit = 2;
 
 	public Main(String[] args, MyCommandLineValues values) {
 		super(args, values, "merge sort", "ch.ethz.mergesort");
 		arraySize = values.getArraySize();
+		upperBound = values.getUpperBound();
+		sortersPerUnit = values.getSortersPerUnit();
 	}
 
 	protected void run() {
-		printTitle(String.format("Array size: %d\nUpper bound: %d\n",
-				arraySize, upperBound));
+		printTitle(String.format(
+				"Array size: %d\nUpper bound: %d\nSorters per unit: %d\n",
+				arraySize, upperBound, sortersPerUnit));
 		runBenchmark();
 		printResult();
 	}
@@ -33,12 +37,19 @@ public class Main extends BenchmarkApp {
 		@Option(name = "-u", aliases = { "--upper-bound" }, usage = "upper bound of random array elements, default value: 100")
 		private int upperBound = 100;
 
+		@Option(name = "-s", aliases = { "--sorters-per-unit" }, usage = "number of sorters per unit, default value: 2")
+		private int sortersPerUnit = 2;
+
 		public int getArraySize() {
 			return arraySize;
 		}
 
 		public int getUpperBound() {
 			return upperBound;
+		}
+
+		public int getSortersPerUnit() {
+			return sortersPerUnit;
 		}
 	}
 }
