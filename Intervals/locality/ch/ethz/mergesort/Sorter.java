@@ -3,27 +3,31 @@ package ch.ethz.mergesort;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Sorter {
+public class Sorter implements MergeSorter {
 	public final int id;
 	public final int size;
+
+	private Integer[] array;
 
 	public Sorter(int id, int size) {
 		this.id = id;
 		this.size = size;
 	}
 
-	public Integer[] run() {
-		Integer[] result = new Integer[size];
+	public Integer[] getArray() {
+		return array;
+	}
+
+	public void run() {
+		array = new Integer[size];
 		Random random = new Random();
 
 		// Fill array
 		for (int i = 0; i < size; i++) {
-			result[i] = random.nextInt(Main.upperBound);
+			array[i] = random.nextInt(Main.upperBound);
 		}
 
 		// Sort array
-		Arrays.sort(result);
-
-		return result;
+		Arrays.sort(array);
 	}
 }

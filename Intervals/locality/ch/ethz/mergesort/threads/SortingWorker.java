@@ -12,6 +12,7 @@ public abstract class SortingWorker extends MergeSortWorker {
 
 	public void run() {
 		Sorter sorter = new Sorter(id, size);
-		array = sorter.run();
+		sorter.run();
+		array = sorter.getArray();
 	}
 }

@@ -25,6 +25,7 @@ public abstract class MergingWorker extends MergeSortWorker {
 		Merger merger = new Merger(id, left.array, right.array);
 
 		// Initialize merged array
-		array = merger.run();
+		merger.run();
+		array = merger.getArray();
 	}
 }

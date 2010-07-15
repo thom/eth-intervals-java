@@ -48,8 +48,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 			e.printStackTrace();
 		}
 
-		// Stop stop watch
-		stopWatch.stop();
+		long time = stopBenchmark();
 
 		// Check result
 		Integer[] result = lastMerger.array;
@@ -60,7 +59,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 			}
 		}
 
-		return stopBenchmark();
+		return time;
 	}
 
 	private void createMergerHierarchy(int number, int id,
