@@ -17,7 +17,12 @@ public class Main extends BenchmarkApp {
 		sortersPerUnit = values.getSortersPerUnit();
 
 		if (arraySize % (sortersPerUnit * units.size()) != 0) {
-			System.err.println("Array size must be a multiple of the overall number of sorters\n");
+			System.err
+					.println("Array size must be a multiple of the overall number of sorters, i.e.");
+			System.err
+					.println("Array size MOD (sorters per unit * units) must be 0\n");
+			System.err.printf("\t%d MOD (%d * %d) != 0\n\n", arraySize,
+					sortersPerUnit, units.size());
 			System.err.printf("Usage:\n");
 
 			// Print the list of available options
