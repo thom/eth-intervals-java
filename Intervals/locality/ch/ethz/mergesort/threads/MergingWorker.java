@@ -1,5 +1,7 @@
 package ch.ethz.mergesort.threads;
 
+import ch.ethz.mergesort.Merger;
+
 public abstract class MergingWorker extends MergeSortWorker {
 	protected final MergeSortWorker left;
 	protected final MergeSortWorker right;
@@ -19,37 +21,10 @@ public abstract class MergingWorker extends MergeSortWorker {
 			e.printStackTrace();
 		}
 
-		// Get sorted arrays
-		Integer[] leftArray = left.array;
-		Integer[] rightArray = right.array;
+		// Create merger
+		Merger merger = new Merger(id, left.array, right.array);
 
 		// Initialize merged array
-		array = new Integer[leftArray.length + rightArray.length];
-
-		// Merge sorted arrays
-		int i = 0, j = 0, k = 0;
-
-		while (i < leftArray.length && j < rightArray.length) {
-			if (leftArray[i] < rightArray[j]) {
-				array[k] = leftArray[i];
-				i++;
-			} else {
-				array[k] = rightArray[j];
-				j++;
-			}
-			k++;
-		}
-
-		if (i == leftArray.length) {
-			for (int jj = j; jj < rightArray.length; jj++) {
-				array[k] = rightArray[jj];
-				k++;
-			}
-		} else {
-			for (int ii = i; ii < leftArray.length; ii++) {
-				array[k] = leftArray[ii];
-				k++;
-			}
-		}
+		array = merger.run();
 	}
 }
