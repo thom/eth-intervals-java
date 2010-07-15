@@ -10,7 +10,7 @@ public class WorstLocalityBenchmark extends Benchmark {
 	@Override
 	public void createCacheStressTask(Dependency dep, int id, int[] array) {
 		// TODO: Set correct place
-		// int unit = id;
+		// int unit = id % units;
 		//
 		// if (unit % 2 == 1) {
 		// unit = (unit + (units / 2)) % units;

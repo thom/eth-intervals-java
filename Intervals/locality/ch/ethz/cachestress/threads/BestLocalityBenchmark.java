@@ -11,7 +11,7 @@ class BestLocalityCacheStressWorker extends CacheStressWorker {
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get(id));
+			Affinity.set(Main.units.get(id % Main.units.size()));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

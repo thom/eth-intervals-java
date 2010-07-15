@@ -11,7 +11,7 @@ public class BestLocalityBenchmark extends Benchmark {
 	public void createCacheStressTask(Dependency dep, int id, int[] array) {
 		// TODO: Set correct place
 		// try {
-		// Affinity.set(Main.units.get(id));
+		// Affinity.set(Main.units.get(id % Main.units.size()));
 		// } catch (SetAffinityException e) {
 		// e.printStackTrace();
 		// System.exit(1);

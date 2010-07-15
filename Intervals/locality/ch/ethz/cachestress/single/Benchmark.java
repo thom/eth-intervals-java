@@ -22,8 +22,8 @@ public class Benchmark extends LocalityBenchmark {
 		int[] array2 = createRandomIntegerArray(Main.arraySize);
 
 		// Create workers
-		for (int i = 0; i < units; i++) {
-			if (i < 4) {
+		for (int i = 0; i < Main.rounds * units; i++) {
+			if ((i % units) < 4) {
 				doWork(i, array1);
 			} else {
 				doWork(i, array2);

@@ -4,10 +4,11 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	private int units;
+	private int units, rounds;
 
 	public Benchmark() {
 		this.units = Main.units.size();
+		this.rounds = Main.rounds;
 	}
 
 	public abstract CacheStressWorker createCacheStressWorker(int id,
@@ -21,8 +22,8 @@ public abstract class Benchmark extends LocalityBenchmark {
 		int[] array2 = createRandomIntegerArray(Main.arraySize);
 
 		// Create workers
-		for (int i = 0; i < units; i++) {
-			if (i < 4) {
+		for (int i = 0; i < rounds * units; i++) {
+			if ((i % units) < 4) {
 				workers[i] = createCacheStressWorker(i, array1);
 			} else {
 				workers[i] = createCacheStressWorker(i, array2);
@@ -30,12 +31,12 @@ public abstract class Benchmark extends LocalityBenchmark {
 		}
 
 		// Start workers
-		for (int i = 0; i < units; i++) {
+		for (int i = 0; i < rounds * units; i++) {
 			workers[i].start();
 		}
 
 		// Wait for workers to finish
-		for (int i = 0; i < units; i++) {
+		for (int i = 0; i < rounds * units; i++) {
 			try {
 				workers[i].join();
 			} catch (InterruptedException e) {

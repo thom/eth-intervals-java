@@ -14,7 +14,7 @@ class WorstLocalityCacheStressWorker extends CacheStressWorker {
 
 	public void run() {
 		try {
-			int unit = id;
+			int unit = id % units;
 
 			if (unit % 2 == 1) {
 				unit = (unit + (units / 2)) % units;
