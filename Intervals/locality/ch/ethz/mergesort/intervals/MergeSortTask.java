@@ -11,7 +11,7 @@ public abstract class MergeSortTask extends Interval {
 
 	public MergeSortTask(@ParentForNew("Parent") Dependency dep, Place place,
 			String name, int id) {
-		super(dep, place);
+		super(dep, name + id, place);
 		this.id = id;
 	}
 }
