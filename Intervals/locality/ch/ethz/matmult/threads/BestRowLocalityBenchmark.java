@@ -7,13 +7,15 @@ import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 class BestRowLocalityMultiplicationWorker extends MultiplicationWorker {
-	public BestRowLocalityMultiplicationWorker(Matrix a, Matrix b,
-			Matrix c, Quadrant quadrant) {
+	public BestRowLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
 		super(a, b, c, quadrant);
 	}
 
 	public void run() {
 		try {
+			// TODO: keep only one best case locality
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant1:
@@ -52,6 +54,8 @@ class BestRowLocalityAdditionWorker extends AdditionWorker {
 
 	public void run() {
 		try {
+			// TODO: keep only one best case locality
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant1:

@@ -7,13 +7,14 @@ import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 class WorstLocalityMultiplicationWorker extends MultiplicationWorker {
-	public WorstLocalityMultiplicationWorker(Matrix a, Matrix b,
-			Matrix c, Quadrant quadrant) {
+	public WorstLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
 		super(a, b, c, quadrant);
 	}
 
 	public void run() {
 		try {
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant1:
@@ -34,8 +35,7 @@ class WorstLocalityMultiplicationWorker extends MultiplicationWorker {
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c,
-				quadrant);
+		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 
 	@Override
@@ -53,6 +53,7 @@ class WorstLocalityAdditionWorker extends AdditionWorker {
 
 	public void run() {
 		try {
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant1:
@@ -73,8 +74,7 @@ class WorstLocalityAdditionWorker extends AdditionWorker {
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c,
-				quadrant);
+		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 
 	@Override
@@ -84,8 +84,7 @@ class WorstLocalityAdditionWorker extends AdditionWorker {
 	}
 }
 
-public class WorstLocalityBenchmark extends
-		Benchmark {
+public class WorstLocalityBenchmark extends Benchmark {
 	public WorstLocalityBenchmark() {
 		super();
 	}
@@ -93,7 +92,6 @@ public class WorstLocalityBenchmark extends
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c,
-				quadrant);
+		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 }

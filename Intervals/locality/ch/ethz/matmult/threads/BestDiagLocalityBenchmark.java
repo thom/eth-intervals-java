@@ -14,6 +14,8 @@ class BestDiagLocalityMultiplicationWorker extends MultiplicationWorker {
 
 	public void run() {
 		try {
+			// TODO: keep only one best case locality
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant3:
@@ -52,6 +54,8 @@ class BestDiagLocalityAdditionWorker extends AdditionWorker {
 
 	public void run() {
 		try {
+			// TODO: keep only one best case locality
+			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
 			case Quadrant3:
