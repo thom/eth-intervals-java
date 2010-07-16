@@ -36,13 +36,13 @@ class BestLocalityMultiplicationWorker extends MultiplicationWorker {
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new BestLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 
 	@Override
 	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		return new BestColLocalityAdditionWorker(a, b, c, quadrant);
+		return new BestLocalityAdditionWorker(a, b, c, quadrant);
 	}
 }
 
@@ -76,13 +76,13 @@ class BestLocalityAdditionWorker extends AdditionWorker {
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new BestLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 
 	@Override
 	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		return new BestColLocalityAdditionWorker(a, b, c, quadrant);
+		return new BestLocalityAdditionWorker(a, b, c, quadrant);
 	}
 }
 
@@ -94,6 +94,6 @@ public class BestLocalityBenchmark extends Benchmark {
 	@Override
 	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new BestLocalityMultiplicationWorker(a, b, c, quadrant);
 	}
 }
