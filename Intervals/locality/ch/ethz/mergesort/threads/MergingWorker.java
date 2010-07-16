@@ -6,8 +6,9 @@ public abstract class MergingWorker extends MergeSortWorker {
 	protected final MergeSortWorker left;
 	protected final MergeSortWorker right;
 
-	public MergingWorker(int id, MergeSortWorker left, MergeSortWorker right) {
-		super("merging-worker-", id);
+	public MergingWorker(int id, int node, MergeSortWorker left,
+			MergeSortWorker right) {
+		super("merging-worker-", id, node);
 		this.left = left;
 		this.right = right;
 	}

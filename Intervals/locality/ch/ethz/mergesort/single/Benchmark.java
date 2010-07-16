@@ -14,7 +14,7 @@ public class Benchmark extends LocalityBenchmark {
 	private Sorter[] sorters;
 
 	public Benchmark() {
-		this.numberOfSorters = Main.units.size() * Main.sortersPerUnit;
+		this.numberOfSorters = Main.units.nodesSize() * Main.sortersPerNode;
 	}
 
 	public long run() {

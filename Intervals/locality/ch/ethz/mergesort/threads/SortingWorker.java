@@ -3,10 +3,10 @@ package ch.ethz.mergesort.threads;
 import ch.ethz.mergesort.Sorter;
 
 public abstract class SortingWorker extends MergeSortWorker {
-	private int size;
+	protected final int size;
 
-	public SortingWorker(int id, int size) {
-		super("sorting-worker-", id);
+	public SortingWorker(int id, int node, int size) {
+		super("sorting-worker-", id, node);
 		this.size = size;
 	}
 

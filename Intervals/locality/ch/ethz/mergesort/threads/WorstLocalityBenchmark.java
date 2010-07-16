@@ -5,13 +5,13 @@ import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.mergesort.Main;
 
 class WorstLocalitySortingWorker extends SortingWorker {
-	public WorstLocalitySortingWorker(int id, int size) {
-		super(id, size);
+	public WorstLocalitySortingWorker(int id, int node, int size) {
+		super(id, node, size);
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get(id));
+			Affinity.set(Main.units.getNode(node));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -21,15 +21,14 @@ class WorstLocalitySortingWorker extends SortingWorker {
 }
 
 class WorstLocalityMergingWorker extends MergingWorker {
-	public WorstLocalityMergingWorker(int id, MergeSortWorker left,
+	public WorstLocalityMergingWorker(int id, int node, MergeSortWorker left,
 			MergeSortWorker right) {
-		super(id, left, right);
+		super(id, node, left, right);
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get((left.id + (Main.units.size() / 2))
-					% Main.units.size()));
+			Affinity.set(Main.units.getNode((node + 1) % Main.units.nodesSize()));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -44,13 +43,13 @@ public class WorstLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int size) {
-		return new WorstLocalitySortingWorker(id, size);
+	public SortingWorker createSortingWorker(int id, int node, int size) {
+		return new WorstLocalitySortingWorker(id, node, size);
 	}
 
 	@Override
-	public MergingWorker createMergingWorker(int id, MergeSortWorker left,
-			MergeSortWorker right) {
-		return new WorstLocalityMergingWorker(id, left, right);
+	public MergingWorker createMergingWorker(int id, int node,
+			MergeSortWorker left, MergeSortWorker right) {
+		return new WorstLocalityMergingWorker(id, node, left, right);
 	}
 }
