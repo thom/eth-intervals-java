@@ -28,15 +28,24 @@ class BestLocalityMultiplicationWorker extends MultiplicationWorker {
 
 	public void run() {
 		try {
-			// TODO: keep only one best case locality
-			// TODO: fix assignment of quadrants
+			// Diagonal:
+			// * 0, 3 -> node 0
+			// * 1, 2 -> node 1
+			//
+			// Row:
+			// * 0, 1 -> node 0
+			// * 2, 3 -> node 1
+			//
+			// Column
+			// * 0, 2 -> node 0
+			// * 1, 3 -> node 1
 			switch (quadrant) {
 			case Quadrant0:
-			case Quadrant2:
-				Affinity.set(Main.units.getNode(0 % Main.units.nodesSize()));
+			case Quadrant3:
+				Affinity.set(Main.units.getNode(0));
 				break;
 			case Quadrant1:
-			case Quadrant3:
+			case Quadrant2:
 				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
 				break;
 			}
@@ -56,15 +65,24 @@ class BestLocalityAdditionWorker extends AdditionWorker {
 
 	public void run() {
 		try {
-			// TODO: keep only one best case locality
-			// TODO: fix assignment of quadrants
+			// Diagonal:
+			// * 0, 3 -> node 0
+			// * 1, 2 -> node 1
+			//
+			// Row:
+			// * 0, 1 -> node 0
+			// * 2, 3 -> node 1
+			//
+			// Column
+			// * 0, 2 -> node 0
+			// * 1, 3 -> node 1
 			switch (quadrant) {
 			case Quadrant0:
-			case Quadrant2:
-				Affinity.set(Main.units.getNode(0 % Main.units.nodesSize()));
+			case Quadrant3:
+				Affinity.set(Main.units.getNode(0));
 				break;
 			case Quadrant1:
-			case Quadrant3:
+			case Quadrant2:
 				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
 				break;
 			}
