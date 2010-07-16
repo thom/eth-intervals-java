@@ -6,7 +6,7 @@ import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.Interval;
 import ch.ethz.intervals.ParentForNew;
 
-class CacheStressTask extends Interval {
+public class CacheStressTask extends Interval {
 	protected final int id;
 	protected final int[] array;
 	protected final Worker worker;
