@@ -2,6 +2,9 @@ package ch.ethz.matmult.intervals;
 
 import ch.ethz.hwloc.Place;
 import ch.ethz.intervals.Dependency;
+import ch.ethz.intervals.EmptyInterval;
+import ch.ethz.intervals.Interval;
+import ch.ethz.intervals.Intervals;
 import ch.ethz.intervals.ParentForNew;
 import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
@@ -20,26 +23,15 @@ public abstract class AdditionTask extends MatrixTask {
 		} else {
 			Matrix[][] aa = a.split(), bb = b.split(), cc = c.split();
 
-			AdditionTask[][] additionWorkers = new AdditionTask[2][2];
+			Interval barrier = new EmptyInterval(parent, "Barrier");
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
-					additionWorkers[row][col] = createAdditionWorker(parent,
-							place, aa[row][col], bb[row][col], cc[row][col],
-							quadrant);
-					additionWorkers[row][col].start();
+					AdditionTask add = createAdditionWorker(parent, place,
+							aa[row][col], bb[row][col], cc[row][col], quadrant);
+					Intervals.addHb(add, barrier);
 				}
 			}
-
-			// for (int row = 0; row < 2; row++) {
-			// for (int col = 0; col < 2; col++) {
-			// try {
-			// additionWorkers[row][col].join();
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
-			// }
-			// }
 		}
 	}
 }
