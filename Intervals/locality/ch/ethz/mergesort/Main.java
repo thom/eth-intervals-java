@@ -16,7 +16,7 @@ public class Main extends BenchmarkApp {
 		upperBound = values.getUpperBound();
 		sortersPerNode = values.getSortersPerNode();
 
-		if (arraySize % (sortersPerNode * units.size()) != 0) {
+		if (arraySize % (sortersPerNode * units.nodesSize()) != 0) {
 			System.err
 					.println("Array size must be a multiple of the overall number of sorters, i.e.");
 			System.err
