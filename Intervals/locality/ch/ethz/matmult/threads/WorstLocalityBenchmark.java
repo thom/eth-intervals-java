@@ -28,15 +28,18 @@ class WorstLocalityMultiplicationWorker extends MultiplicationWorker {
 
 	public void run() {
 		try {
-			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
+				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				break;
 			case Quadrant1:
-				Affinity.set(Main.units.getNode(0 % Main.units.nodesSize()));
+				Affinity.set(Main.units.getNode(0));
 				break;
 			case Quadrant2:
-			case Quadrant3:
 				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				break;
+			case Quadrant3:
+				Affinity.set(Main.units.getNode(0));
 				break;
 			}
 		} catch (SetAffinityException e) {
@@ -55,15 +58,18 @@ class WorstLocalityAdditionWorker extends AdditionWorker {
 
 	public void run() {
 		try {
-			// TODO: fix assignment of quadrants
 			switch (quadrant) {
 			case Quadrant0:
+				Affinity.set(Main.units.getNode(0));
+				break;
 			case Quadrant1:
 				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
 				break;
 			case Quadrant2:
+				Affinity.set(Main.units.getNode(0));
+				break;
 			case Quadrant3:
-				Affinity.set(Main.units.getNode(0 % Main.units.nodesSize()));
+				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
 				break;
 			}
 		} catch (SetAffinityException e) {
