@@ -8,12 +8,26 @@ import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
+class RandomNodeLocalityWorkerFactory extends WorkerFactory {
+	@Override
+	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+			Matrix b, Matrix c, Quadrant quadrant) {
+		return new RandomNodeLocalityMultiplicationWorker(a, b, c, quadrant);
+	}
+
+	@Override
+	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
+		return new RandomNodeLocalityAdditionWorker(a, b, c, quadrant);
+	}
+}
+
 class RandomNodeLocalityMultiplicationWorker extends MultiplicationWorker {
 	private Random random;
 
 	public RandomNodeLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new RandomNodeLocalityWorkerFactory(), a, b, c, quadrant);
 		random = new Random();
 	}
 
@@ -26,18 +40,6 @@ class RandomNodeLocalityMultiplicationWorker extends MultiplicationWorker {
 		}
 
 		super.run();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new RandomNodeLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new RandomNodeLocalityAdditionWorker(a, b, c, quadrant);
 	}
 }
 
@@ -46,7 +48,7 @@ class RandomNodeLocalityAdditionWorker extends AdditionWorker {
 
 	public RandomNodeLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new RandomNodeLocalityWorkerFactory(), a, b, c, quadrant);
 		random = new Random();
 	}
 
@@ -60,29 +62,10 @@ class RandomNodeLocalityAdditionWorker extends AdditionWorker {
 
 		super.run();
 	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new RandomNodeLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new RandomNodeLocalityAdditionWorker(a, b, c, quadrant);
-	}
 }
 
-public class RandomNodeLocalityBenchmark extends
-		Benchmark {
+public class RandomNodeLocalityBenchmark extends Benchmark {
 	public RandomNodeLocalityBenchmark() {
-		super();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new RandomNodeLocalityMultiplicationWorker(a, b, c, quadrant);
+		super(new RandomNodeLocalityWorkerFactory());
 	}
 }

@@ -6,8 +6,11 @@ import ch.ethz.matmult.Quadrant;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	protected abstract MultiplicationWorker createMultiplicationWorker(
-			Matrix a, Matrix b, Matrix c, Quadrant quadrant);
+	WorkerFactory factory;
+
+	public Benchmark(WorkerFactory factory) {
+		this.factory = factory;
+	}
 
 	public long run() {
 		startBenchmark();
@@ -18,8 +21,8 @@ public abstract class Benchmark extends LocalityBenchmark {
 		Matrix c = new Matrix(Main.matrixDimension);
 
 		// Create worker
-		MultiplicationWorker multiplicationWorker = createMultiplicationWorker(
-				a, b, c, Quadrant.None);
+		MultiplicationWorker multiplicationWorker = factory
+				.createMultiplicationWorker(a, b, c, Quadrant.None);
 
 		// Start worker
 		multiplicationWorker.start();

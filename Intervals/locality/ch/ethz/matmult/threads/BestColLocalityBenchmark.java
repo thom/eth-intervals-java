@@ -6,10 +6,24 @@ import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
+class BestColLocalityWorkerFactory extends WorkerFactory {
+	@Override
+	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+			Matrix b, Matrix c, Quadrant quadrant) {
+		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
+	}
+
+	@Override
+	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
+		return new BestColLocalityAdditionWorker(a, b, c, quadrant);
+	}
+}
+
 class BestColLocalityMultiplicationWorker extends MultiplicationWorker {
 	public BestColLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new BestColLocalityWorkerFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -31,25 +45,13 @@ class BestColLocalityMultiplicationWorker extends MultiplicationWorker {
 		}
 
 		super.run();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new BestColLocalityAdditionWorker(a, b, c, quadrant);
 	}
 }
 
 class BestColLocalityAdditionWorker extends AdditionWorker {
 	public BestColLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new BestColLocalityWorkerFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -72,28 +74,10 @@ class BestColLocalityAdditionWorker extends AdditionWorker {
 
 		super.run();
 	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new BestColLocalityAdditionWorker(a, b, c, quadrant);
-	}
 }
 
 public class BestColLocalityBenchmark extends Benchmark {
 	public BestColLocalityBenchmark() {
-		super();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestColLocalityMultiplicationWorker(a, b, c, quadrant);
+		super(new BestColLocalityWorkerFactory());
 	}
 }

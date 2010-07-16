@@ -7,8 +7,9 @@ import ch.ethz.matmult.Quadrant;
 public abstract class MultiplicationWorker extends MatrixWorker {
 	private Matrix lhs, rhs;
 
-	public MultiplicationWorker(Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super("multiplication-worker-", a, b, c, quadrant);
+	public MultiplicationWorker(WorkerFactory factory, Matrix a, Matrix b,
+			Matrix c, Quadrant quadrant) {
+		super("multiplication-worker-", factory, a, b, c, quadrant);
 		this.lhs = new Matrix(a.getDim());
 		this.rhs = new Matrix(a.getDim());
 	}

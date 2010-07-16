@@ -6,10 +6,24 @@ import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
+class WorstLocalityWorkerFactory extends WorkerFactory {
+	@Override
+	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+			Matrix b, Matrix c, Quadrant quadrant) {
+		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
+	}
+
+	@Override
+	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
+		return new WorstLocalityAdditionWorker(a, b, c, quadrant);
+	}
+}
+
 class WorstLocalityMultiplicationWorker extends MultiplicationWorker {
 	public WorstLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new WorstLocalityWorkerFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -30,25 +44,13 @@ class WorstLocalityMultiplicationWorker extends MultiplicationWorker {
 		}
 
 		super.run();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new WorstLocalityAdditionWorker(a, b, c, quadrant);
 	}
 }
 
 class WorstLocalityAdditionWorker extends AdditionWorker {
 	public WorstLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(a, b, c, quadrant);
+		super(new WorstLocalityWorkerFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -70,28 +72,10 @@ class WorstLocalityAdditionWorker extends AdditionWorker {
 
 		super.run();
 	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
-	}
-
-	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
-			Quadrant quadrant) {
-		return new WorstLocalityAdditionWorker(a, b, c, quadrant);
-	}
 }
 
 public class WorstLocalityBenchmark extends Benchmark {
 	public WorstLocalityBenchmark() {
-		super();
-	}
-
-	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
-		return new WorstLocalityMultiplicationWorker(a, b, c, quadrant);
+		super(new WorstLocalityWorkerFactory());
 	}
 }

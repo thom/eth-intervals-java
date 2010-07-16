@@ -5,8 +5,9 @@ import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 public abstract class AdditionWorker extends MatrixWorker {
-	public AdditionWorker(Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super("addition-worker-", a, b, c, quadrant);
+	public AdditionWorker(WorkerFactory factory, Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
+		super("addition-worker-", factory, a, b, c, quadrant);
 	}
 
 	public void run() {
