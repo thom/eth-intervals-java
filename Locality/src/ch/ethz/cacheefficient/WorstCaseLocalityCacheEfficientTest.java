@@ -17,8 +17,7 @@ class WorstCaseLocalityMainWorker extends MainWorker {
 	}
 
 	public void run() {
-		// TODO: Set worst-case locality
-
+		// Set worst-case locality
 		super.run();
 	}
 }
@@ -29,8 +28,7 @@ class WorstCaseLocalitySortingWorker extends SortingWorker {
 	}
 
 	public void run() {
-		// TODO: Set worst-case locality
-
+		// Set worst-case locality
 		super.run();
 	}
 }
@@ -42,8 +40,7 @@ class WorstCaseLocalityMergingWorker extends MergingWorker {
 	}
 
 	public void run() {
-		// TODO: Set worst-case locality
-
+		// Set worst-case locality
 		super.run();
 	}
 }
