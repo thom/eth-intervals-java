@@ -10,43 +10,56 @@ import ch.ethz.hwloc.SetAffinityException;
 
 class ThreadPool {
 
-	class KeepAliveThread extends Thread {
-		public final Semaphore sem = new Semaphore(1);
-
-		@Override
-		public void run() {
-			sem.acquireUninterruptibly();
-			sem.release();
-			return;
-		}
-	}
-
-	private KeepAliveThread keepAliveThread;
-
-	/**
-	 * Starts a keep alive thread that prevents the JVM from exiting. This is
-	 * invoked when new work is submitted to the pool from the outside. Always
-	 * executed under the {@link #idleLock}.
+	/*
+	 * We used to use a KeepAliveThread to prevent the VM from terminating while
+	 * intervals are active. In the new API, however, the user must always use a
+	 * blocking inline interval as the "root" interval, and thus we don't need
+	 * to worry about that anymore, so long as the root interval was itself
+	 * started from a non-daemon thread. Horray.
+	 * 
+	 * I left the code here, however, in case this issue should come back to
+	 * haunt me. The idea was to start the KeepAliveThread whenever we gave out
+	 * our first medallion and stop it whenever we all medallions became free
+	 * again.
 	 */
-	private void startKeepAliveThread() {
-		if (keepAliveThread == null) {
-			keepAliveThread = new KeepAliveThread();
-			keepAliveThread.sem.acquireUninterruptibly();
-			keepAliveThread.start();
-		}
-	}
 
-	/**
-	 * Stops the keep alive thread that prevents the JVM from exiting. This is
-	 * invoked when all threads become idle. Always executed under the
-	 * {@link #idleLock}.
-	 */
-	private void stopKeepAliveThread() {
-		if (keepAliveThread != null) {
-			keepAliveThread.sem.release();
-			keepAliveThread = null;
-		}
-	}
+	// class KeepAliveThread extends Thread {
+	// public final Semaphore sem = new Semaphore(1);
+	//
+	// @Override
+	// public void run() {
+	// sem.acquireUninterruptibly();
+	// sem.release();
+	// return;
+	// }
+	// }
+	//
+	// private KeepAliveThread keepAliveThread;
+	//
+	// /**
+	// * Starts a keep alive thread that prevents the JVM from exiting. This is
+	// * invoked when new work is submitted to the pool from the outside. Always
+	// * executed under the {@link #idleLock}.
+	// */
+	// private void startKeepAliveThread() {
+	// if (keepAliveThread == null) {
+	// keepAliveThread = new KeepAliveThread();
+	// keepAliveThread.sem.acquireUninterruptibly();
+	// keepAliveThread.start();
+	// }
+	// }
+	//
+	// /**
+	// * Stops the keep alive thread that prevents the JVM from exiting. This is
+	// * invoked when all threads become idle. Always executed under the
+	// * {@link #idleLock}.
+	// */
+	// private void stopKeepAliveThread() {
+	// if (keepAliveThread != null) {
+	// keepAliveThread.sem.release();
+	// keepAliveThread = null;
+	// }
+	// }
 
 	final class Worker extends Thread {
 		final int id;
@@ -168,7 +181,7 @@ class ThreadPool {
 				int length = idleWorkers.size();
 				if (length == numWorkers) {
 					// All workers asleep.
-					stopKeepAliveThread();
+					// stopKeepAliveThread();
 				}
 
 				idleLock.unlock();
@@ -267,7 +280,7 @@ class ThreadPool {
 			worker.enqueue(item);
 		else {
 			idleLock.lock();
-			startKeepAliveThread();
+			// startKeepAliveThread();
 			int l = idleWorkers.size();
 			if (l == 0) {
 				// No one waiting to take this job.
