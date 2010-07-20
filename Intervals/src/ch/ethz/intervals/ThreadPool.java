@@ -72,10 +72,12 @@ class ThreadPool {
 
 		@Override
 		public void run() {
-			try {
-				Affinity.set(Config.units.get(id));
-			} catch (SetAffinityException e) {
-				e.printStackTrace();
+			if (Config.AFFINITY) {
+				try {
+					Affinity.set(Config.units.get(id));
+				} catch (SetAffinityException e) {
+					e.printStackTrace();
+				}
 			}
 
 			if (Debug.ENABLED) {

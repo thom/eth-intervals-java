@@ -10,7 +10,12 @@ public class Config {
 	public static final Units units = new MafushiUnits();
 
 	/**
-	 * Should we collect and print statistics
+	 * Should workers be bound to cores?
+	 */
+	public static final boolean AFFINITY = true;
+
+	/**
+	 * Should we collect and print statistics?
 	 */
 	public static final boolean STATISTICS = false;
 
