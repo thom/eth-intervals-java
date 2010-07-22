@@ -35,6 +35,6 @@ public class Config {
 	 * @return WorkStealingDeque
 	 */
 	public final static WorkStealingQueue createQueue(Worker owner) {
-		return new WorkStealingDeque(owner);
+		return new LinkedBlockingWorkStealingDeque(owner);
 	}
 }
