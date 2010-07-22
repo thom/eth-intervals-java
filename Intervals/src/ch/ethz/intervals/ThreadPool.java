@@ -1,12 +1,16 @@
 package ch.ethz.intervals;
 
+import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.*;
+
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class ThreadPool {
 	final class Worker extends Thread {
 		final int id;
-		// final Semaphore semaphore = new Semaphore(1);
+		final Semaphore semaphore = new Semaphore(1);
 		// final WorkStealingQueue tasks;
 		final WorkerStatistics stats;
 
@@ -41,7 +45,7 @@ class ThreadPool {
 			}
 
 			currentWorker.set(this);
-			// this.semaphore.acquireUninterruptibly(); // cannot fail
+			this.semaphore.acquireUninterruptibly(); // cannot fail
 			while (true) {
 				doWork(true);
 			}
@@ -56,15 +60,29 @@ class ThreadPool {
 		 * @return true if work was done, false otherwise
 		 */
 		boolean doWork(boolean block) {
-			WorkItem workItem = pendingWork.take();
+			WorkItem item;
 
-			if (workItem != null) {
-				workItem.exec(this);
-				return true;
-			} else {
-				Thread.yield();
+			if ((item = pendingWork.take()) == null) {
+				if (block) {
+					idleLock.lock();
+					idleWorkersExist = true;
+					idleWorkers.add(this);
+
+					if (WorkerStatistics.ENABLED)
+						this.stats.doIdleWorkersAdd();
+
+					idleLock.unlock();
+
+					// blocks until release() is invoked by some other worker
+					semaphore.acquireUninterruptibly();
+				}
+
 				return false;
 			}
+
+			item.exec(this);
+
+			return true;
 
 			// WorkItem item;
 			// if ((item = tasks.take()) == null)
@@ -109,46 +127,6 @@ class ThreadPool {
 		// return item;
 		// }
 		//
-		// private WorkItem findPendingWork(boolean block) {
-		// idleLock.lock();
-		//
-		// if (WorkerStatistics.ENABLED)
-		// this.stats.doPendingWorkItemsRemoveAttempt();
-		//
-		// int l = pendingWorkItems.size();
-		// if (l != 0) {
-		// WorkItem item = pendingWorkItems.remove(l - 1);
-		//
-		// if (WorkerStatistics.ENABLED)
-		// this.stats.doPendingWorkItemsRemove();
-		//
-		// idleLock.unlock();
-		// return item;
-		// } else if (block) {
-		// idleWorkersExist = true;
-		// idleWorkers.add(this);
-		//
-		// if (WorkerStatistics.ENABLED)
-		// this.stats.doIdleWorkersAdd();
-		//
-		// int length = idleWorkers.size();
-		// if (length == numWorkers) {
-		// // All workers asleep.
-		// // stopKeepAliveThread();
-		// }
-		//
-		// idleLock.unlock();
-		//
-		// // blocks until release() is invoked by some other worker
-		// semaphore.acquireUninterruptibly();
-		//
-		// return null;
-		// }
-		//
-		// idleLock.unlock();
-		// return null;
-		// }
-		//
 		// void enqueue(WorkItem item) {
 		// if (idleWorkersExist) {
 		// Worker idleWorker = null;
@@ -185,7 +163,7 @@ class ThreadPool {
 	final Worker[] workers = new Worker[numWorkers];
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 
-	// final Lock idleLock = new ReentrantLock();
+	final ReentrantLock idleLock = new ReentrantLock();
 
 	// guarded by idleLock
 	// final ArrayList<WorkItem> pendingWorkItems = new ArrayList<WorkItem>();
@@ -195,9 +173,9 @@ class ThreadPool {
 			null);
 
 	// guarded by idleLock
-	// final ArrayList<Worker> idleWorkers = new ArrayList<Worker>();
+	final ArrayList<Worker> idleWorkers = new ArrayList<Worker>();
 
-	// volatile boolean idleWorkersExist;
+	volatile boolean idleWorkersExist;
 
 	ThreadPool() {
 		// Print global statistics and statistics for each worker if worker
@@ -233,42 +211,20 @@ class ThreadPool {
 	void submit(WorkItem item) {
 		pendingWork.put(item);
 
-		// Worker worker = currentWorker();
-		// if (worker != null)
-		// worker.enqueue(item);
-		// else {
-		// idleLock.lock();
-		// // startKeepAliveThread();
-		// int l = idleWorkers.size();
-		// if (l == 0) {
-		// // No one waiting to take this job.
-		// // Put it on the list of pending items, and someone will get to
-		// // it rather than becoming idle.
-		// pendingWorkItems.add(item);
-		//
-		// if (Debug.ENABLED)
-		// Debug.enqeue(null, item);
-		//
-		// if (WorkerStatistics.ENABLED)
-		// WorkerStatistics.doPendingWorkItemsAdd();
-		//
-		// idleLock.unlock();
-		// } else {
-		// // There is an idle worker. Remove it, assign it this job, and
-		// // wake it.
-		// worker = idleWorkers.remove(l - 1);
-		// idleWorkersExist = (l != 1);
-		// idleLock.unlock();
-		//
-		// if (WorkerStatistics.ENABLED)
-		// worker.stats.doIdleWorkersRemove();
-		//
-		// if (Debug.ENABLED)
-		// Debug.awakenIdle(null, item, worker);
-		//
-		// worker.tasks.put(item);
-		// worker.semaphore.release();
-		// }
-		// }
+		Worker worker;
+		idleLock.lock();
+		int l = idleWorkers.size();
+		if (l > 0) {
+			worker = idleWorkers.remove(l - 1);
+			idleWorkersExist = (l != 1);
+			idleLock.unlock();
+
+			if (WorkerStatistics.ENABLED)
+				worker.stats.doIdleWorkersRemove();
+
+			worker.semaphore.release();
+		} else {
+			idleLock.unlock();
+		}
 	}
 }
