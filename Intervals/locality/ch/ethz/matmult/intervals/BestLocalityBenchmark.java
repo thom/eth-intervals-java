@@ -5,12 +5,12 @@ import ch.ethz.intervals.Dependency;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class BestLocalityWorkerFactory extends TaskFactory {
+class BestLocalityTaskFactory extends TaskFactory {
 	@Override
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
 			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new BestLocalityMultiplicationWorker(dep, place, a, b, c,
+		return new BestLocalityMultiplicationTask(dep, place, a, b, c,
 				quadrant);
 	}
 
@@ -18,26 +18,26 @@ class BestLocalityWorkerFactory extends TaskFactory {
 	protected AdditionTask createAdditionTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new BestLocalityAdditionWorker(dep, place, a, b, c, quadrant);
+		return new BestLocalityAdditionTask(dep, place, a, b, c, quadrant);
 	}
 }
 
-class BestLocalityMultiplicationWorker extends MultiplicationTask {
-	public BestLocalityMultiplicationWorker(Dependency dep, Place place,
+class BestLocalityMultiplicationTask extends MultiplicationTask {
+	public BestLocalityMultiplicationTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new BestLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new BestLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
-class BestLocalityAdditionWorker extends AdditionTask {
-	public BestLocalityAdditionWorker(Dependency dep, Place place, Matrix a,
+class BestLocalityAdditionTask extends AdditionTask {
+	public BestLocalityAdditionTask(Dependency dep, Place place, Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new BestLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new BestLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
 public class BestLocalityBenchmark extends Benchmark {
 	public BestLocalityBenchmark() {
-		super(new BestLocalityWorkerFactory());
+		super(new BestLocalityTaskFactory());
 	}
 }

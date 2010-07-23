@@ -5,12 +5,12 @@ import ch.ethz.intervals.Dependency;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class WorstLocalityWorkerFactory extends TaskFactory {
+class WorstLocalityTaskFactory extends TaskFactory {
 	@Override
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
 			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new WorstLocalityMultiplicationWorker(dep, place, a, b, c,
+		return new WorstLocalityMultiplicationTask(dep, place, a, b, c,
 				quadrant);
 	}
 
@@ -18,26 +18,26 @@ class WorstLocalityWorkerFactory extends TaskFactory {
 	protected AdditionTask createAdditionTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new WorstLocalityAdditionWorker(dep, place, a, b, c, quadrant);
+		return new WorstLocalityAdditionTask(dep, place, a, b, c, quadrant);
 	}
 }
 
-class WorstLocalityMultiplicationWorker extends MultiplicationTask {
-	public WorstLocalityMultiplicationWorker(Dependency dep, Place place,
+class WorstLocalityMultiplicationTask extends MultiplicationTask {
+	public WorstLocalityMultiplicationTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new WorstLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new WorstLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
-class WorstLocalityAdditionWorker extends AdditionTask {
-	public WorstLocalityAdditionWorker(Dependency dep, Place place, Matrix a,
+class WorstLocalityAdditionTask extends AdditionTask {
+	public WorstLocalityAdditionTask(Dependency dep, Place place, Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new WorstLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new WorstLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
 public class WorstLocalityBenchmark extends Benchmark {
 	public WorstLocalityBenchmark() {
-		super(new WorstLocalityWorkerFactory());
+		super(new WorstLocalityTaskFactory());
 	}
 }

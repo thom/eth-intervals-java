@@ -23,12 +23,12 @@ public abstract class MatrixTask extends Interval {
 		this.quadrant = quadrant;
 	}
 
-	protected MultiplicationTask createMultiplicationWorker(Dependency dep,
+	protected MultiplicationTask createMultiplicationTask(Dependency dep,
 			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		return factory.createMultiplicationTask(dep, place, a, b, c, quadrant);
 	}
 
-	protected AdditionTask createAdditionWorker(Dependency dep, Place place,
+	protected AdditionTask createAdditionTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		return factory.createAdditionTask(dep, place, a, b, c, quadrant);
 	}

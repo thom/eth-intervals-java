@@ -3,24 +3,24 @@ package ch.ethz.matmult.threads;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class IgnorantLocalityWorkerFactory extends WorkerFactory {
+class IgnorantLocalityTaskFactory extends TaskFactory {
 	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+	protected MultiplicationTask createMultiplicationTask(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new IgnorantLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new IgnorantLocalityMultiplicationTask(a, b, c, quadrant);
 	}
 
 	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+	protected AdditionTask createAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		return new IgnorantLocalityAdditionWorker(a, b, c, quadrant);
+		return new IgnorantLocalityAdditionTask(a, b, c, quadrant);
 	}
 }
 
-class IgnorantLocalityMultiplicationWorker extends MultiplicationWorker {
-	public IgnorantLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
+class IgnorantLocalityMultiplicationTask extends MultiplicationTask {
+	public IgnorantLocalityMultiplicationTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new IgnorantLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new IgnorantLocalityTaskFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -28,10 +28,10 @@ class IgnorantLocalityMultiplicationWorker extends MultiplicationWorker {
 	}
 }
 
-class IgnorantLocalityAdditionWorker extends AdditionWorker {
-	public IgnorantLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
+class IgnorantLocalityAdditionTask extends AdditionTask {
+	public IgnorantLocalityAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new IgnorantLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new IgnorantLocalityTaskFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -41,6 +41,6 @@ class IgnorantLocalityAdditionWorker extends AdditionWorker {
 
 public class IgnorantLocalityBenchmark extends Benchmark {
 	public IgnorantLocalityBenchmark() {
-		super(new IgnorantLocalityWorkerFactory());
+		super(new IgnorantLocalityTaskFactory());
 	}
 }

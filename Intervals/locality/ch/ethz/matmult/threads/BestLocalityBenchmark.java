@@ -6,24 +6,24 @@ import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class BestLocalityWorkerFactory extends WorkerFactory {
+class BestLocalityTaskFactory extends TaskFactory {
 	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+	protected MultiplicationTask createMultiplicationTask(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new BestLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new BestLocalityMultiplicationTask(a, b, c, quadrant);
 	}
 
 	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+	protected AdditionTask createAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		return new BestLocalityAdditionWorker(a, b, c, quadrant);
+		return new BestLocalityAdditionTask(a, b, c, quadrant);
 	}
 }
 
-class BestLocalityMultiplicationWorker extends MultiplicationWorker {
-	public BestLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
+class BestLocalityMultiplicationTask extends MultiplicationTask {
+	public BestLocalityMultiplicationTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new BestLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new BestLocalityTaskFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -57,10 +57,10 @@ class BestLocalityMultiplicationWorker extends MultiplicationWorker {
 	}
 }
 
-class BestLocalityAdditionWorker extends AdditionWorker {
-	public BestLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
+class BestLocalityAdditionTask extends AdditionTask {
+	public BestLocalityAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new BestLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new BestLocalityTaskFactory(), a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -96,6 +96,6 @@ class BestLocalityAdditionWorker extends AdditionWorker {
 
 public class BestLocalityBenchmark extends Benchmark {
 	public BestLocalityBenchmark() {
-		super(new BestLocalityWorkerFactory());
+		super(new BestLocalityTaskFactory());
 	}
 }

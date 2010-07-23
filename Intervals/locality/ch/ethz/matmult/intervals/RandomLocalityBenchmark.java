@@ -5,12 +5,12 @@ import ch.ethz.intervals.Dependency;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class RandomLocalityWorkerFactory extends TaskFactory {
+class RandomLocalityTaskFactory extends TaskFactory {
 	@Override
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
 			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new RandomLocalityMultiplicationWorker(dep, place, a, b, c,
+		return new RandomLocalityMultiplicationTask(dep, place, a, b, c,
 				quadrant);
 	}
 
@@ -18,26 +18,26 @@ class RandomLocalityWorkerFactory extends TaskFactory {
 	protected AdditionTask createAdditionTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new RandomLocalityAdditionWorker(dep, place, a, b, c, quadrant);
+		return new RandomLocalityAdditionTask(dep, place, a, b, c, quadrant);
 	}
 }
 
-class RandomLocalityMultiplicationWorker extends MultiplicationTask {
-	public RandomLocalityMultiplicationWorker(Dependency dep, Place place,
+class RandomLocalityMultiplicationTask extends MultiplicationTask {
+	public RandomLocalityMultiplicationTask(Dependency dep, Place place,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new RandomLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new RandomLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
-class RandomLocalityAdditionWorker extends AdditionTask {
-	public RandomLocalityAdditionWorker(Dependency dep, Place place, Matrix a,
+class RandomLocalityAdditionTask extends AdditionTask {
+	public RandomLocalityAdditionTask(Dependency dep, Place place, Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new RandomLocalityWorkerFactory(), a, b, c, quadrant);
+		super(dep, place, new RandomLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
 public class RandomLocalityBenchmark extends Benchmark {
 	public RandomLocalityBenchmark() {
-		super(new RandomLocalityWorkerFactory());
+		super(new RandomLocalityTaskFactory());
 	}
 }

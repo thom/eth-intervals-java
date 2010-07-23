@@ -8,26 +8,26 @@ import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
-class RandomCoreLocalityWorkerFactory extends WorkerFactory {
+class RandomCoreLocalityTaskFactory extends TaskFactory {
 	@Override
-	protected MultiplicationWorker createMultiplicationWorker(Matrix a,
+	protected MultiplicationTask createMultiplicationTask(Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		return new RandomCoreLocalityMultiplicationWorker(a, b, c, quadrant);
+		return new RandomCoreLocalityMultiplicationTask(a, b, c, quadrant);
 	}
 
 	@Override
-	protected AdditionWorker createAdditionWorker(Matrix a, Matrix b, Matrix c,
+	protected AdditionTask createAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		return new RandomCoreLocalityAdditionWorker(a, b, c, quadrant);
+		return new RandomCoreLocalityAdditionTask(a, b, c, quadrant);
 	}
 }
 
-class RandomCoreLocalityMultiplicationWorker extends MultiplicationWorker {
+class RandomCoreLocalityMultiplicationTask extends MultiplicationTask {
 	private Random random;
 
-	public RandomCoreLocalityMultiplicationWorker(Matrix a, Matrix b, Matrix c,
+	public RandomCoreLocalityMultiplicationTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new RandomCoreLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new RandomCoreLocalityTaskFactory(), a, b, c, quadrant);
 		random = new Random();
 	}
 
@@ -42,12 +42,12 @@ class RandomCoreLocalityMultiplicationWorker extends MultiplicationWorker {
 	}
 }
 
-class RandomCoreLocalityAdditionWorker extends AdditionWorker {
+class RandomCoreLocalityAdditionTask extends AdditionTask {
 	private Random random;
 
-	public RandomCoreLocalityAdditionWorker(Matrix a, Matrix b, Matrix c,
+	public RandomCoreLocalityAdditionTask(Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(new RandomCoreLocalityWorkerFactory(), a, b, c, quadrant);
+		super(new RandomCoreLocalityTaskFactory(), a, b, c, quadrant);
 		random = new Random();
 	}
 
@@ -64,6 +64,6 @@ class RandomCoreLocalityAdditionWorker extends AdditionWorker {
 
 public class RandomCoreLocalityBenchmark extends Benchmark {
 	public RandomCoreLocalityBenchmark() {
-		super(new RandomCoreLocalityWorkerFactory());
+		super(new RandomCoreLocalityTaskFactory());
 	}
 }
