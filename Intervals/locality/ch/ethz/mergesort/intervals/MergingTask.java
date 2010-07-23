@@ -11,7 +11,7 @@ public class MergingTask extends MergeSortTask {
 
 	public MergingTask(@ParentForNew("Parent") Dependency dep, Place place,
 			int id, MergeSortTask left, MergeSortTask right) {
-		super(dep, place, "merging-worker-", id);
+		super(dep, place, "merging-task-", id);
 		this.left = left;
 		this.right = right;
 	}

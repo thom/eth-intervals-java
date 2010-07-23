@@ -4,8 +4,8 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.mergesort.Main;
 
-class BestLocalitySortingWorker extends SortingWorker {
-	public BestLocalitySortingWorker(int id, int node, int size) {
+class BestLocalitySortingTask extends SortingTask {
+	public BestLocalitySortingTask(int id, int node, int size) {
 		super(id, node, size);
 	}
 
@@ -20,9 +20,9 @@ class BestLocalitySortingWorker extends SortingWorker {
 	}
 }
 
-class BestLocalityMergingWorker extends MergingWorker {
-	public BestLocalityMergingWorker(int id, int node, MergeSortWorker left,
-			MergeSortWorker right) {
+class BestLocalityMergingTask extends MergingTask {
+	public BestLocalityMergingTask(int id, int node, MergeSortTask left,
+			MergeSortTask right) {
 		super(id, node, left, right);
 	}
 
@@ -43,13 +43,13 @@ public class BestLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int node, int size) {
-		return new BestLocalitySortingWorker(id, node, size);
+	public SortingTask createSortingTask(int id, int node, int size) {
+		return new BestLocalitySortingTask(id, node, size);
 	}
 
 	@Override
-	public MergingWorker createMergingWorker(int id, int node,
-			MergeSortWorker left, MergeSortWorker right) {
-		return new BestLocalityMergingWorker(id, node, left, right);
+	public MergingTask createMergingTask(int id, int node,
+			MergeSortTask left, MergeSortTask right) {
+		return new BestLocalityMergingTask(id, node, left, right);
 	}
 }

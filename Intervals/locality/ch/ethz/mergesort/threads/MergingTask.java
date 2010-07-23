@@ -2,13 +2,13 @@ package ch.ethz.mergesort.threads;
 
 import ch.ethz.mergesort.Merger;
 
-public abstract class MergingWorker extends MergeSortWorker {
-	protected final MergeSortWorker left;
-	protected final MergeSortWorker right;
+public abstract class MergingTask extends MergeSortTask {
+	protected final MergeSortTask left;
+	protected final MergeSortTask right;
 
-	public MergingWorker(int id, int node, MergeSortWorker left,
-			MergeSortWorker right) {
-		super("merging-worker-", id, node);
+	public MergingTask(int id, int node, MergeSortTask left,
+			MergeSortTask right) {
+		super("merging-task-", id, node);
 		this.left = left;
 		this.right = right;
 	}

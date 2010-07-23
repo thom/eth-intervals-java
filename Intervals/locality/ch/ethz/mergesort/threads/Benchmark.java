@@ -8,43 +8,43 @@ import ch.ethz.util.LocalityBenchmark;
 public abstract class Benchmark extends LocalityBenchmark {
 	private int sortersPerNode;
 	private int numberOfSorters;
-	private ArrayList<MergingWorker> mergingWorkers;
-	private SortingWorker[] sortingWorkers;
+	private ArrayList<MergingTask> mergingTasks;
+	private SortingTask[] sortingTasks;
 
 	public Benchmark() {
 		this.sortersPerNode = Main.sortersPerNode;
 		this.numberOfSorters = Main.units.nodesSize() * sortersPerNode;
 	}
 
-	public abstract SortingWorker createSortingWorker(int id, int unit, int size);
+	public abstract SortingTask createSortingTask(int id, int unit, int size);
 
-	public abstract MergingWorker createMergingWorker(int id, int unit,
-			MergeSortWorker left, MergeSortWorker right);
+	public abstract MergingTask createMergingTask(int id, int unit,
+			MergeSortTask left, MergeSortTask right);
 
 	public long run() {
 		startBenchmark();
 
-		// Create workers hierarchy
-		sortingWorkers = new SortingWorker[numberOfSorters];
+		// Create tasks hierarchy
+		sortingTasks = new SortingTask[numberOfSorters];
 		int sorterArraySize = Main.arraySize / numberOfSorters;
 		for (int i = 0; i < numberOfSorters; i++) {
-			sortingWorkers[i] = createSortingWorker(i, i / sortersPerNode,
+			sortingTasks[i] = createSortingTask(i, i / sortersPerNode,
 					sorterArraySize);
 		}
-		mergingWorkers = new ArrayList<MergingWorker>();
-		createMergerHierarchy(numberOfSorters / 2, 0, sortingWorkers);
+		mergingTasks = new ArrayList<MergingTask>();
+		createMergerHierarchy(numberOfSorters / 2, 0, sortingTasks);
 
-		// Start workers
-		for (SortingWorker sw : sortingWorkers) {
+		// Start tasks
+		for (SortingTask sw : sortingTasks) {
 			sw.start();
 		}
-		for (MergingWorker mw : mergingWorkers) {
+		for (MergingTask mw : mergingTasks) {
 			mw.start();
 		}
 
-		// Wait for workers to finish
-		MergingWorker lastMerger = mergingWorkers
-				.get(mergingWorkers.size() - 1);
+		// Wait for tasks to finish
+		MergingTask lastMerger = mergingTasks
+				.get(mergingTasks.size() - 1);
 		try {
 			lastMerger.join();
 		} catch (InterruptedException e) {
@@ -66,15 +66,15 @@ public abstract class Benchmark extends LocalityBenchmark {
 	}
 
 	private void createMergerHierarchy(int number, int id,
-			MergeSortWorker[] pred) {
-		MergeSortWorker[] newPred = new MergeSortWorker[number];
+			MergeSortTask[] pred) {
+		MergeSortTask[] newPred = new MergeSortTask[number];
 		int newId = id;
 		if (!(number == 0)) {
 			for (int i = 0; i < number; i++) {
-				MergingWorker mw = createMergingWorker(newId, pred[2 * i].node,
+				MergingTask mw = createMergingTask(newId, pred[2 * i].node,
 						pred[2 * i], pred[(2 * i) + 1]);
 				newPred[i] = mw;
-				mergingWorkers.add(mw);
+				mergingTasks.add(mw);
 				newId += 1;
 			}
 			createMergerHierarchy(number / 2, newId, newPred);

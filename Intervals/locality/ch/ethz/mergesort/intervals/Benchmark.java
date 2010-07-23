@@ -30,7 +30,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 	public long run() {
 		startBenchmark();
 
-		// Create workers hierarchy
+		// Create tasks hierarchy
 		sortingTasks = new SortingTask[numberOfSorters];
 		mergingTasks = new ArrayList<MergingTask>();
 		final int sorterArraySize = Main.arraySize / numberOfSorters;

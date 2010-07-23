@@ -6,10 +6,10 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.mergesort.Main;
 
-class RandomNodeLocalitySortingWorker extends SortingWorker {
+class RandomNodeLocalitySortingTask extends SortingTask {
 	private Random random;
 
-	public RandomNodeLocalitySortingWorker(int id, int unit, int size) {
+	public RandomNodeLocalitySortingTask(int id, int unit, int size) {
 		super(id, unit, size);
 		random = new Random();
 	}
@@ -26,11 +26,11 @@ class RandomNodeLocalitySortingWorker extends SortingWorker {
 	}
 }
 
-class RandomNodeLocalityMergingWorker extends MergingWorker {
+class RandomNodeLocalityMergingTask extends MergingTask {
 	private Random random;
 
-	public RandomNodeLocalityMergingWorker(int id, int unit,
-			MergeSortWorker left, MergeSortWorker right) {
+	public RandomNodeLocalityMergingTask(int id, int unit,
+			MergeSortTask left, MergeSortTask right) {
 		super(id, unit, left, right);
 		random = new Random();
 	}
@@ -53,13 +53,13 @@ public class RandomNodeLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int unit, int size) {
-		return new RandomNodeLocalitySortingWorker(id, unit, size);
+	public SortingTask createSortingTask(int id, int unit, int size) {
+		return new RandomNodeLocalitySortingTask(id, unit, size);
 	}
 
 	@Override
-	public MergingWorker createMergingWorker(int id, int unit,
-			MergeSortWorker left, MergeSortWorker right) {
-		return new RandomNodeLocalityMergingWorker(id, unit, left, right);
+	public MergingTask createMergingTask(int id, int unit,
+			MergeSortTask left, MergeSortTask right) {
+		return new RandomNodeLocalityMergingTask(id, unit, left, right);
 	}
 }

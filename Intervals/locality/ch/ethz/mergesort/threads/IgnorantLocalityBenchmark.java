@@ -1,7 +1,7 @@
 package ch.ethz.mergesort.threads;
 
-class IgnorantLocalitySortingWorker extends SortingWorker {
-	public IgnorantLocalitySortingWorker(int id, int node, int size) {
+class IgnorantLocalitySortingTask extends SortingTask {
+	public IgnorantLocalitySortingTask(int id, int node, int size) {
 		super(id, node, size);
 	}
 
@@ -10,9 +10,9 @@ class IgnorantLocalitySortingWorker extends SortingWorker {
 	}
 }
 
-class IgnorantLocalityMergingWorker extends MergingWorker {
-	public IgnorantLocalityMergingWorker(int id, int node,
-			MergeSortWorker left, MergeSortWorker right) {
+class IgnorantLocalityMergingTask extends MergingTask {
+	public IgnorantLocalityMergingTask(int id, int node,
+			MergeSortTask left, MergeSortTask right) {
 		super(id, node, left, right);
 	}
 
@@ -27,13 +27,13 @@ public class IgnorantLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingWorker createSortingWorker(int id, int node, int size) {
-		return new IgnorantLocalitySortingWorker(id, node, size);
+	public SortingTask createSortingTask(int id, int node, int size) {
+		return new IgnorantLocalitySortingTask(id, node, size);
 	}
 
 	@Override
-	public MergingWorker createMergingWorker(int id, int node,
-			MergeSortWorker left, MergeSortWorker right) {
-		return new IgnorantLocalityMergingWorker(id, node, left, right);
+	public MergingTask createMergingTask(int id, int node,
+			MergeSortTask left, MergeSortTask right) {
+		return new IgnorantLocalityMergingTask(id, node, left, right);
 	}
 }

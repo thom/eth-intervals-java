@@ -10,7 +10,7 @@ public class SortingTask extends MergeSortTask {
 
 	public SortingTask(@ParentForNew("Parent") Dependency dep, Place place,
 			int id, int size) {
-		super(dep, place, "sorting-worker-", id);
+		super(dep, place, "sorting-task-", id);
 		this.size = size;
 	}
 
