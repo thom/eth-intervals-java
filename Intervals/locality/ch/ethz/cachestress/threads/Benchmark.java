@@ -11,13 +11,12 @@ public abstract class Benchmark extends LocalityBenchmark {
 		this.tasksPerUnit = Main.tasksPerUnit;
 	}
 
-	public abstract CacheStressTask createCacheStressTask(int id,
-			int[] array);
+	public abstract CacheStressTask createCacheStressTask(int id, int[] array);
 
 	public long run() {
 		startBenchmark();
 
-		CacheStressTask[] tasks = new CacheStressTask[units];
+		CacheStressTask[] tasks = new CacheStressTask[tasksPerUnit * units];
 		int[] array1 = createRandomIntegerArray(Main.arraySize);
 		int[] array2 = createRandomIntegerArray(Main.arraySize);
 
