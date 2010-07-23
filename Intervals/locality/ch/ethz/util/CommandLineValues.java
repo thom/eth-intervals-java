@@ -9,11 +9,14 @@ public abstract class CommandLineValues {
 	@Option(name = "-m", aliases = { "--machine" }, usage = "machine name, options: Mafushi (default), Marvin")
 	private Machine machine = Machine.Mafushi;
 
-	@Option(name = "-t", aliases = { "--type" }, usage = "benchmark type, options: threads (default), intervals, single", metaVar = "TYPE")
+	@Option(name = "-t", aliases = { "--type" }, usage = "benchmark type, options: threads (default), threadpool, intervals, single", metaVar = "TYPE")
 	private BenchmarkType type = BenchmarkType.threads;
 
 	@Option(name = "-l", aliases = { "--locality" }, usage = "locality, options: Best (default), Ignorant, Random, Worst, (BestCol, BestDiag, BestRow, RandomCore, RandomNode)", metaVar = "LOCALITY")
 	private Locality locality = Locality.Best;
+
+	@Option(name = "-p", aliases = { "--threads" }, usage = "number of threads to use in the threadpool, default value: cores of machine (only used when type is threadpool)")
+	private int threads = machine.getUnits().size();
 
 	@Option(name = "-r", aliases = { "--runs" }, usage = "number of runs, default value: 10")
 	private int runs = 10;
@@ -31,6 +34,10 @@ public abstract class CommandLineValues {
 
 	public Locality getLocality() {
 		return locality;
+	}
+
+	public int getThreads() {
+		return threads;
 	}
 
 	public int getRuns() {

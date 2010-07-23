@@ -24,6 +24,7 @@ public abstract class BenchmarkApp {
 	protected final Machine machine;
 	protected final BenchmarkType type;
 	protected final Locality locality;
+	protected final int threads;
 	protected final int runs;
 	protected final int kbest;
 
@@ -59,6 +60,7 @@ public abstract class BenchmarkApp {
 
 		type = values.getType();
 		locality = values.getLocality();
+		threads = values.getThreads();
 		runs = values.getRuns();
 		kbest = values.getKbest();
 
@@ -80,6 +82,11 @@ public abstract class BenchmarkApp {
 				machine.toString().toLowerCase(), units.size(), type.toString()
 						.toLowerCase());
 
+		if (type == BenchmarkType.threadpool) {
+			System.out
+					.printf("Number of threads in thread pool: %s\n", threads);
+		}
+
 		if (additional != null) {
 			System.out.println(additional);
 		}
@@ -89,9 +96,13 @@ public abstract class BenchmarkApp {
 		Class<?> klass;
 
 		try {
-			klass = Class.forName(String.format("%s.%s.%s", packageName, type
-					.toString(), (type == BenchmarkType.single) ? "Benchmark"
-					: locality.toString() + "LocalityBenchmark"));
+			klass = Class
+					.forName(String.format(
+							"%s.%s.%s",
+							packageName,
+							type.toString(),
+							((type == BenchmarkType.single) || (type == BenchmarkType.threadpool)) ? "Benchmark"
+									: locality.toString() + "LocalityBenchmark"));
 			benchmark = (LocalityBenchmark) klass.getConstructor()
 					.newInstance();
 		} catch (Exception e) {

@@ -1,5 +1,5 @@
 package ch.ethz.util;
 
 public enum BenchmarkType {
-	intervals, threads, single
+	intervals, threads, threadpool, single
 }
