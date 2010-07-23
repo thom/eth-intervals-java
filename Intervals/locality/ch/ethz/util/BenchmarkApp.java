@@ -9,6 +9,7 @@ import ch.ethz.hwloc.Units;
 
 public abstract class BenchmarkApp {
 	public static Units units = Machine.Mafushi.getUnits();
+	public static int threads = units.size();
 
 	// Command line values
 	protected final CommandLineValues values;
@@ -24,7 +25,6 @@ public abstract class BenchmarkApp {
 	protected final Machine machine;
 	protected final BenchmarkType type;
 	protected final Locality locality;
-	protected final int threads;
 	protected final int runs;
 	protected final int kbest;
 
@@ -60,7 +60,7 @@ public abstract class BenchmarkApp {
 
 		type = values.getType();
 		locality = values.getLocality();
-		threads = values.getThreads();
+		threads = values.getThreads() == 0 ? units.size() : values.getThreads();
 		runs = values.getRuns();
 		kbest = values.getKbest();
 

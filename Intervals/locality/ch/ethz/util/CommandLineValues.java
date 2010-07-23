@@ -16,7 +16,7 @@ public abstract class CommandLineValues {
 	private Locality locality = Locality.Best;
 
 	@Option(name = "-p", aliases = { "--threads" }, usage = "number of threads to use in the threadpool, default value: cores of machine (only used when type is threadpool)")
-	private int threads = machine.getUnits().size();
+	private int threads = 0;
 
 	@Option(name = "-r", aliases = { "--runs" }, usage = "number of runs, default value: 10")
 	private int runs = 10;
