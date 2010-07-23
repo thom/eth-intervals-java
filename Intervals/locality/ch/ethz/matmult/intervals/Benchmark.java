@@ -9,7 +9,7 @@ import ch.ethz.matmult.Quadrant;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	TaskFactory factory;
+	protected TaskFactory factory;
 
 	public Benchmark(TaskFactory factory) {
 		this.factory = factory;

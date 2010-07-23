@@ -6,7 +6,7 @@ import ch.ethz.matmult.Quadrant;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	WorkerFactory factory;
+	protected WorkerFactory factory;
 
 	public Benchmark(WorkerFactory factory) {
 		this.factory = factory;
