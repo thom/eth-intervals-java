@@ -1,7 +1,7 @@
 package ch.ethz.cachestress.threads;
 
-class IgnorantLocalityCacheStressWorker extends CacheStressWorker {
-	public IgnorantLocalityCacheStressWorker(int id, int[] array) {
+class IgnorantLocalityCacheStressTask extends CacheStressTask {
+	public IgnorantLocalityCacheStressTask(int id, int[] array) {
 		super(id, array);
 	}
 
@@ -16,7 +16,7 @@ public class IgnorantLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
-		return new IgnorantLocalityCacheStressWorker(id, array);
+	public CacheStressTask createCacheStressTask(int id, int[] array) {
+		return new IgnorantLocalityCacheStressTask(id, array);
 	}
 }

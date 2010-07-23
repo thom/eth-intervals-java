@@ -17,7 +17,7 @@ public class WorstLocalityBenchmark extends Benchmark {
 		// }
 		//
 		// // Debug output
-		// // System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
+		// // System.out.printf("ID: %d, Unit: %d\n", getTaskId(), unit);
 		//
 		// Affinity.set(Main.units.get(unit));
 

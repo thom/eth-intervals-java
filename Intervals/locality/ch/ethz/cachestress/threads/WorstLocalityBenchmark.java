@@ -4,10 +4,10 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
-class WorstLocalityCacheStressWorker extends CacheStressWorker {
+class WorstLocalityCacheStressTask extends CacheStressTask {
 	private int units;
 
-	public WorstLocalityCacheStressWorker(int id, int[] array) {
+	public WorstLocalityCacheStressTask(int id, int[] array) {
 		super(id, array);
 		units = Main.units.size();
 	}
@@ -21,7 +21,7 @@ class WorstLocalityCacheStressWorker extends CacheStressWorker {
 			}
 
 			// Debug output
-			// System.out.printf("ID: %d, Unit: %d\n", getWorkerId(), unit);
+			// System.out.printf("ID: %d, Unit: %d\n", getTaskId(), unit);
 
 			Affinity.set(Main.units.get(unit));
 		} catch (SetAffinityException e) {
@@ -38,7 +38,7 @@ public class WorstLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
-		return new WorstLocalityCacheStressWorker(id, array);
+	public CacheStressTask createCacheStressTask(int id, int[] array) {
+		return new WorstLocalityCacheStressTask(id, array);
 	}
 }

@@ -1,10 +1,10 @@
 package ch.ethz.cachestress;
 
-public class Worker {
+public class Task {
 	public final int id;
 	public final int array[];
 
-	public Worker(int id, int[] array) {
+	public Task(int id, int[] array) {
 		this.id = id;
 		this.array = array;
 	}

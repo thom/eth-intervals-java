@@ -4,41 +4,41 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	private int units, workersPerUnit;
+	private int units, tasksPerUnit;
 
 	public Benchmark() {
 		this.units = Main.units.size();
-		this.workersPerUnit = Main.workersPerUnit;
+		this.tasksPerUnit = Main.tasksPerUnit;
 	}
 
-	public abstract CacheStressWorker createCacheStressWorker(int id,
+	public abstract CacheStressTask createCacheStressTask(int id,
 			int[] array);
 
 	public long run() {
 		startBenchmark();
 
-		CacheStressWorker[] workers = new CacheStressWorker[units];
+		CacheStressTask[] tasks = new CacheStressTask[units];
 		int[] array1 = createRandomIntegerArray(Main.arraySize);
 		int[] array2 = createRandomIntegerArray(Main.arraySize);
 
-		// Create workers
-		for (int i = 0; i < workersPerUnit * units; i++) {
+		// Create tasks
+		for (int i = 0; i < tasksPerUnit * units; i++) {
 			if ((i % units) < 4) {
-				workers[i] = createCacheStressWorker(i, array1);
+				tasks[i] = createCacheStressTask(i, array1);
 			} else {
-				workers[i] = createCacheStressWorker(i, array2);
+				tasks[i] = createCacheStressTask(i, array2);
 			}
 		}
 
-		// Start workers
-		for (int i = 0; i < workersPerUnit * units; i++) {
-			workers[i].start();
+		// Start tasks
+		for (int i = 0; i < tasksPerUnit * units; i++) {
+			tasks[i].start();
 		}
 
-		// Wait for workers to finish
-		for (int i = 0; i < workersPerUnit * units; i++) {
+		// Wait for tasks to finish
+		for (int i = 0; i < tasksPerUnit * units; i++) {
 			try {
-				workers[i].join();
+				tasks[i].join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

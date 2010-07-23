@@ -4,8 +4,8 @@ import ch.ethz.cachestress.Main;
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
-class BestLocalityCacheStressWorker extends CacheStressWorker {
-	public BestLocalityCacheStressWorker(int id, int[] array) {
+class BestLocalityCacheStressTask extends CacheStressTask {
+	public BestLocalityCacheStressTask(int id, int[] array) {
 		super(id, array);
 	}
 
@@ -27,7 +27,7 @@ public class BestLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public CacheStressWorker createCacheStressWorker(int id, int[] array) {
-		return new BestLocalityCacheStressWorker(id, array);
+	public CacheStressTask createCacheStressTask(int id, int[] array) {
+		return new BestLocalityCacheStressTask(id, array);
 	}
 }
