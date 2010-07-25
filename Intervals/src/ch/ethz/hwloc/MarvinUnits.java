@@ -23,4 +23,9 @@ public class MarvinUnits implements Units {
 	public int nodesSize() {
 		return nodes.length;
 	}
+
+	@Override
+	public int unitsPerNode() {
+		return units.length / nodes.length;
+	}
 }

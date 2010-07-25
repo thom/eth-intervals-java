@@ -8,4 +8,6 @@ public interface Units {
 	public int[] getNode(int id);
 
 	public int nodesSize();
+
+	public int unitsPerNode();
 }
