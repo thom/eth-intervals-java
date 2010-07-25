@@ -1,6 +1,6 @@
 package ch.ethz.matmult.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.EmptyInterval;
 import ch.ethz.intervals.Interval;
@@ -14,9 +14,9 @@ public abstract class MultiplicationTask extends MatrixTask {
 	private Matrix lhs, rhs;
 
 	public MultiplicationTask(@ParentForNew("Parent") Dependency dep,
-			Place place, TaskFactory factory, Matrix a, Matrix b, Matrix c,
+			PlaceID placeID, TaskFactory factory, Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(dep, place, "multiplication-task-", factory, a, b, c, quadrant);
+		super(dep, placeID, "multiplication-task-", factory, a, b, c, quadrant);
 		this.lhs = new Matrix(a.getDim());
 		this.rhs = new Matrix(a.getDim());
 	}
@@ -36,10 +36,10 @@ public abstract class MultiplicationTask extends MatrixTask {
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
 					MultiplicationTask mult0 = createMultiplicationTask(
-							parent, place, aa[row][0], bb[0][col],
+							parent, placeID, aa[row][0], bb[0][col],
 							ll[row][col], quadrants[row][col]);
 					MultiplicationTask mult1 = createMultiplicationTask(
-							parent, place, aa[row][1], bb[1][col],
+							parent, placeID, aa[row][1], bb[1][col],
 							rr[row][col], quadrants[row][col]);
 
 					Intervals.addHb(mult0, barrier);
@@ -48,7 +48,7 @@ public abstract class MultiplicationTask extends MatrixTask {
 			}
 
 			// Do sum
-			AdditionTask add = createAdditionTask(this, place, lhs, rhs, c,
+			AdditionTask add = createAdditionTask(this, placeID, lhs, rhs, c,
 					quadrant);
 			Intervals.addHb(barrier, add);
 		}

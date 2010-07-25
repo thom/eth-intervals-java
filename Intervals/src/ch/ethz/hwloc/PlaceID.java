@@ -1,5 +1,5 @@
 package ch.ethz.hwloc;
 
-public interface Place {
+public interface PlaceID {
 	// TODO
 }

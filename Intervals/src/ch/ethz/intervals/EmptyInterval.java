@@ -1,6 +1,6 @@
 package ch.ethz.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 
 public class EmptyInterval extends Interval {
 	public EmptyInterval(@ParentForNew("Parent") Dependency dep, String name) {
@@ -8,8 +8,8 @@ public class EmptyInterval extends Interval {
 	}
 
 	public EmptyInterval(@ParentForNew("Parent") Dependency dep, String name,
-			Place place) {
-		super(dep, name, place);
+			PlaceID placeID) {
+		super(dep, name, placeID);
 	}
 
 	@Override

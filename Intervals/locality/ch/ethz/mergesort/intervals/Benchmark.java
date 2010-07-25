@@ -2,7 +2,7 @@ package ch.ethz.mergesort.intervals;
 
 import java.util.ArrayList;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.Interval;
 import ch.ethz.intervals.Intervals;
@@ -21,10 +21,10 @@ public abstract class Benchmark extends LocalityBenchmark {
 		this.numberOfSorters = Main.units.nodesSize() * sortersPerNode;
 	}
 
-	public abstract SortingTask createSortingTask(Dependency dep, Place place,
+	public abstract SortingTask createSortingTask(Dependency dep, PlaceID placeID,
 			int id, int size);
 
-	public abstract MergingTask createMergingTask(Dependency dep, Place place,
+	public abstract MergingTask createMergingTask(Dependency dep, PlaceID placeID,
 			int id, MergeSortTask left, MergeSortTask right);
 
 	public long run() {
@@ -71,7 +71,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 			for (int i = 0; i < number; i++) {
 				MergeSortTask left = pred[2 * i];
 				MergeSortTask right = pred[(2 * i) + 1];
-				MergingTask merger = createMergingTask(dep, left.place, newId,
+				MergingTask merger = createMergingTask(dep, left.placeID, newId,
 						left, right);
 				newPred[i] = merger;
 				mergingTasks.add(merger);

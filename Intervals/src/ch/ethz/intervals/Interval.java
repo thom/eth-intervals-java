@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import pcollections.Empty;
 import pcollections.HashTreePSet;
 import pcollections.PSet;
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.ThreadPool.Worker;
 import ch.ethz.intervals.guard.Guard;
 import ch.ethz.intervals.mirror.IntervalMirror;
@@ -27,21 +27,21 @@ implements Dependency, Guard, IntervalMirror
 	public final @Is("Parent") Interval parent;
 	public final Point start;
 	public final Point end;
-	public final Place place;
+	public final PlaceID placeID;
 	
 	public Interval(@ParentForNew("Parent") Dependency dep) {
 		this(dep, null, null);
 	}
 
-	public Interval(@ParentForNew("Parent") Dependency dep, Place place) {
-		this(dep, null, place);
+	public Interval(@ParentForNew("Parent") Dependency dep, PlaceID placeID) {
+		this(dep, null, placeID);
 	}
 	
 	public Interval(@ParentForNew("Parent") Dependency dep, String name) {
 		this(dep, name, null);
 	}
 
-	public Interval(@ParentForNew("Parent") Dependency dep, String name, Place place) {
+	public Interval(@ParentForNew("Parent") Dependency dep, String name, PlaceID placeID) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
 		else
@@ -64,7 +64,7 @@ implements Dependency, Guard, IntervalMirror
 		if(parent != null)
 			current.checkCanAddChild(parent);
 		
-		this.place = place;
+		this.placeID = placeID;
 		this.name = name;
 		this.parent = parent;
 		end = new Point(name, Point.FLAG_END, parentEnd, 2, this);
@@ -397,13 +397,13 @@ implements Dependency, Guard, IntervalMirror
 		this(name, current, parent, pntFlags, startWaitCount, endWaitCount, null);
 	}
 
-	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount, Place place) {
+	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount, PlaceID placeID) {
 		if (Config.DUPLICATING_QUEUE)
 			runningState = new AtomicReference<RunningState>(RunningState.INIT);
 		else
 			runningState = null;
 
-		this.place = place;
+		this.placeID = placeID;
 		this.state = State.WAIT;
 		this.name = name;
 		this.parent = parent;		

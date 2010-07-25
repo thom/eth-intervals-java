@@ -2,7 +2,7 @@ package ch.ethz.intervals;
 
 import java.util.Set;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 
 final class InlineIntervalImpl<R> extends Interval {
 	InlineTask<R> task;
@@ -14,8 +14,8 @@ final class InlineIntervalImpl<R> extends Interval {
 	}
 
 	InlineIntervalImpl(String name, Current current, InlineTask<R> task,
-			Place place) {
-		super(name, current, current.inter, Point.FLAG_SYNCHRONOUS, 1, 2, place);
+			PlaceID placeID) {
+		super(name, current, current.inter, Point.FLAG_SYNCHRONOUS, 1, 2, placeID);
 		this.task = task;
 	}
 

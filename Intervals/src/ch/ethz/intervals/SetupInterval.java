@@ -1,7 +1,7 @@
 package ch.ethz.intervals;
 
 import static ch.ethz.intervals.Intervals.addHb;
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 
 /**
  * Base class for tasks with an extended setup period.
@@ -13,8 +13,8 @@ public abstract class SetupInterval extends Interval {
 		super(dep);
 	}
 
-	public SetupInterval(@ParentForNew("Parent") Dependency dep, Place place) {
-		super(dep, place);
+	public SetupInterval(@ParentForNew("Parent") Dependency dep, PlaceID placeID) {
+		super(dep, placeID);
 	}
 
 	public SetupInterval(@ParentForNew("Parent") Dependency dep, String name) {
@@ -22,8 +22,8 @@ public abstract class SetupInterval extends Interval {
 	}
 
 	public SetupInterval(@ParentForNew("Parent") Dependency dep, String name,
-			Place place) {
-		super(dep, name, place);
+			PlaceID placeID) {
+		super(dep, name, placeID);
 	}
 
 	@Override

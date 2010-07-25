@@ -1,6 +1,6 @@
 package ch.ethz.matmult.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
@@ -8,31 +8,31 @@ import ch.ethz.matmult.Quadrant;
 class RandomLocalityTaskFactory extends TaskFactory {
 	@Override
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
-			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
+			PlaceID placeID, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new RandomLocalityMultiplicationTask(dep, place, a, b, c,
+		return new RandomLocalityMultiplicationTask(dep, placeID, a, b, c,
 				quadrant);
 	}
 
 	@Override
-	protected AdditionTask createAdditionTask(Dependency dep, Place place,
+	protected AdditionTask createAdditionTask(Dependency dep, PlaceID placeID,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		// TODO: Set place
-		return new RandomLocalityAdditionTask(dep, place, a, b, c, quadrant);
+		return new RandomLocalityAdditionTask(dep, placeID, a, b, c, quadrant);
 	}
 }
 
 class RandomLocalityMultiplicationTask extends MultiplicationTask {
-	public RandomLocalityMultiplicationTask(Dependency dep, Place place,
+	public RandomLocalityMultiplicationTask(Dependency dep, PlaceID placeID,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new RandomLocalityTaskFactory(), a, b, c, quadrant);
+		super(dep, placeID, new RandomLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 
 class RandomLocalityAdditionTask extends AdditionTask {
-	public RandomLocalityAdditionTask(Dependency dep, Place place, Matrix a,
+	public RandomLocalityAdditionTask(Dependency dep, PlaceID placeID, Matrix a,
 			Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, new RandomLocalityTaskFactory(), a, b, c, quadrant);
+		super(dep, placeID, new RandomLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
 

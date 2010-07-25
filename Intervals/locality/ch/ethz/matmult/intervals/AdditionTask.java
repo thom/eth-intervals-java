@@ -1,6 +1,6 @@
 package ch.ethz.matmult.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.EmptyInterval;
 import ch.ethz.intervals.Interval;
@@ -11,9 +11,9 @@ import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 public abstract class AdditionTask extends MatrixTask {
-	public AdditionTask(@ParentForNew("Parent") Dependency dep, Place place,
+	public AdditionTask(@ParentForNew("Parent") Dependency dep, PlaceID placeID,
 			TaskFactory factory, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		super(dep, place, "addition-task-", factory, a, b, c, quadrant);
+		super(dep, placeID, "addition-task-", factory, a, b, c, quadrant);
 	}
 
 	public void run() {
@@ -27,7 +27,7 @@ public abstract class AdditionTask extends MatrixTask {
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
-					AdditionTask add = createAdditionTask(parent, place,
+					AdditionTask add = createAdditionTask(parent, placeID,
 							aa[row][col], bb[row][col], cc[row][col], quadrant);
 					Intervals.addHb(add, barrier);
 				}

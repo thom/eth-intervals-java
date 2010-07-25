@@ -1,6 +1,6 @@
 package ch.ethz.mergesort.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.ParentForNew;
 import ch.ethz.mergesort.Sorter;
@@ -8,9 +8,9 @@ import ch.ethz.mergesort.Sorter;
 public class SortingTask extends MergeSortTask {
 	protected final int size;
 
-	public SortingTask(@ParentForNew("Parent") Dependency dep, Place place,
+	public SortingTask(@ParentForNew("Parent") Dependency dep, PlaceID placeID,
 			int id, int size) {
-		super(dep, place, "sorting-task-", id);
+		super(dep, placeID, "sorting-task-", id);
 		this.size = size;
 	}
 

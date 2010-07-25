@@ -1,6 +1,6 @@
 package ch.ethz.matmult.intervals;
 
-import ch.ethz.hwloc.Place;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 import ch.ethz.intervals.Interval;
 import ch.ethz.intervals.ParentForNew;
@@ -12,10 +12,10 @@ public abstract class MatrixTask extends Interval {
 	protected final Matrix a, b, c;
 	protected final Quadrant quadrant;
 
-	public MatrixTask(@ParentForNew("Parent") Dependency dep, Place place,
+	public MatrixTask(@ParentForNew("Parent") Dependency dep, PlaceID placeID,
 			String name, TaskFactory factory, Matrix a, Matrix b, Matrix c,
 			Quadrant quadrant) {
-		super(dep, name, place);
+		super(dep, name, placeID);
 		this.factory = factory;
 		this.a = a;
 		this.b = b;
@@ -24,12 +24,12 @@ public abstract class MatrixTask extends Interval {
 	}
 
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
-			Place place, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		return factory.createMultiplicationTask(dep, place, a, b, c, quadrant);
+			PlaceID placeID, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
+		return factory.createMultiplicationTask(dep, placeID, a, b, c, quadrant);
 	}
 
-	protected AdditionTask createAdditionTask(Dependency dep, Place place,
+	protected AdditionTask createAdditionTask(Dependency dep, PlaceID placeID,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		return factory.createAdditionTask(dep, place, a, b, c, quadrant);
+		return factory.createAdditionTask(dep, placeID, a, b, c, quadrant);
 	}
 }
