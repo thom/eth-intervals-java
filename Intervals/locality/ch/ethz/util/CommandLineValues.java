@@ -12,7 +12,7 @@ public abstract class CommandLineValues {
 	@Option(name = "-t", aliases = { "--type" }, usage = "benchmark type, options: threads (default), threadpool, intervals, single", metaVar = "TYPE")
 	private BenchmarkType type = BenchmarkType.threads;
 
-	@Option(name = "-l", aliases = { "--locality" }, usage = "locality, options: Best (default), Ignorant, Random, Worst, (BestCol, BestDiag, BestRow, RandomCore, RandomNode)", metaVar = "LOCALITY")
+	@Option(name = "-l", aliases = { "--locality" }, usage = "locality, options: Best (default), Ignorant, Random, Worst, (BestCol, BestDiag, BestRow, RandomCore, RandomPlace)", metaVar = "LOCALITY")
 	private Locality locality = Locality.Best;
 
 	@Option(name = "-p", aliases = { "--threads" }, usage = "number of threads to use in the threadpool, default value: cores of machine (only used when type is threadpool)")

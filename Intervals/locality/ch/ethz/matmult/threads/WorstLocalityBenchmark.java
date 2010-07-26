@@ -8,8 +8,8 @@ import ch.ethz.matmult.Quadrant;
 
 class WorstLocalityTaskFactory extends TaskFactory {
 	@Override
-	protected MultiplicationTask createMultiplicationTask(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
+	protected MultiplicationTask createMultiplicationTask(Matrix a, Matrix b,
+			Matrix c, Quadrant quadrant) {
 		return new WorstLocalityMultiplicationTask(a, b, c, quadrant);
 	}
 
@@ -30,16 +30,16 @@ class WorstLocalityMultiplicationTask extends MultiplicationTask {
 		try {
 			switch (quadrant) {
 			case Quadrant0:
-				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				Affinity.set(Main.places.get(1));
 				break;
 			case Quadrant1:
-				Affinity.set(Main.units.getNode(0));
+				Affinity.set(Main.places.get(0));
 				break;
 			case Quadrant2:
-				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				Affinity.set(Main.places.get(1));
 				break;
 			case Quadrant3:
-				Affinity.set(Main.units.getNode(0));
+				Affinity.set(Main.places.get(0));
 				break;
 			}
 		} catch (SetAffinityException e) {
@@ -60,16 +60,16 @@ class WorstLocalityAdditionTask extends AdditionTask {
 		try {
 			switch (quadrant) {
 			case Quadrant0:
-				Affinity.set(Main.units.getNode(0));
+				Affinity.set(Main.places.get(0));
 				break;
 			case Quadrant1:
-				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				Affinity.set(Main.places.get(1));
 				break;
 			case Quadrant2:
-				Affinity.set(Main.units.getNode(0));
+				Affinity.set(Main.places.get(0));
 				break;
 			case Quadrant3:
-				Affinity.set(Main.units.getNode(1 % Main.units.nodesSize()));
+				Affinity.set(Main.places.get(1));
 				break;
 			}
 		} catch (SetAffinityException e) {

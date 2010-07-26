@@ -10,8 +10,8 @@ import ch.ethz.matmult.Quadrant;
 
 class RandomCoreLocalityTaskFactory extends TaskFactory {
 	@Override
-	protected MultiplicationTask createMultiplicationTask(Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
+	protected MultiplicationTask createMultiplicationTask(Matrix a, Matrix b,
+			Matrix c, Quadrant quadrant) {
 		return new RandomCoreLocalityMultiplicationTask(a, b, c, quadrant);
 	}
 
@@ -33,7 +33,8 @@ class RandomCoreLocalityMultiplicationTask extends MultiplicationTask {
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get(random.nextInt(Main.units.size())));
+			Affinity.set(Main.places.getUnit(random
+					.nextInt(Main.places.unitsLength)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +54,8 @@ class RandomCoreLocalityAdditionTask extends AdditionTask {
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get(random.nextInt(Main.units.size())));
+			Affinity.set(Main.places.getUnit(random
+					.nextInt(Main.places.unitsLength)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
