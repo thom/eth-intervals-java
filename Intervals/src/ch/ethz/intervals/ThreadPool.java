@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import ch.ethz.hwloc.Affinity;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.intervals.ThreadPool.Place.Worker;
 
@@ -67,12 +68,17 @@ class ThreadPool {
 			 * @return true if work was done, false otherwise
 			 */
 			boolean doWork(boolean block) {
-				WorkItem item;
-				if ((item = owner.tasks.take()) == null) {
-					// if ((item = stealTask()) == null) {
-					Thread.yield();
-					return false;
-					// }
+				WorkItem item = owner.tasks.take();
+
+				if (item == null) {
+					if (numberOfPlaces > 1) {
+						item = stealTask();
+					}
+
+					if (item == null) {
+						Thread.yield();
+						return false;
+					}
 				}
 
 				if (Debug.ENABLED)
@@ -85,12 +91,14 @@ class ThreadPool {
 
 			private WorkItem stealTask() {
 				WorkItem item;
-				for (int victim = id + 1; victim < numWorkers; victim++)
+
+				for (int victim = id + 1; victim < numberOfPlaces; victim++)
 					if ((item = stealTaskFrom(victim)) != null)
 						return item;
-				for (int victim = 0; victim < id; victim++)
+				for (int victim = 0; victim < numberOfPlaces; victim++)
 					if ((item = stealTaskFrom(victim)) != null)
 						return item;
+
 				return null;
 			}
 
@@ -98,90 +106,90 @@ class ThreadPool {
 				if (WorkerStatistics.ENABLED)
 					stats.doStealAttempt();
 
-				Worker victim = workers[victimId];
-				// WorkItem item = victim.tasks.steal(this);
+				Place victim = places[victimId];
+				WorkItem item = victim.tasks.steal(this);
 
-				// if (item == null) {
-				// if (WorkerStatistics.ENABLED)
-				// stats.doStealFailure();
-				// } else {
-				// if (WorkerStatistics.ENABLED)
-				// stats.doStealSuccess();
-				// }
-
-				return null;
-				// return item;
-			}
-
-			private WorkItem findPendingWork(boolean block) {
-				idleLock.lock();
-
-				if (WorkerStatistics.ENABLED)
-					this.stats.doPendingWorkItemsRemoveAttempt();
-
-				int l = pendingWorkItems.size();
-				if (l != 0) {
-					WorkItem item = pendingWorkItems.remove(l - 1);
-
-					if (WorkerStatistics.ENABLED)
-						this.stats.doPendingWorkItemsRemove();
-
-					idleLock.unlock();
-					return item;
-				} else if (block) {
-					idleWorkersExist = true;
-					idleWorkers.add(this);
-
-					if (WorkerStatistics.ENABLED)
-						this.stats.doIdleWorkersAdd();
-
-					int length = idleWorkers.size();
-					if (length == numWorkers) {
-						// All workers asleep.
-						// stopKeepAliveThread();
-					}
-
-					idleLock.unlock();
-
-					// blocks until release() is invoked by some other worker
-					semaphore.acquireUninterruptibly();
-
-					return null;
+				if (WorkerStatistics.ENABLED) {
+					if (item == null)
+						stats.doStealFailure();
+					else
+						stats.doStealSuccess();
 				}
 
-				idleLock.unlock();
-				return null;
+				return item;
 			}
+
+			// private WorkItem findPendingWork(boolean block) {
+			// idleLock.lock();
+			//
+			// if (WorkerStatistics.ENABLED)
+			// this.stats.doPendingWorkItemsRemoveAttempt();
+			//
+			// int l = pendingWorkItems.size();
+			// if (l != 0) {
+			// WorkItem item = pendingWorkItems.remove(l - 1);
+			//
+			// if (WorkerStatistics.ENABLED)
+			// this.stats.doPendingWorkItemsRemove();
+			//
+			// idleLock.unlock();
+			// return item;
+			// } else if (block) {
+			// idleWorkersExist = true;
+			// idleWorkers.add(this);
+			//
+			// if (WorkerStatistics.ENABLED)
+			// this.stats.doIdleWorkersAdd();
+			//
+			// int length = idleWorkers.size();
+			// if (length == numWorkers) {
+			// // All workers asleep.
+			// // stopKeepAliveThread();
+			// }
+			//
+			// idleLock.unlock();
+			//
+			// // blocks until release() is invoked by some other worker
+			// semaphore.acquireUninterruptibly();
+			//
+			// return null;
+			// }
+			//
+			// idleLock.unlock();
+			// return null;
+			// }
 
 			void enqueue(WorkItem item) {
-				if (idleWorkersExist) {
-					Worker idleWorker = null;
-					idleLock.lock();
-					try {
-						int l = idleWorkers.size();
-						if (l != 0) {
-							idleWorker = idleWorkers.remove(l - 1);
-							idleWorkersExist = (l != 1);
-						}
-					} finally {
-						idleLock.unlock();
-					}
+				owner.tasks.put(item);
 
-					if (idleWorker != null) {
-						if (Debug.ENABLED)
-							Debug.awakenIdle(this, item, idleWorker);
-
-						if (WorkerStatistics.ENABLED)
-							idleWorker.stats.doIdleWorkersRemove();
-
-						// idleWorker.tasks.put(item);
-						idleWorker.semaphore.release();
-						return;
-					}
-				}
-				if (Debug.ENABLED)
-					Debug.enqeue(this, item);
-				tasks.put(item);
+				// if (idleWorkersExist) {
+				// Worker idleWorker = null;
+				// idleLock.lock();
+				// try {
+				// int l = idleWorkers.size();
+				// if (l != 0) {
+				// idleWorker = idleWorkers.remove(l - 1);
+				// idleWorkersExist = (l != 1);
+				// }
+				// } finally {
+				// idleLock.unlock();
+				// }
+				//
+				// if (idleWorker != null) {
+				// if (Debug.ENABLED)
+				// Debug.awakenIdle(this, item, idleWorker);
+				//
+				// if (WorkerStatistics.ENABLED)
+				// idleWorker.stats.doIdleWorkersRemove();
+				//
+				// // idleWorker.tasks.put(item);
+				// idleWorker.semaphore.release();
+				// return;
+				// }
+				// }
+				// if (Debug.ENABLED)
+				// Debug.enqeue(this, item);
+				// tasks.put(item);
 			}
 		}
 
@@ -189,7 +197,7 @@ class ThreadPool {
 		final WorkStealingQueue tasks;
 		final int numberOfWorkers;
 		final Worker[] workers;
-		
+
 		// TODO: add queue for sleeping workers
 
 		Place(int id, int[] units) {
@@ -234,6 +242,7 @@ class ThreadPool {
 
 	final int numberOfPlaces = Config.places.length;
 	final Place[] places = new Place[numberOfPlaces];
+	int lastPlace = 0;
 
 	ThreadPool() {
 		// Print global statistics and statistics for each worker if worker
@@ -276,8 +285,22 @@ class ThreadPool {
 	}
 
 	void submit(WorkItem item) {
-		// TODO: fix for >= 1 places
-		places[0].tasks.put(item);
+		PlaceID placeID = item.getPlaceID();
+
+		if (placeID == null) {
+			// TODO: fix for >= 1 places
+			Worker worker = currentWorker();
+			if (worker != null)
+				worker.enqueue(item);
+			else {
+				// TODO: round robin assignment
+				// places[0].tasks.put(item);
+				places[lastPlace].tasks.put(item);
+				lastPlace = (lastPlace + 1) % numberOfPlaces;
+			}
+		} else {
+			places[placeID.id].tasks.put(item);
+		}
 
 		// Worker worker = currentWorker();
 		// if (worker != null)
@@ -317,5 +340,4 @@ class ThreadPool {
 		// }
 		// }
 	}
-
 }
