@@ -5,8 +5,8 @@ import ch.ethz.mergesort.Sorter;
 public abstract class SortingTask extends MergeSortTask {
 	protected final int size;
 
-	public SortingTask(int id, int node, int size) {
-		super("sorting-task-", id, node);
+	public SortingTask(int id, int place, int size) {
+		super("sorting-task-", id, place);
 		this.size = size;
 	}
 

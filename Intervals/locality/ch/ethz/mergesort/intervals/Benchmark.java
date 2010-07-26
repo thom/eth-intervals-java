@@ -11,21 +11,21 @@ import ch.ethz.mergesort.Main;
 import ch.ethz.util.LocalityBenchmark;
 
 public abstract class Benchmark extends LocalityBenchmark {
-	private int sortersPerNode;
+	private int sortersPerPlace;
 	private int numberOfSorters;
 	private ArrayList<MergingTask> mergingTasks;
 	private SortingTask[] sortingTasks;
 
 	public Benchmark() {
-		this.sortersPerNode = Main.sortersPerNode;
-		this.numberOfSorters = Main.units.nodesSize() * sortersPerNode;
+		this.sortersPerPlace = Main.sortersPerPlace;
+		this.numberOfSorters = Main.places.length * sortersPerPlace;
 	}
 
-	public abstract SortingTask createSortingTask(Dependency dep, PlaceID placeID,
-			int id, int size);
+	public abstract SortingTask createSortingTask(Dependency dep,
+			PlaceID placeID, int id, int size);
 
-	public abstract MergingTask createMergingTask(Dependency dep, PlaceID placeID,
-			int id, MergeSortTask left, MergeSortTask right);
+	public abstract MergingTask createMergingTask(Dependency dep,
+			PlaceID placeID, int id, MergeSortTask left, MergeSortTask right);
 
 	public long run() {
 		startBenchmark();
@@ -71,8 +71,8 @@ public abstract class Benchmark extends LocalityBenchmark {
 			for (int i = 0; i < number; i++) {
 				MergeSortTask left = pred[2 * i];
 				MergeSortTask right = pred[(2 * i) + 1];
-				MergingTask merger = createMergingTask(dep, left.placeID, newId,
-						left, right);
+				MergingTask merger = createMergingTask(dep, left.placeID,
+						newId, left, right);
 				newPred[i] = merger;
 				mergingTasks.add(merger);
 				newId += 1;

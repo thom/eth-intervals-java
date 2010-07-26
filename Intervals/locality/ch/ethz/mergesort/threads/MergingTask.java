@@ -6,9 +6,9 @@ public abstract class MergingTask extends MergeSortTask {
 	protected final MergeSortTask left;
 	protected final MergeSortTask right;
 
-	public MergingTask(int id, int node, MergeSortTask left,
+	public MergingTask(int id, int place, MergeSortTask left,
 			MergeSortTask right) {
-		super("merging-task-", id, node);
+		super("merging-task-", id, place);
 		this.left = left;
 		this.right = right;
 	}

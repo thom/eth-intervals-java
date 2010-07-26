@@ -6,19 +6,19 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.mergesort.Main;
 
-class RandomCoreLocalitySortingTask extends SortingTask {
+class RandomPlaceLocalitySortingTask extends SortingTask {
 	private Random random;
-	private int units;
+	private int places;
 
-	public RandomCoreLocalitySortingTask(int id, int unit, int size) {
+	public RandomPlaceLocalitySortingTask(int id, int unit, int size) {
 		super(id, unit, size);
 		random = new Random();
-		units = Main.places.unitsLength;
+		places = Main.places.length;
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.places.getUnit(random.nextInt(units)));
+			Affinity.set(Main.places.get(random.nextInt(places)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -27,20 +27,20 @@ class RandomCoreLocalitySortingTask extends SortingTask {
 	}
 }
 
-class RandomCoreLocalityMergingTask extends MergingTask {
+class RandomPlaceLocalityMergingTask extends MergingTask {
 	private Random random;
-	private int units;
+	private int places;
 
-	public RandomCoreLocalityMergingTask(int id, int unit, MergeSortTask left,
+	public RandomPlaceLocalityMergingTask(int id, int unit, MergeSortTask left,
 			MergeSortTask right) {
 		super(id, unit, left, right);
 		random = new Random();
-		units = Main.places.unitsLength;
+		places = Main.places.length;
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.places.getUnit(random.nextInt(units)));
+			Affinity.set(Main.places.get(random.nextInt(places)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -49,19 +49,19 @@ class RandomCoreLocalityMergingTask extends MergingTask {
 	}
 }
 
-public class RandomCoreLocalityBenchmark extends Benchmark {
-	public RandomCoreLocalityBenchmark() {
+public class RandomPlaceLocalityBenchmark extends Benchmark {
+	public RandomPlaceLocalityBenchmark() {
 		super();
 	}
 
 	@Override
 	public SortingTask createSortingTask(int id, int unit, int size) {
-		return new RandomCoreLocalitySortingTask(id, unit, size);
+		return new RandomPlaceLocalitySortingTask(id, unit, size);
 	}
 
 	@Override
 	public MergingTask createMergingTask(int id, int unit, MergeSortTask left,
 			MergeSortTask right) {
-		return new RandomCoreLocalityMergingTask(id, unit, left, right);
+		return new RandomPlaceLocalityMergingTask(id, unit, left, right);
 	}
 }

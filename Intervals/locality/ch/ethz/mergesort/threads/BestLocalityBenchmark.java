@@ -5,13 +5,13 @@ import ch.ethz.hwloc.SetAffinityException;
 import ch.ethz.mergesort.Main;
 
 class BestLocalitySortingTask extends SortingTask {
-	public BestLocalitySortingTask(int id, int node, int size) {
-		super(id, node, size);
+	public BestLocalitySortingTask(int id, int place, int size) {
+		super(id, place, size);
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.getNode(node));
+			Affinity.set(Main.places.get(place));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -21,14 +21,14 @@ class BestLocalitySortingTask extends SortingTask {
 }
 
 class BestLocalityMergingTask extends MergingTask {
-	public BestLocalityMergingTask(int id, int node, MergeSortTask left,
+	public BestLocalityMergingTask(int id, int place, MergeSortTask left,
 			MergeSortTask right) {
-		super(id, node, left, right);
+		super(id, place, left, right);
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.getNode(node));
+			Affinity.set(Main.places.get(place));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 		}
@@ -43,13 +43,13 @@ public class BestLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingTask createSortingTask(int id, int node, int size) {
-		return new BestLocalitySortingTask(id, node, size);
+	public SortingTask createSortingTask(int id, int place, int size) {
+		return new BestLocalitySortingTask(id, place, size);
 	}
 
 	@Override
-	public MergingTask createMergingTask(int id, int node,
-			MergeSortTask left, MergeSortTask right) {
-		return new BestLocalityMergingTask(id, node, left, right);
+	public MergingTask createMergingTask(int id, int place, MergeSortTask left,
+			MergeSortTask right) {
+		return new BestLocalityMergingTask(id, place, left, right);
 	}
 }

@@ -10,13 +10,13 @@ import ch.ethz.util.LocalityBenchmark;
 
 public class Benchmark extends LocalityBenchmark {
 	protected ExecutorService exec;
-	private int sortersPerNode;
+	private int sortersPerPlace;
 	private int numberOfSorters;
 	private ArrayList<Future<Integer[]>> mergingTasks;
 
 	public Benchmark() {
-		this.sortersPerNode = Main.sortersPerNode;
-		this.numberOfSorters = Main.units.nodesSize() * sortersPerNode;
+		this.sortersPerPlace = Main.sortersPerPlace;
+		this.numberOfSorters = Main.places.length * sortersPerPlace;
 	}
 
 	public SortingTask createSortingTask(int id, int size) {

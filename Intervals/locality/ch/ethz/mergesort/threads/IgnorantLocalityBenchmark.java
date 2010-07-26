@@ -1,8 +1,8 @@
 package ch.ethz.mergesort.threads;
 
 class IgnorantLocalitySortingTask extends SortingTask {
-	public IgnorantLocalitySortingTask(int id, int node, int size) {
-		super(id, node, size);
+	public IgnorantLocalitySortingTask(int id, int place, int size) {
+		super(id, place, size);
 	}
 
 	public void run() {
@@ -11,9 +11,9 @@ class IgnorantLocalitySortingTask extends SortingTask {
 }
 
 class IgnorantLocalityMergingTask extends MergingTask {
-	public IgnorantLocalityMergingTask(int id, int node,
-			MergeSortTask left, MergeSortTask right) {
-		super(id, node, left, right);
+	public IgnorantLocalityMergingTask(int id, int place, MergeSortTask left,
+			MergeSortTask right) {
+		super(id, place, left, right);
 	}
 
 	public void run() {
@@ -27,13 +27,13 @@ public class IgnorantLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public SortingTask createSortingTask(int id, int node, int size) {
-		return new IgnorantLocalitySortingTask(id, node, size);
+	public SortingTask createSortingTask(int id, int place, int size) {
+		return new IgnorantLocalitySortingTask(id, place, size);
 	}
 
 	@Override
-	public MergingTask createMergingTask(int id, int node,
-			MergeSortTask left, MergeSortTask right) {
-		return new IgnorantLocalityMergingTask(id, node, left, right);
+	public MergingTask createMergingTask(int id, int place, MergeSortTask left,
+			MergeSortTask right) {
+		return new IgnorantLocalityMergingTask(id, place, left, right);
 	}
 }
