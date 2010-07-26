@@ -9,7 +9,7 @@ class WorstLocalityCacheStressTask extends CacheStressTask {
 
 	public WorstLocalityCacheStressTask(int id, int[] array) {
 		super(id, array);
-		units = Main.units.size();
+		units = Main.places.unitsLength;
 	}
 
 	public void run() {
@@ -23,7 +23,7 @@ class WorstLocalityCacheStressTask extends CacheStressTask {
 			// Debug output
 			// System.out.printf("ID: %d, Unit: %d\n", getTaskId(), unit);
 
-			Affinity.set(Main.units.get(unit));
+			Affinity.set(Main.places.getUnit(unit));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);

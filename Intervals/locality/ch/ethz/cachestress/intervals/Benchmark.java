@@ -11,7 +11,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 	private int units, tasksPerUnit;
 
 	public Benchmark() {
-		this.units = Main.units.size();
+		this.units = Main.places.unitsLength;
 		this.tasksPerUnit = Main.tasksPerUnit;
 	}
 

@@ -12,13 +12,13 @@ class RandomLocalityCacheStressTask extends CacheStressTask {
 
 	public RandomLocalityCacheStressTask(int id, int[] array) {
 		super(id, array);
-		units = Main.units.size();
+		units = Main.places.unitsLength;
 		random = new Random();
 	}
 
 	public void run() {
 		try {
-			Affinity.set(Main.units.get(random.nextInt(units)));
+			Affinity.set(Main.places.getUnit(random.nextInt(units)));
 		} catch (SetAffinityException e) {
 			e.printStackTrace();
 			System.exit(1);
