@@ -92,7 +92,10 @@ implements Dependency, Guard, IntervalMirror
 		
 		dep.addHbToNewInterval(this);		
 	}
-	
+
+	public PlaceID getPlaceID() {
+		return placeID;
+	}
 
 	/**
 	 * Defines the behavior of the interval.  Must be
