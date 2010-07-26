@@ -159,38 +159,38 @@ class ThreadPool {
 			// return null;
 			// }
 
-			void enqueue(WorkItem item) {
-				owner.tasks.put(item);
-
-				// if (idleWorkersExist) {
-				// Worker idleWorker = null;
-				// idleLock.lock();
-				// try {
-				// int l = idleWorkers.size();
-				// if (l != 0) {
-				// idleWorker = idleWorkers.remove(l - 1);
-				// idleWorkersExist = (l != 1);
-				// }
-				// } finally {
-				// idleLock.unlock();
-				// }
-				//
-				// if (idleWorker != null) {
-				// if (Debug.ENABLED)
-				// Debug.awakenIdle(this, item, idleWorker);
-				//
-				// if (WorkerStatistics.ENABLED)
-				// idleWorker.stats.doIdleWorkersRemove();
-				//
-				// // idleWorker.tasks.put(item);
-				// idleWorker.semaphore.release();
-				// return;
-				// }
-				// }
-				// if (Debug.ENABLED)
-				// Debug.enqeue(this, item);
-				// tasks.put(item);
-			}
+			// void enqueue(WorkItem item) {
+			// owner.tasks.put(item);
+			//
+			// if (idleWorkersExist) {
+			// Worker idleWorker = null;
+			// idleLock.lock();
+			// try {
+			// int l = idleWorkers.size();
+			// if (l != 0) {
+			// idleWorker = idleWorkers.remove(l - 1);
+			// idleWorkersExist = (l != 1);
+			// }
+			// } finally {
+			// idleLock.unlock();
+			// }
+			//
+			// if (idleWorker != null) {
+			// if (Debug.ENABLED)
+			// Debug.awakenIdle(this, item, idleWorker);
+			//
+			// if (WorkerStatistics.ENABLED)
+			// idleWorker.stats.doIdleWorkersRemove();
+			//
+			// // idleWorker.tasks.put(item);
+			// idleWorker.semaphore.release();
+			// return;
+			// }
+			// }
+			// if (Debug.ENABLED)
+			// Debug.enqeue(this, item);
+			// tasks.put(item);
+			// }
 		}
 
 		final int id;
@@ -198,7 +198,9 @@ class ThreadPool {
 		final int numberOfWorkers;
 		final Worker[] workers;
 
-		// TODO: add queue for sleeping workers
+		// TODO: add queue for idle workers
+
+		// TODO: add volatile boolean idleWorkersExist
 
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
@@ -222,6 +224,11 @@ class ThreadPool {
 
 		public String toString() {
 			return "(" + getName() + ")";
+		}
+
+		public void enqueue(WorkItem item) {
+			// TODO: Wake sleeping worker if there's any
+			tasks.put(item);
 		}
 	}
 
@@ -287,18 +294,16 @@ class ThreadPool {
 		PlaceID placeID = item.getPlaceID();
 
 		if (placeID == null) {
-			// TODO: fix for >= 1 places
 			Worker worker = currentWorker();
 			if (worker != null)
-				worker.enqueue(item);
+				worker.owner.enqueue(item);
 			else {
-				// TODO: round robin assignment
-				// places[0].tasks.put(item);
-				places[lastPlace].tasks.put(item);
+				// Round robin assignment
+				places[lastPlace].enqueue(item);
 				lastPlace = (lastPlace + 1) % numberOfPlaces;
 			}
 		} else {
-			places[placeID.id].tasks.put(item);
+			places[placeID.id].enqueue(item);
 		}
 
 		// Worker worker = currentWorker();
