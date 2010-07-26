@@ -203,7 +203,6 @@ class ThreadPool {
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
 			this.id = id;
-			System.out.println(getName());
 
 			// TODO: Set place as owner
 			this.tasks = Config.createQueue(null);
