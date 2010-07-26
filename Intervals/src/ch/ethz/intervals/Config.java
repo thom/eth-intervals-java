@@ -7,7 +7,7 @@ public class Config {
 	/**
 	 * Creation method to simplify switching to another machine
 	 */
-	public static final Units units = new MafushiUnits();
+	public static final Places places = new MafushiPlaces();
 
 	/**
 	 * Should workers be bound to cores?

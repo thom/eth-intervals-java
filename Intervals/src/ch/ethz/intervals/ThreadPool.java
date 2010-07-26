@@ -9,6 +9,10 @@ import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.SetAffinityException;
 
 class ThreadPool {
+	final class Place extends Thread {
+		// TODO: Implement places
+	}
+
 	final class Worker extends Thread {
 		final int id;
 		final Semaphore semaphore = new Semaphore(1);
@@ -35,7 +39,7 @@ class ThreadPool {
 		public void run() {
 			if (Config.AFFINITY) {
 				try {
-					Affinity.set(Config.units.get(id));
+					Affinity.set(Config.places.getUnit(id));
 				} catch (SetAffinityException e) {
 					e.printStackTrace();
 				}
@@ -177,7 +181,7 @@ class ThreadPool {
 
 	}
 
-	final int numWorkers = Config.units.size();
+	final int numWorkers = Config.places.unitsLength;
 	final Worker[] workers = new Worker[numWorkers];
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 
