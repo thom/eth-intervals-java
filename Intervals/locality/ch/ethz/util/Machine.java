@@ -1,15 +1,16 @@
 package ch.ethz.util;
 
-import ch.ethz.hwloc.Units;
+import ch.ethz.hwloc.Places;
 
 public enum Machine {
 	Mafushi, Marvin;
 
-	public Units getUnits() {
-		Units result = null;
+	public Places getPlaces() {
+		Places result = null;
 
 		try {
-			result = (Units) Class.forName("ch.ethz.hwloc." + name() + "Units")
+			result = (Places) Class
+					.forName("ch.ethz.hwloc." + name() + "Places")
 					.getConstructor().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();

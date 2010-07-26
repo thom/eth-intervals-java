@@ -5,11 +5,11 @@ import java.util.Arrays;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import ch.ethz.hwloc.Units;
+import ch.ethz.hwloc.Places;
 
 public abstract class BenchmarkApp {
-	public static Units units = Machine.Mafushi.getUnits();
-	public static int threads = units.size();
+	public static Places places = Machine.Mafushi.getPlaces();
+	public static int threads = places.unitsLength;
 
 	// Command line values
 	protected final CommandLineValues values;
@@ -56,11 +56,12 @@ public abstract class BenchmarkApp {
 		}
 
 		machine = values.getMachine();
-		units = machine.getUnits();
+		places = machine.getPlaces();
 
 		type = values.getType();
 		locality = values.getLocality();
-		threads = values.getThreads() == 0 ? units.size() : values.getThreads();
+		threads = values.getThreads() == 0 ? places.unitsLength : values
+				.getThreads();
 		runs = values.getRuns();
 		kbest = values.getKbest();
 
@@ -78,9 +79,10 @@ public abstract class BenchmarkApp {
 					.toLowerCase());
 		}
 
-		System.out.printf("Machine: %s\nUnits: %s\nImplemenation: %s\n",
-				machine.toString().toLowerCase(), units.size(), type.toString()
-						.toLowerCase());
+		System.out.printf(
+				"Machine: %s\nPlaces: %s\nUnits: %s\nImplemenation: %s\n",
+				machine.toString().toLowerCase(), places.length,
+				places.unitsLength, type.toString().toLowerCase());
 
 		if (type == BenchmarkType.threadpool) {
 			System.out
