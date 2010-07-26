@@ -1,6 +1,6 @@
 package ch.ethz.intervals;
 
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 public class DuplicatingWorkStealingDeque implements WorkStealingQueue {
 	private final Worker owner;

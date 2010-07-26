@@ -2,7 +2,7 @@ package ch.ethz.intervals;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 public class WorkStealingDeque implements WorkStealingQueue {
 	private volatile WorkItem[] tasks = new WorkItem[1024];

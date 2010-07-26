@@ -2,7 +2,7 @@ package ch.ethz.intervals;
 
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 // Called "Lazy" because the owner of the deque only lazily updates the
 // location of the head of deque, i.e., only when it tries to pop something

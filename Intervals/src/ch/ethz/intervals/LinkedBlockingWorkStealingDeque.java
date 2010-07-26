@@ -2,7 +2,7 @@ package ch.ethz.intervals;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 public class LinkedBlockingWorkStealingDeque extends
 		LinkedBlockingDeque<WorkItem> implements WorkStealingQueue {
