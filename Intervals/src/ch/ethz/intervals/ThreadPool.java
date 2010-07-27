@@ -14,16 +14,14 @@ class ThreadPool {
 	final class Place extends Thread {
 		final class Worker extends Thread {
 			final int id;
-			final Place owner;
+			final Place place;
 			final Semaphore semaphore = new Semaphore(1);
-
-			// TODO: Move to place
 			final WorkerStatistics stats;
 
-			Worker(int id, Place owner) {
-				super(owner.getName() + "-Worker-" + id);
+			Worker(int id, Place place) {
+				super(place.getName() + "-Worker-" + id);
 				this.id = id;
-				this.owner = owner;
+				this.place = place;
 
 				if (WorkerStatistics.ENABLED) {
 					stats = new WorkerStatistics(this);
@@ -69,7 +67,7 @@ class ThreadPool {
 			 * @return true if work was done, false otherwise
 			 */
 			boolean doWork(boolean block) {
-				WorkItem item = owner.tasks.take();
+				WorkItem item = place.tasks.take();
 
 				if (item == null) {
 					if (numberOfPlaces > 1) {
@@ -78,14 +76,14 @@ class ThreadPool {
 
 					if (item == null) {
 						if (block) {
-							owner.idleLock.lock();
-							owner.idleWorkersExist = true;
-							owner.idleWorkers.add(this);
+							place.idleLock.lock();
+							place.idleWorkersExist = true;
+							place.idleWorkers.add(this);
 
 							if (WorkerStatistics.ENABLED)
 								this.stats.doIdleWorkersAdd();
 
-							owner.idleLock.unlock();
+							place.idleLock.unlock();
 
 							// Blocks until release() is invoked by place
 							semaphore.acquireUninterruptibly();
@@ -138,6 +136,7 @@ class ThreadPool {
 		final WorkStealingQueue tasks;
 		final int numberOfWorkers;
 		final Worker[] workers;
+		final PlaceStatistics stats;
 		final Lock idleLock = new ReentrantLock();
 		volatile boolean idleWorkersExist;
 
@@ -159,6 +158,12 @@ class ThreadPool {
 
 			for (Worker worker : workers)
 				worker.start();
+
+			if (PlaceStatistics.ENABLED) {
+				stats = new PlaceStatistics(this);
+			} else {
+				stats = null;
+			}
 		}
 
 		public String toString() {
@@ -187,30 +192,35 @@ class ThreadPool {
 		}
 	}
 
-	final int numWorkers = Config.places.unitsLength;
-	final Worker[] workers = new Worker[numWorkers];
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 	final int numberOfPlaces = Config.places.length;
 	final Place[] places = new Place[numberOfPlaces];
 	int nextPlace = 0;
 
 	ThreadPool() {
-		// TODO: Fix statistics
 		// Print global statistics and statistics for each worker if worker
 		// statistics is enabled
-		// if (WorkerStatistics.ENABLED) {
-		// Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-		// public void run() {
-		// // Global statistics
-		// WorkerStatistics.globalPrint();
-		//
-		// // Statistics for each worker
-		// for (Worker worker : workers) {
-		// worker.stats.print();
-		// }
-		// }
-		// }));
-		// }
+		if (PlaceStatistics.ENABLED) {
+			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+				public void run() {
+					// Global place statistics
+					// PlaceStatistics.globalPrint();
+
+					// Global worker statistics
+					WorkerStatistics.globalPrint();
+
+					// Statistics for each place
+					for (Place place : places) {
+						// place.stats.print();
+
+						// Statistics for each worker
+						for (Worker worker : place.workers) {
+							worker.stats.print();
+						}
+					}
+				}
+			}));
+		}
 
 		for (int i = 0; i < numberOfPlaces; i++) {
 			Place place = new Place(i, Config.places.get(i));
@@ -232,7 +242,7 @@ class ThreadPool {
 		if (placeID == null) {
 			Worker worker = currentWorker();
 			if (worker != null)
-				worker.owner.enqueue(item);
+				worker.place.enqueue(item);
 			else {
 				// Round robin assignment
 				places[nextPlace].enqueue(item);

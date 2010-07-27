@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.ethz.intervals.ThreadPool.Place.Worker;
 
-// TODO: WorkerStatistics -> PlaceStatistics
+// TODO: Move over queue statistics to PlaceStatistics
 public class WorkerStatistics {
 	public static final boolean ENABLED = Config.STATISTICS;
 

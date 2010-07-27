@@ -35,7 +35,7 @@ public abstract class IndexedInterval extends Interval {
 
 		// By default, about 16 times as many tasks as threads.
 		int count = hi - lo;
-		int p = POOL.numWorkers;
+		int p = POOL.numberOfPlaces;
 		this.threshold = (p > 1) ? (1 + count / (p << 4)) : count;
 	}
 
