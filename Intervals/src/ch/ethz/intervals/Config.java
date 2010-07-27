@@ -1,7 +1,6 @@
 package ch.ethz.intervals;
 
-import ch.ethz.hwloc.MafushiPlaces;
-import ch.ethz.hwloc.Places;
+import ch.ethz.hwloc.*;
 import ch.ethz.intervals.ThreadPool.Place;
 
 public class Config {

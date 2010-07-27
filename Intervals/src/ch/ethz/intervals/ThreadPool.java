@@ -17,7 +17,7 @@ class ThreadPool {
 			final Place owner;
 			final Semaphore semaphore = new Semaphore(1);
 
-			// TODO: Move to place (?)
+			// TODO: Move to place
 			final WorkerStatistics stats;
 
 			Worker(int id, Place owner) {
@@ -77,8 +77,20 @@ class ThreadPool {
 					}
 
 					if (item == null) {
-						// TODO: Go to sleep instead of calling yield()
-						Thread.yield();
+						if (block) {
+							owner.idleLock.lock();
+							owner.idleWorkersExist = true;
+							owner.idleWorkers.add(this);
+
+							if (WorkerStatistics.ENABLED)
+								this.stats.doIdleWorkersAdd();
+
+							owner.idleLock.unlock();
+
+							// Blocks until release() is invoked by place
+							semaphore.acquireUninterruptibly();
+						}
+
 						return false;
 					}
 				}
@@ -90,46 +102,6 @@ class ThreadPool {
 
 				return true;
 			}
-
-			// private WorkItem findPendingWork(boolean block) {
-			// idleLock.lock();
-			//
-			// if (WorkerStatistics.ENABLED)
-			// this.stats.doPendingWorkItemsRemoveAttempt();
-			//
-			// int l = pendingWorkItems.size();
-			// if (l != 0) {
-			// WorkItem item = pendingWorkItems.remove(l - 1);
-			//
-			// if (WorkerStatistics.ENABLED)
-			// this.stats.doPendingWorkItemsRemove();
-			//
-			// idleLock.unlock();
-			// return item;
-			// } else if (block) {
-			// idleWorkersExist = true;
-			// idleWorkers.add(this);
-			//
-			// if (WorkerStatistics.ENABLED)
-			// this.stats.doIdleWorkersAdd();
-			//
-			// int length = idleWorkers.size();
-			// if (length == numWorkers) {
-			// // All workers asleep.
-			// // stopKeepAliveThread();
-			// }
-			//
-			// idleLock.unlock();
-			//
-			// // blocks until release() is invoked by some other worker
-			// semaphore.acquireUninterruptibly();
-			//
-			// return null;
-			// }
-			//
-			// idleLock.unlock();
-			// return null;
-			// }
 
 			private WorkItem stealTask() {
 				WorkItem item;
@@ -175,11 +147,8 @@ class ThreadPool {
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
 			this.id = id;
-
-			// TODO: Set place as owner
-			this.tasks = Config.createQueue(null);
-
-			this.numberOfWorkers = units.length;
+			tasks = Config.createQueue(null);
+			numberOfWorkers = units.length;
 			workers = new Worker[numberOfWorkers];
 
 			for (int i = 0; i < numberOfWorkers; i++) {
@@ -197,40 +166,25 @@ class ThreadPool {
 		}
 
 		public void enqueue(WorkItem item) {
-			// TODO: Wake sleeping worker if there's any
 			tasks.put(item);
-		}
 
-		// void enqueue(WorkItem item) {
-		// if (idleWorkersExist) {
-		// Worker idleWorker = null;
-		// idleLock.lock();
-		// try {
-		// int l = idleWorkers.size();
-		// if (l != 0) {
-		// idleWorker = idleWorkers.remove(l - 1);
-		// idleWorkersExist = (l != 1);
-		// }
-		// } finally {
-		// idleLock.unlock();
-		// }
-		//
-		// if (idleWorker != null) {
-		// if (Debug.ENABLED)
-		// Debug.awakenIdle(this, item, idleWorker);
-		//
-		// if (WorkerStatistics.ENABLED)
-		// idleWorker.stats.doIdleWorkersRemove();
-		//
-		// // idleWorker.tasks.put(item);
-		// idleWorker.semaphore.release();
-		// return;
-		// }
-		// }
-		// if (Debug.ENABLED)
-		// Debug.enqeue(this, item);
-		// tasks.put(item);
-		// }
+			// Wake sleeping worker in current place if there's any
+			Worker worker;
+			idleLock.lock();
+			int l = idleWorkers.size();
+			if (l > 0) {
+				worker = idleWorkers.remove(l - 1);
+				idleWorkersExist = (l != 1);
+				idleLock.unlock();
+
+				if (WorkerStatistics.ENABLED)
+					worker.stats.doIdleWorkersRemove();
+
+				worker.semaphore.release();
+			} else {
+				idleLock.unlock();
+			}
+		}
 	}
 
 	final int numWorkers = Config.places.unitsLength;
@@ -284,46 +238,22 @@ class ThreadPool {
 				places[nextPlace].enqueue(item);
 				nextPlace = (nextPlace + 1) % numberOfPlaces;
 
-				// TODO: Wake worker in next place
-				// Worker worker = currentWorker();
-				// if (worker != null)
-				// worker.enqueue(item);
-				// else {
-				// idleLock.lock();
-				// // startKeepAliveThread();
-				// int l = idleWorkers.size();
-				// if (l == 0) {
-				// // No one waiting to take this job.
-				// // Put it on the list of pending items, and someone will get
-				// to
-				// // it rather than becoming idle.
-				// pendingWorkItems.add(item);
-				//
-				// if (Debug.ENABLED)
-				// Debug.enqeue(null, item);
-				//
-				// if (WorkerStatistics.ENABLED)
-				// WorkerStatistics.doPendingWorkItemsAdd();
-				//
-				// idleLock.unlock();
-				// } else {
-				// // There is an idle worker. Remove it, assign it this job,
-				// and
-				// // wake it.
-				// worker = idleWorkers.remove(l - 1);
-				// idleWorkersExist = (l != 1);
-				// idleLock.unlock();
-				//
-				// if (WorkerStatistics.ENABLED)
-				// worker.stats.doIdleWorkersRemove();
-				//
-				// if (Debug.ENABLED)
-				// Debug.awakenIdle(null, item, worker);
-				//
-				// // worker.tasks.put(item);
-				// worker.semaphore.release();
-				// }
-				// }
+				// Wake worker in next place
+				Place place = places[nextPlace];
+				place.idleLock.lock();
+				int l = place.idleWorkers.size();
+				if (l > 0) {
+					worker = place.idleWorkers.remove(l - 1);
+					place.idleWorkersExist = (l != 1);
+					place.idleLock.unlock();
+
+					if (WorkerStatistics.ENABLED)
+						worker.stats.doIdleWorkersRemove();
+
+					worker.semaphore.release();
+				} else {
+					place.idleLock.unlock();
+				}
 			}
 		} else {
 			places[placeID.id].enqueue(item);
