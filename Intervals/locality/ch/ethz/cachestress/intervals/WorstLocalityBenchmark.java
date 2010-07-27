@@ -18,9 +18,9 @@ public class WorstLocalityBenchmark extends Benchmark {
 		// unit = (unit + (units / 2)) % units;
 		// }
 		//
-		// // Debug output
-		// // System.out.printf("ID: %d, Unit: %d\n", getTaskId(), unit);
-		//
+		// Debug output
+		System.out.printf("ID: %d, Place: %d\n", id, placeID.id);
+
 		// Affinity.set(Main.units.get(unit));
 
 		new CacheStressTask(dep, null, id, array);
