@@ -36,8 +36,6 @@ class ThreadPool {
 				return "(" + getName() + ")";
 			}
 
-			// TODO: Fix worker
-
 			@Override
 			public void run() {
 				if (Config.AFFINITY) {
@@ -160,8 +158,6 @@ class ThreadPool {
 			// }
 
 			// void enqueue(WorkItem item) {
-			// owner.tasks.put(item);
-			//
 			// if (idleWorkersExist) {
 			// Worker idleWorker = null;
 			// idleLock.lock();
@@ -248,7 +244,7 @@ class ThreadPool {
 
 	final int numberOfPlaces = Config.places.length;
 	final Place[] places = new Place[numberOfPlaces];
-	int lastPlace = 0;
+	int nextPlace = 0;
 
 	ThreadPool() {
 		// Print global statistics and statistics for each worker if worker
@@ -299,8 +295,10 @@ class ThreadPool {
 				worker.owner.enqueue(item);
 			else {
 				// Round robin assignment
-				places[lastPlace].enqueue(item);
-				lastPlace = (lastPlace + 1) % numberOfPlaces;
+				places[nextPlace].enqueue(item);
+				nextPlace = (nextPlace + 1) % numberOfPlaces;
+
+				// TODO: Wake worker in next place
 			}
 		} else {
 			places[placeID.id].enqueue(item);
