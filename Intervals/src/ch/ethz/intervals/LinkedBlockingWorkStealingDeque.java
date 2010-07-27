@@ -2,15 +2,16 @@ package ch.ethz.intervals;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
+import ch.ethz.intervals.ThreadPool.Place;
 import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 public class LinkedBlockingWorkStealingDeque extends
 		LinkedBlockingDeque<WorkItem> implements WorkStealingQueue {
-	private final Worker owner;
+	private final Place owner;
 
 	private static final long serialVersionUID = 1L;
 
-	public LinkedBlockingWorkStealingDeque(Worker owner) {
+	public LinkedBlockingWorkStealingDeque(Place owner) {
 		this.owner = owner;
 	}
 
@@ -19,7 +20,8 @@ public class LinkedBlockingWorkStealingDeque extends
 		super.addLast(task);
 
 		if (WorkerStatistics.ENABLED) {
-			owner.stats.doPut();
+			// TODO: Fix stats
+			// owner.stats.doPut();
 		}
 	}
 
@@ -28,10 +30,13 @@ public class LinkedBlockingWorkStealingDeque extends
 		WorkItem task = super.pollLast();
 
 		if (WorkerStatistics.ENABLED) {
-			if (task == null)
-				owner.stats.doTakeFailure();
-			else
-				owner.stats.doTakeSuccess();
+			if (task == null) {
+				// TODO: Fix stats
+				// owner.stats.doTakeFailure();
+			} else {
+				// TODO: Fix stats
+				// owner.stats.doTakeSuccess();
+			}
 		}
 
 		return task;
