@@ -22,7 +22,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 
 		// Create tasks
 		for (int i = 0; i < tasksPerUnit * units; i++) {
-			if ((i % units) < 4) {
+			if ((i % units) < (units / 2)) {
 				tasks[i] = createCacheStressTask(i, array1);
 			} else {
 				tasks[i] = createCacheStressTask(i, array2);
