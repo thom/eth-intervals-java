@@ -174,20 +174,25 @@ class ThreadPool {
 			tasks.put(item);
 
 			// Wake sleeping worker in current place if there's any
-			Worker worker;
-			idleLock.lock();
-			int l = idleWorkers.size();
-			if (l > 0) {
-				worker = idleWorkers.remove(l - 1);
-				idleWorkersExist = (l != 1);
-				idleLock.unlock();
+			if (idleWorkersExist) {
+				Worker idleWorker = null;
+				idleLock.lock();
+				try {
+					int l = idleWorkers.size();
+					if (l != 0) {
+						idleWorker = idleWorkers.remove(l - 1);
+						idleWorkersExist = (l != 1);
+					}
+				} finally {
+					idleLock.unlock();
+				}
 
-				if (WorkerStatistics.ENABLED)
-					worker.stats.doIdleWorkersRemove();
+				if (idleWorker != null) {
+					if (WorkerStatistics.ENABLED)
+						idleWorker.stats.doIdleWorkersRemove();
 
-				worker.semaphore.release();
-			} else {
-				idleLock.unlock();
+					idleWorker.semaphore.release();
+				}
 			}
 		}
 	}
@@ -246,7 +251,7 @@ class ThreadPool {
 				worker.place.enqueue(item);
 			else {
 				// Round robin assignment
-				places[nextPlace].enqueue(item);
+				Place thisPlace = places[nextPlace];
 				nextPlace = (nextPlace + 1) % numberOfPlaces;
 
 				// Wake worker in next place
@@ -265,6 +270,8 @@ class ThreadPool {
 				} else {
 					place.idleLock.unlock();
 				}
+
+				thisPlace.enqueue(item);
 			}
 		} else {
 			places[placeID.id].enqueue(item);
