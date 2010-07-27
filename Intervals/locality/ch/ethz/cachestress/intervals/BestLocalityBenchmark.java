@@ -1,5 +1,6 @@
 package ch.ethz.cachestress.intervals;
 
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 
 public class BestLocalityBenchmark extends Benchmark {
@@ -8,15 +9,8 @@ public class BestLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public void createCacheStressTask(Dependency dep, int id, int[] array) {
-		// TODO: Set correct place
-		// try {
-		// Affinity.set(Main.units.get(id % Main.units.size()));
-		// } catch (SetAffinityException e) {
-		// e.printStackTrace();
-		// System.exit(1);
-		// }
-
-		new CacheStressTask(dep, null, id, array);
+	public void createCacheStressTask(Dependency dep, PlaceID placeID, int id,
+			int[] array) {
+		new CacheStressTask(dep, placeID, id, array);
 	}
 }

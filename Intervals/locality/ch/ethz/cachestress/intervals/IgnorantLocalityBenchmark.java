@@ -1,5 +1,6 @@
 package ch.ethz.cachestress.intervals;
 
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 
 public class IgnorantLocalityBenchmark extends Benchmark {
@@ -8,7 +9,8 @@ public class IgnorantLocalityBenchmark extends Benchmark {
 	}
 
 	@Override
-	public void createCacheStressTask(Dependency dep, int id, int[] array) {
+	public void createCacheStressTask(Dependency dep, PlaceID placeID, int id,
+			int[] array) {
 		new CacheStressTask(dep, null, id, array);
 	}
 }

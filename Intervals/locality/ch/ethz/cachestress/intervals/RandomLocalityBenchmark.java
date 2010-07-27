@@ -1,22 +1,23 @@
 package ch.ethz.cachestress.intervals;
 
+import java.util.Random;
+
+import ch.ethz.cachestress.Main;
+import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
 
 public class RandomLocalityBenchmark extends Benchmark {
+	private Random random;
+
 	public RandomLocalityBenchmark() {
 		super();
+		random = new Random();
 	}
 
 	@Override
-	public void createCacheStressTask(Dependency dep, int id, int[] array) {
-		// TODO: Set correct place
-		// try {
-		// Affinity.set(Main.units.get(random.nextInt(units)));
-		// } catch (SetAffinityException e) {
-		// e.printStackTrace();
-		// System.exit(1);
-		// }
-
-		new CacheStressTask(dep, null, id, array);
+	public void createCacheStressTask(Dependency dep, PlaceID placeID, int id,
+			int[] array) {
+		new CacheStressTask(dep, Main.places.getPlaceID(random
+				.nextInt(Main.places.length)), id, array);
 	}
 }
