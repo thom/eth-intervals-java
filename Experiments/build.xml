@@ -2,7 +2,7 @@
 <project name="sampleProject" basedir="." default="compile">
 	<target name="compile" depends="create">
 		<javac destdir="bin">
-			<src path="src" />
+			<src path="locality" />
 			<classpath refid="java" />
 		</javac>
 

@@ -1,5 +1,5 @@
 bin
 doc
 debug-logs
-Locality/lib/libAffinity.so
+Experiments/lib/libAffinity.so
 Intervals/lib/libAffinity.so
