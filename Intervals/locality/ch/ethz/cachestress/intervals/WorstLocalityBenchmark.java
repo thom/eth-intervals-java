@@ -17,7 +17,7 @@ public class WorstLocalityBenchmark extends Benchmark {
 		}
 
 		// Debug output
-		System.out.printf("ID: %d, Place: %d\n", id, placeID.id);
+		// System.out.printf("ID: %d, Place: %d\n", id, placeID.id);
 
 		new CacheStressTask(dep, placeID, id, array);
 	}
