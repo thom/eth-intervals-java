@@ -2,11 +2,11 @@ package ch.ethz.intervals;
 
 import static ch.ethz.intervals.Intervals.POOL;
 
-//******************************************************
+//********************************************************
 // Note: IntReduction and LongReduction are automatically
 // generated.  Edit the version for DOUBLES only and run
 // makereductions.sh!
-//******************************************************
+//********************************************************
 
 /**
  * Reductions allow efficient, race-free parallel addition and subtraction.
@@ -26,7 +26,7 @@ public class DoubleReduction {
 
 	public DoubleReduction(double initialValue) {
 		value = initialValue;
-		int workers = POOL.numberOfPlaces;
+		int workers = POOL.numberOfWorkers;
 		values = new double[workers * PAD];
 	}
 
@@ -48,7 +48,7 @@ public class DoubleReduction {
 			synchronized (this) {
 				next = this.next;
 				if (next == null) {
-					int parSize = POOL.numberOfPlaces * PAD - length;
+					int parSize = POOL.numberOfWorkers * PAD - length;
 					int newSize = Math.max(parSize, index - length + PAD);
 					this.next = next = new DoubleReduction(0, newSize);
 				}

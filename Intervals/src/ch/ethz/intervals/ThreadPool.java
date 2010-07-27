@@ -194,6 +194,7 @@ class ThreadPool {
 
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 	final int numberOfPlaces = Config.places.length;
+	final int numberOfWorkers = Config.places.unitsLength;
 	final Place[] places = new Place[numberOfPlaces];
 	int nextPlace = 0;
 
