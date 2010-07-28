@@ -15,11 +15,6 @@ public class Config {
 	public static final boolean AFFINITY = true;
 
 	/**
-	 * Should we collect and print statistics?
-	 */
-	public static final boolean STATISTICS = false;
-
-	/**
 	 * Are we using a duplicating queue?
 	 * 
 	 * Use state (init, running, done) to make sure tasks are executed only

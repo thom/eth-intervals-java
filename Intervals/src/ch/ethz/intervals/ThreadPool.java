@@ -16,18 +16,11 @@ class ThreadPool {
 			final int id;
 			final Place place;
 			final Semaphore semaphore = new Semaphore(1);
-			final WorkerStatistics stats;
 
 			Worker(int id, Place place) {
 				super(place.getName() + "-Worker-" + id);
 				this.id = id;
 				this.place = place;
-
-				if (WorkerStatistics.ENABLED) {
-					stats = new WorkerStatistics(this);
-				} else {
-					stats = null;
-				}
 			}
 
 			public String toString() {
@@ -69,15 +62,6 @@ class ThreadPool {
 			boolean doWork(boolean block) {
 				WorkItem item = place.tasks.take();
 
-				if (WorkerStatistics.ENABLED) {
-					stats.doTakeAttempt();
-					if (item == null) {
-						stats.doTakeFailure();
-					} else {
-						stats.doTakeSuccess();
-					}
-				}
-
 				if (item == null) {
 					if (numberOfPlaces > 1) {
 						item = stealTask();
@@ -88,10 +72,6 @@ class ThreadPool {
 							place.idleLock.lock();
 							place.idleWorkersExist = true;
 							place.idleWorkers.add(this);
-
-							if (WorkerStatistics.ENABLED)
-								this.stats.doIdleWorkersAdd();
-
 							place.idleLock.unlock();
 
 							// Blocks until release() is invoked by place
@@ -124,19 +104,8 @@ class ThreadPool {
 			}
 
 			private WorkItem stealTaskFrom(int victimId) {
-				if (WorkerStatistics.ENABLED)
-					stats.doStealAttempt();
-
 				Place victim = places[victimId];
 				WorkItem item = victim.tasks.steal(this);
-
-				if (WorkerStatistics.ENABLED) {
-					if (item == null)
-						stats.doStealFailure();
-					else
-						stats.doStealSuccess();
-				}
-
 				return item;
 			}
 		}
@@ -145,7 +114,6 @@ class ThreadPool {
 		final WorkStealingQueue tasks;
 		final int numberOfWorkers;
 		final Worker[] workers;
-		final PlaceStatistics stats;
 		final Lock idleLock = new ReentrantLock();
 		volatile boolean idleWorkersExist;
 
@@ -167,12 +135,6 @@ class ThreadPool {
 
 			for (Worker worker : workers)
 				worker.start();
-
-			if (PlaceStatistics.ENABLED) {
-				stats = new PlaceStatistics(this);
-			} else {
-				stats = null;
-			}
 		}
 
 		public String toString() {
@@ -197,9 +159,6 @@ class ThreadPool {
 				}
 
 				if (idleWorker != null) {
-					if (WorkerStatistics.ENABLED)
-						idleWorker.stats.doIdleWorkersRemove();
-
 					idleWorker.semaphore.release();
 				}
 			}
@@ -213,34 +172,6 @@ class ThreadPool {
 	int nextPlace = 0;
 
 	ThreadPool() {
-		// Print global statistics and statistics for each worker if worker
-		// statistics is enabled
-		if (PlaceStatistics.ENABLED) {
-			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-				public void run() {
-					// Global place statistics
-					PlaceStatistics.globalPrint();
-
-					// Global worker statistics
-					if (WorkerStatistics.ENABLED) {
-						WorkerStatistics.globalPrint();
-					}
-
-					// Statistics for each place
-					for (Place place : places) {
-						place.stats.print();
-
-						// Statistics for each worker
-						if (WorkerStatistics.ENABLED) {
-							for (Worker worker : place.workers) {
-								worker.stats.print();
-							}
-						}
-					}
-				}
-			}));
-		}
-
 		for (int i = 0; i < numberOfPlaces; i++) {
 			Place place = new Place(i, Config.places.get(i));
 			places[i] = place;
@@ -275,10 +206,6 @@ class ThreadPool {
 					worker = place.idleWorkers.remove(l - 1);
 					place.idleWorkersExist = (l != 1);
 					place.idleLock.unlock();
-
-					if (WorkerStatistics.ENABLED)
-						worker.stats.doIdleWorkersRemove();
-
 					worker.semaphore.release();
 				} else {
 					place.idleLock.unlock();

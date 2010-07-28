@@ -7,6 +7,7 @@ import ch.ethz.intervals.ThreadPool.Place.Worker;
 
 public class LinkedBlockingWorkStealingDeque extends
 		LinkedBlockingDeque<WorkItem> implements WorkStealingQueue {
+	@SuppressWarnings("unused")
 	private final Place owner;
 
 	private static final long serialVersionUID = 1L;
@@ -18,10 +19,6 @@ public class LinkedBlockingWorkStealingDeque extends
 	@Override
 	public void put(WorkItem task) {
 		super.addLast(task);
-
-		if (PlaceStatistics.ENABLED) {
-			owner.stats.doPut();
-		}
 	}
 
 	@Override
