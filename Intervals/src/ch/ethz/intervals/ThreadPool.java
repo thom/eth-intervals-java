@@ -138,6 +138,24 @@ class ThreadPool {
 
 		public void enqueue(WorkItem item) {
 			tasks.put(item);
+
+			if (idleWorkersExist) {
+				Worker idleWorker = null;
+				idleLock.lock();
+				try {
+					int l = idleWorkers.size();
+					if (l != 0) {
+						idleWorker = idleWorkers.remove(l - 1);
+						idleWorkersExist = (l != 1);
+					}
+				} finally {
+					idleLock.unlock();
+				}
+
+				if (idleWorker != null) {
+					idleWorker.semaphore.release();
+				}
+			}
 		}
 	}
 
@@ -168,10 +186,11 @@ class ThreadPool {
 	}
 
 	void submit(WorkItem item) {
+		Worker worker;
 		PlaceID placeID = item.getPlaceID();
 
 		if (placeID == null) {
-			Worker worker = currentWorker();
+			worker = currentWorker();
 			if (worker != null)
 				worker.place.enqueue(item);
 			else {
@@ -183,18 +202,15 @@ class ThreadPool {
 			places[placeID.id].enqueue(item);
 		}
 
-		if (idleWorkersExist) {
-			Worker worker;
-			idleLock.lock();
-			int l = idleWorkers.size();
-			if (l > 0) {
-				worker = idleWorkers.remove(l - 1);
-				idleWorkersExist = (l != 1);
-				idleLock.unlock();
-				worker.semaphore.release();
-			} else {
-				idleLock.unlock();
-			}
+		idleLock.lock();
+		int l = idleWorkers.size();
+		if (l > 0) {
+			worker = idleWorkers.remove(l - 1);
+			idleWorkersExist = (l != 1);
+			idleLock.unlock();
+			worker.semaphore.release();
+		} else {
+			idleLock.unlock();
 		}
 	}
 }
