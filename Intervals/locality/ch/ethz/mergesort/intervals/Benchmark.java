@@ -38,10 +38,12 @@ public abstract class Benchmark extends LocalityBenchmark {
 		// Create intervals
 		Intervals.inline(new VoidInlineTask() {
 			public void run(Interval subinterval) {
-				for (int i = 0; i < numberOfSorters; i++) {
-					// TODO: Set correct place
-					sortingTasks[i] = createSortingTask(subinterval, null, i,
-							sorterArraySize);
+				for (int i = 0, placeNr = 0; i < numberOfSorters; i++) {
+					if (i == (placeNr + 1) * sortersPerPlace)
+						placeNr++;
+
+					sortingTasks[i] = createSortingTask(subinterval,
+							Main.places.getPlaceID(placeNr), i, sorterArraySize);
 				}
 
 				createMergerHierarchy(subinterval, numberOfSorters / 2, 0,
