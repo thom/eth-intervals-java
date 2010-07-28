@@ -35,12 +35,12 @@ public abstract class MultiplicationTask extends MatrixTask {
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
-					MultiplicationTask mult0 = createMultiplicationTask(
-							parent, placeID, aa[row][0], bb[0][col],
-							ll[row][col], quadrants[row][col]);
-					MultiplicationTask mult1 = createMultiplicationTask(
-							parent, placeID, aa[row][1], bb[1][col],
-							rr[row][col], quadrants[row][col]);
+					MultiplicationTask mult0 = createMultiplicationTask(parent,
+							aa[row][0], bb[0][col], ll[row][col],
+							quadrants[row][col]);
+					MultiplicationTask mult1 = createMultiplicationTask(parent,
+							aa[row][1], bb[1][col], rr[row][col],
+							quadrants[row][col]);
 
 					Intervals.addHb(mult0, barrier);
 					Intervals.addHb(mult1, barrier);
@@ -48,8 +48,7 @@ public abstract class MultiplicationTask extends MatrixTask {
 			}
 
 			// Do sum
-			AdditionTask add = createAdditionTask(this, placeID, lhs, rhs, c,
-					quadrant);
+			AdditionTask add = createAdditionTask(this, lhs, rhs, c, quadrant);
 			Intervals.addHb(barrier, add);
 		}
 	}

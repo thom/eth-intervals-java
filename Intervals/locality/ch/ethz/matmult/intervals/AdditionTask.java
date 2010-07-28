@@ -11,8 +11,9 @@ import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 public abstract class AdditionTask extends MatrixTask {
-	public AdditionTask(@ParentForNew("Parent") Dependency dep, PlaceID placeID,
-			TaskFactory factory, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
+	public AdditionTask(@ParentForNew("Parent") Dependency dep,
+			PlaceID placeID, TaskFactory factory, Matrix a, Matrix b, Matrix c,
+			Quadrant quadrant) {
 		super(dep, placeID, "addition-task-", factory, a, b, c, quadrant);
 	}
 
@@ -27,8 +28,8 @@ public abstract class AdditionTask extends MatrixTask {
 
 			for (int row = 0; row < 2; row++) {
 				for (int col = 0; col < 2; col++) {
-					AdditionTask add = createAdditionTask(parent, placeID,
-							aa[row][col], bb[row][col], cc[row][col], quadrant);
+					AdditionTask add = createAdditionTask(parent, aa[row][col],
+							bb[row][col], cc[row][col], quadrant);
 					Intervals.addHb(add, barrier);
 				}
 			}

@@ -8,14 +8,14 @@ import ch.ethz.matmult.Quadrant;
 class IgnorantLocalityTaskFactory extends TaskFactory {
 	@Override
 	protected MultiplicationTask createMultiplicationTask(Dependency dep,
-			PlaceID placeID, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
+			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		return new IgnorantLocalityMultiplicationTask(dep, null, a, b, c,
 				quadrant);
 	}
 
 	@Override
-	protected AdditionTask createAdditionTask(Dependency dep, PlaceID placeID,
-			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
+	protected AdditionTask createAdditionTask(Dependency dep, Matrix a,
+			Matrix b, Matrix c, Quadrant quadrant) {
 		return new IgnorantLocalityAdditionTask(dep, null, a, b, c, quadrant);
 	}
 }

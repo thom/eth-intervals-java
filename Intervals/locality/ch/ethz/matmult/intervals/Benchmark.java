@@ -26,7 +26,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 		// Do multiplication
 		Intervals.inline(new VoidInlineTask() {
 			public void run(Interval subinterval) {
-				factory.createMultiplicationTask(subinterval, null, a, b, c,
+				factory.createMultiplicationTask(subinterval, a, b, c,
 						Quadrant.None);
 			}
 		});

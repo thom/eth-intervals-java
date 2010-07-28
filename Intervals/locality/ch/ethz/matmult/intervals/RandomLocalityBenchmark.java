@@ -1,24 +1,34 @@
 package ch.ethz.matmult.intervals;
 
+import java.util.Random;
+
 import ch.ethz.hwloc.PlaceID;
 import ch.ethz.intervals.Dependency;
+import ch.ethz.matmult.Main;
 import ch.ethz.matmult.Matrix;
 import ch.ethz.matmult.Quadrant;
 
 class RandomLocalityTaskFactory extends TaskFactory {
-	@Override
-	protected MultiplicationTask createMultiplicationTask(Dependency dep,
-			PlaceID placeID, Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		// TODO: Set place
-		return new RandomLocalityMultiplicationTask(dep, placeID, a, b, c,
-				quadrant);
+	private Random random;
+
+	public RandomLocalityTaskFactory() {
+		random = new Random();
 	}
 
 	@Override
-	protected AdditionTask createAdditionTask(Dependency dep, PlaceID placeID,
+	protected MultiplicationTask createMultiplicationTask(Dependency dep,
 			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
-		// TODO: Set place
-		return new RandomLocalityAdditionTask(dep, placeID, a, b, c, quadrant);
+		return new RandomLocalityMultiplicationTask(dep,
+				Main.places.getPlaceID(random.nextInt(Main.places.length)), a,
+				b, c, quadrant);
+	}
+
+	@Override
+	protected AdditionTask createAdditionTask(Dependency dep, Matrix a,
+			Matrix b, Matrix c, Quadrant quadrant) {
+		return new RandomLocalityAdditionTask(dep,
+				Main.places.getPlaceID(random.nextInt(Main.places.length)), a,
+				b, c, quadrant);
 	}
 }
 
@@ -30,8 +40,8 @@ class RandomLocalityMultiplicationTask extends MultiplicationTask {
 }
 
 class RandomLocalityAdditionTask extends AdditionTask {
-	public RandomLocalityAdditionTask(Dependency dep, PlaceID placeID, Matrix a,
-			Matrix b, Matrix c, Quadrant quadrant) {
+	public RandomLocalityAdditionTask(Dependency dep, PlaceID placeID,
+			Matrix a, Matrix b, Matrix c, Quadrant quadrant) {
 		super(dep, placeID, new RandomLocalityTaskFactory(), a, b, c, quadrant);
 	}
 }
