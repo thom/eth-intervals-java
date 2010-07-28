@@ -195,7 +195,7 @@ class ThreadPool {
 				worker.place.enqueue(item);
 			else {
 				// Round robin assignment
-				Place thisPlace = places[nextPlace];
+				places[nextPlace].enqueue(item);
 				nextPlace = (nextPlace + 1) % numberOfPlaces;
 
 				// Wake worker in next place
@@ -210,8 +210,6 @@ class ThreadPool {
 				} else {
 					place.idleLock.unlock();
 				}
-
-				thisPlace.enqueue(item);
 			}
 		} else {
 			places[placeID.id].enqueue(item);
