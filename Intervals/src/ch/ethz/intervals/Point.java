@@ -469,7 +469,7 @@ public final class Point implements PointMirror {
 				}
 				if (didOccur(wc))
 					return;
-				if (!worker.doWork(false))
+				if (!worker.doWork())
 					Thread.yield();
 			}
 		}

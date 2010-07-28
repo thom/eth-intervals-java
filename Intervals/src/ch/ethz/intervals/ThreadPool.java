@@ -1,10 +1,5 @@
 package ch.ethz.intervals;
 
-import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import ch.ethz.hwloc.Affinity;
 import ch.ethz.hwloc.PlaceID;
 import ch.ethz.hwloc.SetAffinityException;
@@ -15,7 +10,6 @@ class ThreadPool {
 		final class Worker extends Thread {
 			final int id;
 			final Place place;
-			final Semaphore semaphore = new Semaphore(1);
 
 			Worker(int id, Place place) {
 				super(place.getName() + "-Worker-" + id);
@@ -43,23 +37,17 @@ class ThreadPool {
 
 				currentWorker.set(this);
 
-				// Cannot fail
-				this.semaphore.acquireUninterruptibly();
-
 				while (true) {
-					doWork(true);
+					doWork();
 				}
 			}
 
 			/**
 			 * Tries to do some work.
 			 * 
-			 * @param block
-			 *            if true, will block if no work is found, otherwise
-			 *            just returns false
 			 * @return true if work was done, false otherwise
 			 */
-			boolean doWork(boolean block) {
+			boolean doWork() {
 				WorkItem item = place.tasks.take();
 
 				if (item == null) {
@@ -68,16 +56,7 @@ class ThreadPool {
 					}
 
 					if (item == null) {
-						if (block) {
-							place.idleLock.lock();
-							place.idleWorkersExist = true;
-							place.idleWorkers.add(this);
-							place.idleLock.unlock();
-
-							// Blocks until release() is invoked by place
-							semaphore.acquireUninterruptibly();
-						}
-
+						Thread.yield();
 						return false;
 					}
 				}
@@ -114,11 +93,6 @@ class ThreadPool {
 		final WorkStealingQueue tasks;
 		final int numberOfWorkers;
 		final Worker[] workers;
-		final Lock idleLock = new ReentrantLock();
-		volatile boolean idleWorkersExist;
-
-		// Guarded by idleLock
-		final ArrayList<Worker> idleWorkers = new ArrayList<Worker>();
 
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
@@ -143,25 +117,6 @@ class ThreadPool {
 
 		public void enqueue(WorkItem item) {
 			tasks.put(item);
-
-			// Wake sleeping worker in current place if there's any
-			if (idleWorkersExist) {
-				Worker idleWorker = null;
-				idleLock.lock();
-				try {
-					int l = idleWorkers.size();
-					if (l != 0) {
-						idleWorker = idleWorkers.remove(l - 1);
-						idleWorkersExist = (l != 1);
-					}
-				} finally {
-					idleLock.unlock();
-				}
-
-				if (idleWorker != null) {
-					idleWorker.semaphore.release();
-				}
-			}
 		}
 	}
 
@@ -195,23 +150,8 @@ class ThreadPool {
 				worker.place.enqueue(item);
 			else {
 				// Round robin assignment
-				Place thisPlace = places[nextPlace];
+				places[nextPlace].enqueue(item);
 				nextPlace = (nextPlace + 1) % numberOfPlaces;
-
-				// Wake worker in next place
-				Place place = places[nextPlace];
-				place.idleLock.lock();
-				int l = place.idleWorkers.size();
-				if (l > 0) {
-					worker = place.idleWorkers.remove(l - 1);
-					place.idleWorkersExist = (l != 1);
-					place.idleLock.unlock();
-					worker.semaphore.release();
-				} else {
-					place.idleLock.unlock();
-				}
-
-				thisPlace.enqueue(item);
 			}
 		} else {
 			places[placeID.id].enqueue(item);
