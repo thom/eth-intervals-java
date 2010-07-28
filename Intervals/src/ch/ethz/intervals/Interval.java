@@ -6,7 +6,7 @@ import pcollections.Empty;
 import pcollections.HashTreePSet;
 import pcollections.PSet;
 import ch.ethz.hwloc.PlaceID;
-import ch.ethz.intervals.ThreadPool.Place.Worker;
+import ch.ethz.intervals.ThreadPool.Worker;
 import ch.ethz.intervals.guard.Guard;
 import ch.ethz.intervals.mirror.IntervalMirror;
 import ch.ethz.intervals.mirror.LockMirror;

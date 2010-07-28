@@ -1,7 +1,6 @@
 package ch.ethz.intervals;
 
 import ch.ethz.hwloc.*;
-import ch.ethz.intervals.ThreadPool.Place;
 
 public class Config {
 	/**
@@ -21,7 +20,7 @@ public class Config {
 	 * @param owner
 	 * @return WorkStealingDeque
 	 */
-	public final static WorkStealingQueue createQueue(Place owner) {
-		return new LinkedBlockingWorkStealingDeque(owner);
+	public final static WorkStealingQueue createQueue() {
+		return new LinkedBlockingWorkStealingDeque();
 	}
 }

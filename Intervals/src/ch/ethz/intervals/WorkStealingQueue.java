@@ -1,6 +1,6 @@
 package ch.ethz.intervals;
 
-import ch.ethz.intervals.ThreadPool.Place.Worker;
+import ch.ethz.intervals.ThreadPool.Worker;
 
 interface WorkStealingQueue {
 	public void put(WorkItem task);

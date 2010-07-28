@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
-import ch.ethz.intervals.ThreadPool.Place.Worker;
+import ch.ethz.intervals.ThreadPool.Worker;
 import ch.ethz.intervals.mirror.PointMirror;
 import ch.ethz.intervals.util.ChunkList;
 
