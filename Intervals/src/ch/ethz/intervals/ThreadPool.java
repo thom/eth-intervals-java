@@ -69,10 +69,10 @@ class ThreadPool {
 
 					if (item == null) {
 						if (block) {
-							place.idleLock.lock();
-							place.idleWorkersExist = true;
-							place.idleWorkers.add(this);
-							place.idleLock.unlock();
+							idleLock.lock();
+							idleWorkersExist = true;
+							idleWorkers.add(this);
+							idleLock.unlock();
 
 							// Blocks until release() is invoked by place
 							semaphore.acquireUninterruptibly();
@@ -114,11 +114,6 @@ class ThreadPool {
 		final WorkStealingQueue tasks;
 		final int numberOfWorkers;
 		final Worker[] workers;
-		final Lock idleLock = new ReentrantLock();
-		volatile boolean idleWorkersExist;
-
-		// Guarded by idleLock
-		final ArrayList<Worker> idleWorkers = new ArrayList<Worker>();
 
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
@@ -143,33 +138,19 @@ class ThreadPool {
 
 		public void enqueue(WorkItem item) {
 			tasks.put(item);
-
-			// Wake sleeping worker in current place if there's any
-			if (idleWorkersExist) {
-				Worker idleWorker = null;
-				idleLock.lock();
-				try {
-					int l = idleWorkers.size();
-					if (l != 0) {
-						idleWorker = idleWorkers.remove(l - 1);
-						idleWorkersExist = (l != 1);
-					}
-				} finally {
-					idleLock.unlock();
-				}
-
-				if (idleWorker != null) {
-					idleWorker.semaphore.release();
-				}
-			}
 		}
 	}
 
 	final static ThreadLocal<Worker> currentWorker = new ThreadLocal<Worker>();
 	final int numberOfPlaces = Config.places.length;
 	final int numberOfWorkers = Config.places.unitsLength;
+	final Lock idleLock = new ReentrantLock();
+	volatile boolean idleWorkersExist = false;
 	final Place[] places = new Place[numberOfPlaces];
 	int nextPlace = 0;
+
+	// Guarded by idleLock
+	final ArrayList<Worker> idleWorkers = new ArrayList<Worker>();
 
 	ThreadPool() {
 		for (int i = 0; i < numberOfPlaces; i++) {
@@ -195,26 +176,25 @@ class ThreadPool {
 				worker.place.enqueue(item);
 			else {
 				// Round robin assignment
-				Place thisPlace = places[nextPlace];
+				places[nextPlace].enqueue(item);
 				nextPlace = (nextPlace + 1) % numberOfPlaces;
-
-				// Wake worker in next place
-				Place place = places[nextPlace];
-				place.idleLock.lock();
-				int l = place.idleWorkers.size();
-				if (l > 0) {
-					worker = place.idleWorkers.remove(l - 1);
-					place.idleWorkersExist = (l != 1);
-					place.idleLock.unlock();
-					worker.semaphore.release();
-				} else {
-					place.idleLock.unlock();
-				}
-
-				thisPlace.enqueue(item);
 			}
 		} else {
 			places[placeID.id].enqueue(item);
+		}
+
+		if (idleWorkersExist) {
+			Worker worker;
+			idleLock.lock();
+			int l = idleWorkers.size();
+			if (l > 0) {
+				worker = idleWorkers.remove(l - 1);
+				idleWorkersExist = (l != 1);
+				idleLock.unlock();
+				worker.semaphore.release();
+			} else {
+				idleLock.unlock();
+			}
 		}
 	}
 }
