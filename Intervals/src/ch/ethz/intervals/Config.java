@@ -15,14 +15,6 @@ public class Config {
 	public static final boolean AFFINITY = true;
 
 	/**
-	 * Are we using a duplicating queue?
-	 * 
-	 * Use state (init, running, done) to make sure tasks are executed only
-	 * once.
-	 */
-	public static final boolean DUPLICATING_QUEUE = false;
-
-	/**
 	 * Creation method to simplify switching of work-stealing queue
 	 * implementations
 	 * 
