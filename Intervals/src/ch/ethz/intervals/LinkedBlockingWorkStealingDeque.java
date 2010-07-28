@@ -19,27 +19,14 @@ public class LinkedBlockingWorkStealingDeque extends
 	public void put(WorkItem task) {
 		super.addLast(task);
 
-		if (WorkerStatistics.ENABLED) {
-			// TODO: Fix stats
-			// owner.stats.doPut();
+		if (PlaceStatistics.ENABLED) {
+			owner.stats.doPut();
 		}
 	}
 
 	@Override
 	public WorkItem take() {
-		WorkItem task = super.pollLast();
-
-		if (WorkerStatistics.ENABLED) {
-			if (task == null) {
-				// TODO: Fix stats
-				// owner.stats.doTakeFailure();
-			} else {
-				// TODO: Fix stats
-				// owner.stats.doTakeSuccess();
-			}
-		}
-
-		return task;
+		return super.pollLast();
 	}
 
 	@Override

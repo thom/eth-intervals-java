@@ -69,6 +69,15 @@ class ThreadPool {
 			boolean doWork(boolean block) {
 				WorkItem item = place.tasks.take();
 
+				if (WorkerStatistics.ENABLED) {
+					stats.doTakeAttempt();
+					if (item == null) {
+						stats.doTakeFailure();
+					} else {
+						stats.doTakeSuccess();
+					}
+				}
+
 				if (item == null) {
 					if (numberOfPlaces > 1) {
 						item = stealTask();
@@ -146,7 +155,7 @@ class ThreadPool {
 		Place(int id, int[] units) {
 			super("Intervals-Place-" + id);
 			this.id = id;
-			tasks = Config.createQueue(null);
+			tasks = Config.createQueue(this);
 			numberOfWorkers = units.length;
 			workers = new Worker[numberOfWorkers];
 
@@ -210,18 +219,22 @@ class ThreadPool {
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
 					// Global place statistics
-					// PlaceStatistics.globalPrint();
+					PlaceStatistics.globalPrint();
 
 					// Global worker statistics
-					WorkerStatistics.globalPrint();
+					if (WorkerStatistics.ENABLED) {
+						WorkerStatistics.globalPrint();
+					}
 
 					// Statistics for each place
 					for (Place place : places) {
-						// place.stats.print();
+						place.stats.print();
 
 						// Statistics for each worker
-						for (Worker worker : place.workers) {
-							worker.stats.print();
+						if (WorkerStatistics.ENABLED) {
+							for (Worker worker : place.workers) {
+								worker.stats.print();
+							}
 						}
 					}
 				}
