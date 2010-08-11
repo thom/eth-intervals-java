@@ -51,12 +51,17 @@ public class IdempotentLIFOQueue implements WorkStealingQueue {
 		WorkItem task;
 
 		while (true) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealAttempt();
+
 			// (1)
 			tail = anchor.getReference();
 			tag = anchor.getStamp();
 
 			// (2)
 			if (tail == 0) {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 				return null;
 			}
 
@@ -69,6 +74,14 @@ public class IdempotentLIFOQueue implements WorkStealingQueue {
 			if (anchor.compareAndSet(tail, tail - 1, tag, tag)) {
 				break;
 			}
+		}
+
+		if (task == null) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealFailure();
+		} else {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealSuccess();
 		}
 
 		return task;
