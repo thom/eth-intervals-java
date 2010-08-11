@@ -86,6 +86,9 @@ public class IdempotentWorkStealingDeque implements WorkStealingQueue {
 			if (anchor.compareAndSet(arrayData,
 					new ArrayData(newHead, size - 1), tag, tag)) {
 				break;
+			} else {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 			}
 		}
 
