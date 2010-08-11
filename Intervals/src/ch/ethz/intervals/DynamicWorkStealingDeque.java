@@ -97,9 +97,10 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			Index currentBottom = bottom;
 
 			if (isEmpty(currentBottom, currentTop)) {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
+
 				if (currentTopRef == top) {
-					if (WorkerStatistics.ENABLED)
-						owner.stats.doStealFailure();
 					return null;
 				} else {
 					// ABORT
@@ -134,6 +135,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			// Try to update top using CAS
 			if (top.compareAndSet(currentTop, newTop, currentTopTag, newTopTag)) {
 				break;
+			} else {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 			}
 		}
 
