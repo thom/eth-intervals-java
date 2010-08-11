@@ -55,8 +55,12 @@ public class WorkStealingDeque implements WorkStealingQueue {
 
 			task = currentTasks[oldTop % currentTasks.length];
 
-			if (top.compareAndSet(oldTop, oldTop + 1)) // fetch and increment
+			if (top.compareAndSet(oldTop, oldTop + 1)) { // fetch and increment
 				break;
+			} else {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
+			}
 		}
 
 		if (task == null) {
