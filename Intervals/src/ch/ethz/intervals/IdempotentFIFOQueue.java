@@ -77,6 +77,9 @@ public class IdempotentFIFOQueue implements WorkStealingQueue {
 			// (5)
 			if (head.compareAndSet(oldHead, oldHead + 1)) {
 				break;
+			} else {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 			}
 		}
 
