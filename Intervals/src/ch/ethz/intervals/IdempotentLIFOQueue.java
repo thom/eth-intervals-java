@@ -73,6 +73,9 @@ public class IdempotentLIFOQueue implements WorkStealingQueue {
 			// (4)
 			if (anchor.compareAndSet(tail, tail - 1, tag, tag)) {
 				break;
+			} else {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 			}
 		}
 
