@@ -77,6 +77,9 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 		WorkItem task;
 
 		while (true) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealAttempt();
+
 			// Read top
 			AtomicStampedReference<Index> currentTopRef = top;
 			Index currentTop = currentTopRef.getReference();
@@ -85,6 +88,8 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			int currentTopTag = currentTopRef.getStamp();
 
 			if (currentTopNode == null) {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
 				return null;
 			}
 
@@ -93,6 +98,8 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 
 			if (isEmpty(currentBottom, currentTop)) {
 				if (currentTopRef == top) {
+					if (WorkerStatistics.ENABLED)
+						owner.stats.doStealFailure();
 					return null;
 				} else {
 					// ABORT
@@ -128,6 +135,14 @@ public class DynamicWorkStealingDeque implements WorkStealingQueue {
 			if (top.compareAndSet(currentTop, newTop, currentTopTag, newTopTag)) {
 				break;
 			}
+		}
+
+		if (task == null) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealFailure();
+		} else {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealSuccess();
 		}
 
 		return task;
