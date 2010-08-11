@@ -52,6 +52,9 @@ public class IdempotentFIFOQueue implements WorkStealingQueue {
 		WorkItem task;
 
 		while (true) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealAttempt();
+
 			// (1)
 			oldHead = head.get();
 
@@ -59,6 +62,9 @@ public class IdempotentFIFOQueue implements WorkStealingQueue {
 			oldTail = tail;
 
 			if (oldHead == oldTail) {
+				if (WorkerStatistics.ENABLED)
+					owner.stats.doStealFailure();
+
 				return null;
 			}
 
@@ -72,6 +78,14 @@ public class IdempotentFIFOQueue implements WorkStealingQueue {
 			if (head.compareAndSet(oldHead, oldHead + 1)) {
 				break;
 			}
+		}
+
+		if (task == null) {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealFailure();
+		} else {
+			if (WorkerStatistics.ENABLED)
+				owner.stats.doStealSuccess();
 		}
 
 		return task;
