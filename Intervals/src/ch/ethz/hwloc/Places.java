@@ -24,8 +24,6 @@ public abstract class Places {
 		this.unitsLength = units.length;
 	}
 
-	// Marvin: PlaceID[] placeIDs = { new PlaceIDImpl(0) }
-	// Mafushi: PlaceID[] placeIDs = { new PlaceIDImpl(0), new PlaceIDImpl(1) }
 	public PlaceID getPlaceID(int id) {
 		return placeIDs[id % placeIDs.length];
 	}
