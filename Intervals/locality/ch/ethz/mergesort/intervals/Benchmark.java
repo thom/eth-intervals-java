@@ -54,6 +54,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 		long time = stopBenchmark();
 
 		// Check result
+		/*
 		Integer[] result = mergingTasks.get(mergingTasks.size() - 1).array;
 		for (int i = 0; i < result.length - 1; i++) {
 			if (result[i] > result[i + 1]) {
@@ -61,6 +62,7 @@ public abstract class Benchmark extends LocalityBenchmark {
 				System.exit(1);
 			}
 		}
+		*/
 
 		return time;
 	}
