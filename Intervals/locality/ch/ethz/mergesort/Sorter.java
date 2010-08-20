@@ -27,9 +27,7 @@ public class Sorter implements MergeSorter {
 			array[i] = random.nextInt(Main.upperBound);
 		}
 
-		for (int i = 0; i < 100; i++) {
-			// Sort array
-			Arrays.sort(array);
-		}
+		// Sort array
+		Arrays.sort(array);
 	}
 }
