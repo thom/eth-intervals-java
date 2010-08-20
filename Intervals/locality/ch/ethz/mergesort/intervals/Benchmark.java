@@ -30,7 +30,6 @@ public abstract class Benchmark extends LocalityBenchmark {
 	public long run() {
 		startBenchmark();
 
-		for (int k = 0; k < 100; k++) {
 		// Create tasks hierarchy
 		sortingTasks = new SortingTask[numberOfSorters];
 		mergingTasks = new ArrayList<MergingTask>();
@@ -51,7 +50,6 @@ public abstract class Benchmark extends LocalityBenchmark {
 						sortingTasks);
 			}
 		});
-		}
 
 		long time = stopBenchmark();
 
