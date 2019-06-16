@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 import ch.ethz.intervals.mirror.PointMirror;
 import ch.ethz.intervals.util.ChunkList;
 
@@ -19,7 +19,7 @@ public final class Point implements PointMirror {
 	public static final int FLAG_END = 1;
 	/** is end point? */
 	public static final int FLAG_SYNCHRONOUS = 2;
-	
+
 	/** is point of a sync. interval? */
 	public static final int FLAGS_SYNCHRONOUS_END = FLAG_END | FLAG_SYNCHRONOUS;
 
@@ -202,7 +202,7 @@ public final class Point implements PointMirror {
 	private boolean hb(final PointMirror tar, final int skipFlags) {
 		assert tar != null;
 
-		// TODO: We currently access the list of outgoing edges with
+		// We currently access the list of outgoing edges with
 		// outEdgesSync. Is that necessary? It seems like a
 		// volatile might be enough, at worst it would miss a path--
 		// Except that missing a path is bad when checking for cycles!

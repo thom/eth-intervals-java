@@ -5,7 +5,8 @@ import java.util.Set;
 import pcollections.Empty;
 import pcollections.HashTreePSet;
 import pcollections.PSet;
-import ch.ethz.intervals.ThreadPool.Worker;
+import ch.ethz.hwloc.PlaceID;
+import ch.ethz.intervals.ThreadPool.Place.Worker;
 import ch.ethz.intervals.guard.Guard;
 import ch.ethz.intervals.mirror.IntervalMirror;
 import ch.ethz.intervals.mirror.LockMirror;
@@ -16,7 +17,7 @@ import ch.ethz.intervals.util.ChunkList;
 
 @Parent @ParentForNew("this")
 public abstract class Interval 
-extends ThreadPool.WorkItem 
+extends WorkItem 
 implements Dependency, Guard, IntervalMirror
 {	
 	// =====================================================================================
@@ -25,12 +26,21 @@ implements Dependency, Guard, IntervalMirror
 	public final @Is("Parent") Interval parent;
 	public final Point start;
 	public final Point end;
+	public final PlaceID placeID;
 	
 	public Interval(@ParentForNew("Parent") Dependency dep) {
-		this(dep, null);
+		this(dep, null, null);
+	}
+
+	public Interval(@ParentForNew("Parent") Dependency dep, PlaceID placeID) {
+		this(dep, null, placeID);
 	}
 	
 	public Interval(@ParentForNew("Parent") Dependency dep, String name) {
+		this(dep, name, null);
+	}
+
+	public Interval(@ParentForNew("Parent") Dependency dep, String name, PlaceID placeID) {
 		Interval parent = dep.parentForNewInterval();
 		Current current = Current.get();
 		
@@ -48,6 +58,7 @@ implements Dependency, Guard, IntervalMirror
 		if(parent != null)
 			current.checkCanAddChild(parent);
 		
+		this.placeID = placeID;
 		this.name = name;
 		this.parent = parent;
 		end = new Point(name, Point.FLAG_END, parentEnd, 2, this);
@@ -75,7 +86,10 @@ implements Dependency, Guard, IntervalMirror
 		
 		dep.addHbToNewInterval(this);		
 	}
-	
+
+	public PlaceID getPlaceID() {
+		return placeID;
+	}
 
 	/**
 	 * Defines the behavior of the interval.  Must be
@@ -295,14 +309,14 @@ implements Dependency, Guard, IntervalMirror
 	private static final long serialVersionUID = 8105268455633202522L;
 		
 	/** User-provided name for the interval, or null */
-	private final String name;
+	protected final String name;
 	
 	/** If we are unscheduled, who are we "unscheduled" by? */
 	private Current unscheduled;
 	
 	/** @see Current#unscheduled */
 	Interval nextUnscheduled;
-	
+
 	/** Current state of this interval.  
 	 * 
 	 *  Any change to this variable must HAPPEN AFTER the predecessor state.
@@ -361,6 +375,11 @@ implements Dependency, Guard, IntervalMirror
 	
 	/** Constructor used by blocking subintervals */
 	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount) {
+		this(name, current, parent, pntFlags, startWaitCount, endWaitCount, null);
+	}
+
+	Interval(String name, Current current, Interval parent, int pntFlags, int startWaitCount, int endWaitCount, PlaceID placeID) {
+		this.placeID = placeID;
 		this.state = State.WAIT;
 		this.name = name;
 		this.parent = parent;		
